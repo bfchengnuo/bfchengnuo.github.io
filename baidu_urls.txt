@@ -1,1 +1,1 @@
-http://bfchengnuo.com/2019/06/02/Vue核心使用总结/
+http://bfchengnuo.com/2019/09/14/ECMAScript常用语法整理/

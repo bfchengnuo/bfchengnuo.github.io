@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://bfchengnuo.com/2019/06/02/Vue%E6%A0%B8%E5%BF%83%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93/</loc>
+    
+    <lastmod>2019-09-25T13:13:02.727Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://bfchengnuo.com/2019/09/14/ECMAScript%E5%B8%B8%E7%94%A8%E8%AF%AD%E6%B3%95%E6%95%B4%E7%90%86/</loc>
     
     <lastmod>2019-09-13T16:35:30.909Z</lastmod>
@@ -19,13 +26,6 @@
     <loc>http://bfchengnuo.com/2016/03/22/git%E6%8A%80%E5%B7%A7/</loc>
     
     <lastmod>2019-08-13T16:28:05.731Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://bfchengnuo.com/2019/06/02/Vue%E6%A0%B8%E5%BF%83%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93/</loc>
-    
-    <lastmod>2019-06-02T13:35:20.000Z</lastmod>
     
   </url>
   
@@ -268,21 +268,7 @@
   </url>
   
   <url>
-    <loc>http://bfchengnuo.com/2017/09/28/MyBatis%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</loc>
-    
-    <lastmod>2018-08-25T09:37:28.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://bfchengnuo.com/2017/03/26/%E4%BA%86%E8%A7%A3Tomcat/</loc>
-    
-    <lastmod>2018-08-25T09:37:28.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://bfchengnuo.com/2017/03/06/VMware%E7%9A%84%E4%B8%89%E7%A7%8D%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F/</loc>
+    <loc>http://bfchengnuo.com/2017/11/16/Java%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6/</loc>
     
     <lastmod>2018-08-25T09:37:28.000Z</lastmod>
     
@@ -296,7 +282,7 @@
   </url>
   
   <url>
-    <loc>http://bfchengnuo.com/2017/09/18/Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F/</loc>
+    <loc>http://bfchengnuo.com/2017/07/27/%E6%9E%84%E5%BB%BA%E5%B7%A5%E5%85%B7%E4%B9%8BMaven/</loc>
     
     <lastmod>2018-08-25T09:37:28.000Z</lastmod>
     
@@ -310,21 +296,14 @@
   </url>
   
   <url>
-    <loc>http://bfchengnuo.com/2017/04/13/%E7%BC%96%E5%86%99%E7%AE%80%E5%8D%95%E7%9A%84%E7%88%AC%E8%99%AB/</loc>
+    <loc>http://bfchengnuo.com/2017/03/06/VMware%E7%9A%84%E4%B8%89%E7%A7%8D%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F/</loc>
     
     <lastmod>2018-08-25T09:37:28.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://bfchengnuo.com/2017/11/18/Fiddler%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/</loc>
-    
-    <lastmod>2018-08-25T09:37:28.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://bfchengnuo.com/2017/04/27/JDBC%E5%85%A5%E9%97%A8/</loc>
+    <loc>http://bfchengnuo.com/2018/01/03/Java%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6%E5%B7%A5%E5%85%B7/</loc>
     
     <lastmod>2018-08-25T09:37:28.000Z</lastmod>
     
@@ -338,7 +317,35 @@
   </url>
   
   <url>
-    <loc>http://bfchengnuo.com/2017/07/27/%E6%9E%84%E5%BB%BA%E5%B7%A5%E5%85%B7%E4%B9%8BMaven/</loc>
+    <loc>http://bfchengnuo.com/2017/07/01/Hibernate%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</loc>
+    
+    <lastmod>2018-08-25T09:37:28.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://bfchengnuo.com/2017/03/26/%E4%BA%86%E8%A7%A3Tomcat/</loc>
+    
+    <lastmod>2018-08-25T09:37:28.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://bfchengnuo.com/2017/11/18/Fiddler%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/</loc>
+    
+    <lastmod>2018-08-25T09:37:28.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://bfchengnuo.com/2017/09/18/Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F/</loc>
+    
+    <lastmod>2018-08-25T09:37:28.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://bfchengnuo.com/2017/04/27/JDBC%E5%85%A5%E9%97%A8/</loc>
     
     <lastmod>2018-08-25T09:37:28.000Z</lastmod>
     
@@ -352,6 +359,13 @@
   </url>
   
   <url>
+    <loc>http://bfchengnuo.com/2017/09/28/MyBatis%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</loc>
+    
+    <lastmod>2018-08-25T09:37:28.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://bfchengnuo.com/2018/02/08/Shiro%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</loc>
     
     <lastmod>2018-08-25T09:37:28.000Z</lastmod>
@@ -359,21 +373,7 @@
   </url>
   
   <url>
-    <loc>http://bfchengnuo.com/2017/11/16/Java%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6/</loc>
-    
-    <lastmod>2018-08-25T09:37:28.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://bfchengnuo.com/2017/07/01/Hibernate%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</loc>
-    
-    <lastmod>2018-08-25T09:37:28.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://bfchengnuo.com/2018/01/03/Java%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6%E5%B7%A5%E5%85%B7/</loc>
+    <loc>http://bfchengnuo.com/2017/04/13/%E7%BC%96%E5%86%99%E7%AE%80%E5%8D%95%E7%9A%84%E7%88%AC%E8%99%AB/</loc>
     
     <lastmod>2018-08-25T09:37:28.000Z</lastmod>
     

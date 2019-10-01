@@ -362,7 +362,7 @@ to{-webkit-transform:rotateZ(-30deg);-moz-transform:rotateZ(-30deg);-ms-transfor
 .feed-link a{padding:0 15px;border-radius:4px}
 .feed-link a i{color:#fc6423;font-size:14px}
 .links-of-author a{display:inline-block;vertical-align:middle;margin-right:10px;margin-bottom:10px;border-bottom-color:#555;font-size:13px}
-.links-of-author a:before{display:inline-block;vertical-align:middle;margin-right:3px;content:" ";width:4px;height:4px;border-radius:50%;background:#3973ff}
+.links-of-author a:before{display:inline-block;vertical-align:middle;margin-right:3px;content:" ";width:4px;height:4px;border-radius:50%;background:#fbff63}
 .links-of-blogroll{font-size:13px}
 .links-of-blogroll-title{font-size:14px;font-weight:600}
 .links-of-blogroll-list{margin:0;padding:0;list-style:none}

@@ -1,0 +1,1235 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Microsoft Yahei:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,安全," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakanoy" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/image/tb.png?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="继续更新！Android的安全问题太多太多，这里只是总结了下我所了解(强制 = = )到的安全问题话说，实际开发中还能想到多少呢？？">
+<meta name="keywords" content="Android,安全">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android安全开发初步(二)">
+<meta property="og:url" content="https://sakanoy.com/2016/10/27/Android安全开发初步-二/index.html">
+<meta property="og:site_name" content="Sakanoy">
+<meta property="og:description" content="继续更新！Android的安全问题太多太多，这里只是总结了下我所了解(强制 = = )到的安全问题话说，实际开发中还能想到多少呢？？">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-03-10T06:42:28.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android安全开发初步(二)">
+<meta name="twitter:description" content="继续更新！Android的安全问题太多太多，这里只是总结了下我所了解(强制 = = )到的安全问题话说，实际开发中还能想到多少呢？？">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://sakanoy.com/2016/10/27/Android安全开发初步-二/"/>
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-bounce.css">
+
+  <title> Android安全开发初步(二) | Sakanoy </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-77463916-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakanoy</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">立于浮华之世,奏响天籁之音.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-mark">
+          <a href="/mark" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-retweet"></i> <br />
+            
+            笔记本
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-book"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-music">
+          <a href="/music" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-music"></i> <br />
+            
+            音乐台
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://sakanoy.com/2016/10/27/Android安全开发初步-二/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Kerronex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/image/tx.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakanoy">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Android安全开发初步(二)
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-10-27T14:45:35+00:00">
+                2016-10-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-eye"></i> 热度
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-wordcount">
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  4,037
+                </span>
+              
+
+              
+
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <div style="display: none;color: #999" class="note warning" id='timeliness'></div>
+        <script language=javascript>
+          var days = (new Date().getTime() - 1477579535000) / 86400000;
+          if(days > 180) {
+            var infoDom = document.getElementById("timeliness");
+            infoDom.innerHTML = "提醒：本文发布于 " + Math.round(days) + " 天前，文中所描述的信息可能已发生改变，请谨慎使用。";
+            infoDom.style.display = "block"
+          }
+        </script>
+        <p>继续更新！Android的安全问题太多太多，这里只是总结了下我所了解(强制 = = )到的安全问题<br>话说，实际开发中还能想到多少呢？？<br><a id="more"></a><br>现在感觉各行各业越来越重视安全，如果有机会接触到感觉还是很爽的！<br><del>其实我想装逼</del></p>
+<h2 id="截屏风险"><a href="#截屏风险" class="headerlink" title="截屏风险"></a>截屏风险</h2><p>在登录和注册，或修改密码等敏感数据操作时，如果手机中有后台默认隐藏截屏的应用，<strong>在输入是一直截屏</strong>，就有可能盗取敏感数据信息。<br><strong>解决方案：</strong><br>在Activity onCreate 中加入：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//一般写在setContentView上面</span></span><br><span class="line">getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);</span><br></pre></td></tr></table></figure>
+<p>官方的意思就是设置了这个flag后, 系统会把当前窗口的内容视为安全隐私内容, 系统会阻止这些内容被截屏或者在不安全可靠的场景显示出来.<br>它起到的主要作用是：</p>
+<ul>
+<li><p>阻止屏幕截图</p>
+</li>
+<li><p>在Recent apps(任务切换界面)中只显示应用名字和图标, 不显示内容</p>
+</li>
+<li>Google App的Now on tap功能不会去分析你的页面的内容</li>
+</ul>
+<p>最后，对于国内各种ROM对Android的丧心病狂的更改还是要测试下实际效果的。。。</p>
+<h2 id="关注debuggable"><a href="#关注debuggable" class="headerlink" title="关注debuggable"></a>关注debuggable</h2><p><code>android:debuggable</code> 属性的设置可能会引起 被动态调试的风险。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">application</span></span></span><br><span class="line"><span class="tag">	<span class="attr">android:icon</span>=<span class="string">"@drawable/ic_launcher"</span></span></span><br><span class="line"><span class="tag">	<span class="attr">android:label</span>=<span class="string">"@string/app_name"</span></span></span><br><span class="line"><span class="tag">	<span class="attr">android:theme</span>=<span class="string">"@style/AppTheme"</span> </span></span><br><span class="line"><span class="tag">	<span class="attr">android:debuggable</span>=<span class="string">"true"</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>debuggable 属性有两个值“true|false”;<br>只有<code>Android:debuggable=”true”</code>时我们才可以在手机上调试Android程序。<br>但是当我们没在<code>AndroidManifest.xml</code>中设置其debug属性时:<br>使用Eclipse运行这种方式打包时其debug属性为true,使用Eclipse导出这种方式打包时其debug属性为法false.<br>在使用ant打包时，其值就取决于ant的打包参数是release还是debug.<br><strong>因此在AndroidMainifest.xml中最好不设置android:debuggable属性置，而是由打包方式来决定其值。</strong><br>如果设置了 android:debuggable=”true” 那么在正式打包时 把它设置成false吧！！！</p>
+<h2 id="关注allowBackup"><a href="#关注allowBackup" class="headerlink" title="关注allowBackup"></a>关注allowBackup</h2><p><code>android:allowBackup</code> 属性的设置可能会引起用数据被任意备份的风险</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">application</span></span></span><br><span class="line"><span class="tag">  <span class="attr">android:allowBackup</span>=<span class="string">"false"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">android:label</span>=<span class="string">"@string/app_name"</span>&gt;</span></span><br><span class="line">  ......</span><br><span class="line"><span class="tag">&lt;/<span class="name">application</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>Android API Level 8 及其以上 Android 系统提供了为应用程序数据的备份和恢复功能，此功能的开关决定于该应用程序中 <code>AndroidManifest.xml</code> 文件中的 allowBackup 属性值，<strong>其属性值默认是 True</strong>。当 allowBackup 标志为 true 时，用户即可通过 adb backup 和 adb restore 来进行对应用数据的备份和恢复。<br>一旦应用程序支持备份和恢复功能，攻击者即可通过 adb backup 和 adb restore 进行恢复新安装的同一个应用来查看聊天记录等信息；对于支付金融类应用，攻击者可通过此来进行恶意支付、盗取存款等；因此为了安全起见，开发者务必将 allowBackup 标志值设置为 false 来关闭应用程序的备份和恢复功能，以免造成信息泄露和财产损失。</p>
+<h2 id="安全的打印日志"><a href="#安全的打印日志" class="headerlink" title="安全的打印日志"></a>安全的打印日志</h2><p>如何打印日志？这不是很简单，直接使用<code>android.util.Log</code>这个类不就行了？然而，日志属于非常敏感的信息；逆向工程师在逆向你的程序的时候，本来需要捕捉你程序的各种输出，然后进行推测，顺藤摸瓜然后得到需要的信息；一旦你的日志泄漏，无异于门户洞开，破解你的程序如入无人之境。<br>我们打印日志是用<code>Log.d(TAG, msg);</code>当把APK进行反编译后，TAG这个字符串会原封不动的还原出来，推理推理也就差不多了，不管你是否混淆过….<br>安全的概念本来就是相对的，如果破解你程序的代价远远大于破解得到的价值，那么就可以认为程序是“安全的”；这里就分析一下，为了提高程序的安全性，在打印日志的时候应该注意什么。</p>
+<h3 id="让release版本里面不包含日志代码"><a href="#让release版本里面不包含日志代码" class="headerlink" title="让release版本里面不包含日志代码"></a>让release版本里面不包含日志代码</h3><p>我们想要的是在开发的时候，正常打印日志；一旦需要发布版本，把所有打印日志的语句代码，全部删除掉。<br>这里我们可以采用日志开关+<code>proguard</code>的方式来进行优化，关于proguard这个工具，很多认只是觉得他是一个代码混淆的工具，实际上，它还可以帮你剔除无用代码！<br>无用代码就是类似下面的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">    <span class="comment">// statement;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>静态编译的时候被认为“永远不会执行的代码”，就被认为是无用代码，会被这个工具直接优化掉，生成的class文件里面，这个if语句直接就没有了。这个功能，完美符合我们的需求；我们只需要把输出日志的代码用这样的if语句包围起来，然后release的时候肯定会用这个工具混淆；然后，在release版本里面，所有的输出日志的代码全部都没有了！不会像以前一样，留下一个影子，只是不做事。<br>所以我们这样写：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">boolean</span> DEBUG = <span class="keyword">true</span>; <span class="comment">// 必须是static final 也就是常量，这样才能在编译器优化；删除if块</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (DEBUG) &#123;</span><br><span class="line">    android.util.Log.d(TAG, <span class="string">"msg to print"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那么当<code>DEBUG</code>变量为<code>False</code>的时候proguard可以理所当然地认为，这一部分代码时绝对不会被执行的，这样，打印日志的语句就会被优化（删除）掉.<br>这里还需要注意的是，不要把打印日志进行封装，往里传个TAG和MSG，想省去写if包裹语句，这样的话就会使之前的工作失去作用，反编译后传参的部分会暴露出来….所以不要这么搞！<br>如果你实在懒得打，AS的话有框架提示，打个<code>ifd</code>就会自动生成代码块！<br>AS的话还有另一种方式，详情去参考里翻一翻。</p>
+<h2 id="SQLite数据库安全风险"><a href="#SQLite数据库安全风险" class="headerlink" title="SQLite数据库安全风险"></a>SQLite数据库安全风险</h2><p>使用SQLite来存储数据却存在着一个问题。因为大多数的Android手机都是Root过的，而Root过的手机都可以进入到<code>/data/data/&lt;package_name&gt;/databases</code>目录下面，在这里就可以查看到数据库中存储的所有数据。如果是一般的数据还好，但是当涉及到一些账号密码，或者聊天内容的时候，我们的程序就会面临严重的安全漏洞隐患。我们可以借助SQLCipher来解决这个安全性问题。</p>
+<blockquote>
+<p>SQLCipher是一个在SQLite基础之上进行扩展的开源数据库，它主要是在SQLite的基础之上增加了数据加密功能，如果我们在项目中使用它来存储数据的话，就可以大大提高程序的安全性。SQLCipher支持很多种不同的平台。</p>
+</blockquote>
+<p>使用SQLCipher替换掉程序中的SQLite的数据。将SQLCipher数据包导入项目相应目录中，将原有的SQlite import文件修改为SQLCipher,在程序启动界面添加<code>SQLiteDatabase.loadLibs(this)</code>，并修改<code>mysqlite.getWritableDatabase()</code>方法<br>首先创建一个MyDatabaseHelper继承自SQLiteOpenHelper,<strong>注意导入的包</strong>，除了导入的包不同，其他基本都和SQLiteOpenHelper相同。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> android.content.Context;  </span><br><span class="line"><span class="keyword">import</span> net.sqlcipher.database.SQLiteDatabase;  </span><br><span class="line"><span class="keyword">import</span> net.sqlcipher.database.SQLiteDatabase.CursorFactory;  </span><br><span class="line"><span class="keyword">import</span> net.sqlcipher.database.SQLiteOpenHelper;  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyDatabaseHelper</span> <span class="keyword">extends</span> <span class="title">SQLiteOpenHelper</span> </span>&#123;</span><br><span class="line">      </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String CREATE_TABLE = <span class="string">"create table Book(name text, pages integer)"</span>;</span><br><span class="line">  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyDatabaseHelper</span><span class="params">(Context context, String name, CursorFactory factory, <span class="keyword">int</span> version)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(context, name, factory, version);</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(SQLiteDatabase db)</span> </span>&#123;</span><br><span class="line">        db.execSQL(CREATE_TABLE);</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onUpgrade</span><span class="params">(SQLiteDatabase db, <span class="keyword">int</span> arg1, <span class="keyword">int</span> arg2)</span> </span>&#123;</span><br><span class="line">  </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后在使用到的Activity中这样写：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;  </span><br><span class="line">      </span><br><span class="line">    <span class="keyword">private</span> SQLiteDatabase db;  </span><br><span class="line">  </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">      <span class="comment">//首先将SQLCipher所依赖的so库加载进来</span></span><br><span class="line">        SQLiteDatabase.loadLibs(<span class="keyword">this</span>);</span><br><span class="line">      <span class="comment">//创建实例</span></span><br><span class="line">        MyDatabaseHelper dbHelper = <span class="keyword">new</span> MyDatabaseHelper(<span class="keyword">this</span>, <span class="string">"demo.db"</span>, <span class="keyword">null</span>, <span class="number">1</span>);</span><br><span class="line">      <span class="comment">//获取SQLiteDatabase对象，它接受一个字符串参数</span></span><br><span class="line">      <span class="comment">//就是SQLCipher所依赖的key，在对数据库进行加解密的时候SQLCipher都将使用这里指定的key。</span></span><br><span class="line">        db = dbHelper.getWritableDatabase(<span class="string">"secret_key"</span>);</span><br><span class="line">        <span class="comment">//即可对db进行操作</span></span><br><span class="line">		<span class="comment">//db.insert("Book", null, values);  </span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>需要注意的是：<strong>加入SQLCipher后会使APP的安装包增加几M，安全与体积要权衡好</strong></p>
+<h2 id="Android签名安全"><a href="#Android签名安全" class="headerlink" title="Android签名安全"></a>Android签名安全</h2><p>现在Android逆向越来越火，并且相比PC端的EXE程序感觉Android的逆向还是很简单的，那就会面临着一个问题：会有人将APK进行反编译后修改代码然后进行二次打包发布，造成一些恶劣影响<br>我们知道打包APK必然要进行签名，原始的签名密钥肯定是安全的唯一的，二次打包会改变APP的签名信息，我们在APP启动的时候进行签名对比，如果不一致就强制JVM退出<br>当然了，没有绝对的安全，只要你逆向技术够高，这个是拦不住你的….</p>
+<h3 id="获取签名"><a href="#获取签名" class="headerlink" title="获取签名"></a>获取签名</h3><p>获取签名我们可以采用两种方式，一种手动用keytool命令，还可以在代码里写</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//代码方式获取签名，根据包名</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> Signature[] getRawSignature(Context context, String pkgName) &#123;</span><br><span class="line">        <span class="keyword">if</span> ((pkgName == <span class="keyword">null</span>) || (pkgName.length() == <span class="number">0</span>)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        PackageManager pm = context.getPackageManager();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            PackageInfo pi = pm.getPackageInfo(pkgName, PackageManager.GET_SIGNATURES);</span><br><span class="line">            <span class="keyword">if</span> (pi == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">          <span class="comment">//返回是个数字签名的数组，一般apk都是单签名的</span></span><br><span class="line">          <span class="comment">//因此一般取Signature[0]做MD5，与已知签名的MD5信息做对比即可</span></span><br><span class="line">            <span class="keyword">return</span> pi.signatures;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (PackageManager.NameNotFoundException e) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>如果是手动用命令查的话，可以直接用RAR之类的打开APK文件，找到Apk文件中META-INF/CERT.RSA文件，解压，然后执行：<code>keytool -printcert -file fileName</code>就可以查到签名了<br>PS:正常的签名文件查询命令是<code>keytool -list -v -keystore filepath</code>(后缀一般为keystore，其实并不需要后缀)</p>
+<h3 id="签名进行对比"><a href="#签名进行对比" class="headerlink" title="签名进行对比"></a>签名进行对比</h3><p>这里贴下主要代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">String signature=<span class="string">"e79cf0a46d543ab6092b71f41d835543"</span>; <span class="comment">//正确的已知的签名</span></span><br><span class="line">String pack=<span class="string">"com.bfchengnuo.demo"</span>; <span class="comment">//包名</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 获取其他应用的签名信息，然后进行对比，错误强制系统退出</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> paramString</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">getSign</span><span class="params">(String paramString)</span> </span>&#123;</span><br><span class="line">  <span class="comment">//getRawSignature方法返回的就是上面获得的签名MD5数组(类似，大概..)</span></span><br><span class="line">	Signature[] arrayOfSignature = getRawSignature(<span class="keyword">this</span>, paramString);</span><br><span class="line">	<span class="keyword">if</span> ((arrayOfSignature == <span class="keyword">null</span>) || (arrayOfSignature.length == <span class="number">0</span>)) &#123;</span><br><span class="line">		errout(<span class="string">"signs is null"</span>);</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">int</span> i = arrayOfSignature.length;</span><br><span class="line">  	<span class="comment">//与已知的签名进行对比，如果全部匹配不成功则退出JVM</span></span><br><span class="line">	<span class="comment">//签名数组要进行MD5加密处理下，为了保险起见，这里把数组的每一个都进行了对比</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; i; j++)</span><br><span class="line">	stdout(MD5.getMessageDigest(arrayOfSignature[j].toByteArray()));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">stdout</span><span class="params">(String paramString)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(signature.equals(paramString))</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">// do thing</span></span><br><span class="line">		Toast.makeText(<span class="keyword">this</span>, <span class="string">"签名正确"</span>, <span class="number">0</span>).show();</span><br><span class="line">	&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    	System.exit(<span class="number">0</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="BroadCastReceiver安全风险"><a href="#BroadCastReceiver安全风险" class="headerlink" title="BroadCastReceiver安全风险"></a>BroadCastReceiver安全风险</h2><p>Android 可以在配置文件中声明一个receiver或者动态注册一个receiver来接收广播信息，攻击者假冒APP构造广播发送给被攻击的receiver，是被攻击的APP执行某些敏感行为或者返回敏感信息等，如果receiver接收到有害的数据或者命令时可能泄露数据或者做一些不当的操作，会造成用户的信息泄漏甚至是财产损失<br>那么如何避免应用中注册的广播响应其他应用发送的广播呢，对于显式的广播除非是别人故意攻击，一般很少出现响应别人的广播，<strong>但是对于隐式的广播就很容易出现上述问题，因为action很容易是一样的，一旦是一样的就出问题了</strong></p>
+<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><ul>
+<li><p>如果仅在应用内部通信，可以使用私有receiver，设置<code>exported=&quot;false&quot;</code>，该receiver可以接收相同应用程序组件或带有相同用户ID的应用程序所发出的消息[<a href="http://developer.android.com/guide/topics/manifest/receiver-element.html" target="_blank" rel="noopener">参考</a>]。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">receiver</span> <span class="attr">android:name</span>=<span class="string">".permittedReceiver"</span> <span class="attr">android:exported</span>=<span class="string">"false"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>若只在当前进程内通信，可以使用<code>LocalBroadcastManager</code>，使其他应用程序不能向该receiver发送广播</p>
+</li>
+<li><p>对于动态注册的广播<code>registerReceiver(BroadcastReceiver, IntentFilter, String permission, android.os.Handler)</code>,指定receiver必须具备的permission。<br>如果只允许自己的产品族使用，可以设置<code>android:protectionLevel=&quot;signature&quot;</code> ，若提供给其他APP使用，则设置<code>android:protectionLevel=&quot;normal&quot;</code>，同时要避免敏感信息的传递。<br>其实就是自定义权限~~</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">permission</span> <span class="attr">android:name</span>=<span class="string">"com.android.permission.send_permission"</span> 		<span class="attr">android:protectionLevel</span>=<span class="string">"signature"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">receiver</span> <span class="attr">android:name</span>=<span class="string">".permittedReceiver"</span></span></span><br><span class="line"><span class="tag">          <span class="attr">android:permission</span>=<span class="string">"com.android.permission.send_permission"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">action</span> <span class="attr">android:name</span>=<span class="string">"com.android.permitted_ACTION"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">receiver</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>对接收来的广播进行验证，返回结果时需注意接收app是否会泄露信息</p>
+</li>
+</ul>
+<h3 id="关于自定义权限的补充"><a href="#关于自定义权限的补充" class="headerlink" title="关于自定义权限的补充"></a>关于自定义权限的补充</h3><p>首先说一下<code>protectionLevel</code>这个属性：</p>
+<ul>
+<li>normal：默认的，应用安装前，用户可以看到相应的权限，但无需用户主动授权。</li>
+<li>dangerous：normal安全级别控制以外的任何危险操作。需要dangerous级别权限时，Android会明确要求用户进行授权。常见的如：网络使用权限，相机使用权限及联系人信息使用权限等。</li>
+<li>signature：它要求权限声明应用和权限使用应用使用相同的keystore进行签名。如果使用同一keystore，则该权限由系统授予，否则系统会拒绝。并且权限授予时，不会通知用户。它常用于应用内部。</li>
+</ul>
+<p>上面的订阅方例子用到了signature这个值，多说一下，如果别的应用使用的不是同一个签名文件，就没办法使用该权限，从而保护了自己的接收者(可以理解为只接受拥有此权限的应用发送的广播)。<br>发送方和订阅方都是需要加入这个权限的，只不过订阅方需要在注册接收器的时候再写一遍权限，上面的例子是静态注册receiver，如果用动态的方式注册那就是<code>registerReceiver(receiver, filter, permission, null);</code>，直接指定<strong>发送者</strong>应该具有的权限</p>
+<blockquote>
+<p>android:permission  —如果设置，具有相应权限的广播<strong>发送方</strong>发送的广播才能被此broadcastReceiver所接收</p>
+</blockquote>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="http://wolfeye.baidu.com/blog/recieve-broadcast-security/" target="_blank" rel="noopener">http://wolfeye.baidu.com/blog/recieve-broadcast-security/</a><br><a href="https://github.com/CharonChui/AndroidNote/blob/master/Android%E5%8A%A0%E5%BC%BA/BroadcastReceiver%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98.md" target="_blank" rel="noopener">BroadcastReceiver安全问题</a></p>
+<h2 id="剪切板安全风险"><a href="#剪切板安全风险" class="headerlink" title="剪切板安全风险"></a>剪切板安全风险</h2><p>同一部手机中安装的其他app，甚至是一些权限不高的app，都可以通过剪贴板功能获取密码管理器中的账户密码信息。原因是Android剪贴板的内容向任何权限的app开放，很容易就被嗅探泄密，如上代码剪切板中存有明文内容，如果是明文内容将会有信息泄露的风险<br>如下代码可以在任意APP中读取剪切板的内容：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ClipboardManager cm = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);</span><br><span class="line">ClipData cd2 = cm.getPrimaryClip();</span><br><span class="line">str2 = cd2.getItemAt(<span class="number">0</span>).getText().toString();</span><br></pre></td></tr></table></figure>
+<p>所以，<strong>使用完clipboard及时清空，并避免使用剪贴板明文存储敏感信息</strong></p>
+<h2 id="其他风险"><a href="#其他风险" class="headerlink" title="其他风险"></a>其他风险</h2><ul>
+<li><p>在配置Database配置模式的时候要注意：避免使用<code>MODE_WORLD_WRITEABLE</code>和<code>MODE_WORLD_READABLE</code>模式创建数据库(Database)，最好还是使用<code>MODE_PRIVATE</code>模式</p>
+</li>
+<li><p>安卓SecureRandom安全:<br><strong>在Android 4.2以下</strong>，SecureRandom是基于老版的Bouncy Castle实现的。如果生成SecureRandom对象后马上调用setSeed方法。SecureRandom会用用户设置的seed代替默认的随机源。使得每次生成随机数时都是会使用相同的seed作为输入。从而导致生成的随机数是相同的。<br>解决方案推荐：不要使用自定义随机源代替系统默认随机源，就是说不要调用以下函数：</p>
+<blockquote>
+<p> SecureRandom＃SecureRandom(byte[] seed)<br> SecureRandom＃setSeed(long seed)<br> SecureRandom＃setSeed(byte[] seed)</p>
+</blockquote>
+<p>其实还可以在调用setSeed方法前先调用任意nextXXX方法(<code>nextBytes(byte[] bytes)</code>)不过不推荐这种方式</p>
+<p>现在基本上不用考虑了，毕竟已经到Android7.1+了，但是考虑到国内情况嘛….</p>
+</li>
+</ul>
+<h2 id="参考-1"><a href="#参考-1" class="headerlink" title="参考"></a>参考</h2><p><a href="https://segmentfault.com/a/1190000006434989" target="_blank" rel="noopener">Android项目安全注意事项</a><br><a href="http://weishu.me/2015/10/19/how-to-log-safely-in-android/" target="_blank" rel="noopener">如何安全打印日志</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>喜欢就请我吃包辣条吧！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/image/pay/wx.jpg" alt="Kerronex WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/image/pay/zfb.jpg" alt="Kerronex Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Kerronex
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://sakanoy.com/2016/10/27/Android安全开发初步-二/" title="Android安全开发初步(二)">https://sakanoy.com/2016/10/27/Android安全开发初步-二/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"><i class="fa fa-tag"></i> Android</a>
+          
+            <a href="/tags/安全/" rel="tag"><i class="fa fa-tag"></i> 安全</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/10/19/Android安全开发初步-一/" rel="next" title="Android安全开发初步(一)">
+                <i class="fa fa-chevron-left"></i> Android安全开发初步(一)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/11/20/Python学习笔记-基础/" rel="prev" title="Python学习笔记-基础">
+                Python学习笔记-基础 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        
+          <p class="warninginfo">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+              评论框加载失败，无法访问 Disqus<br><br>
+              你可能需要魔法上网~~
+          </p>
+
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/image/tx.png"
+               alt="Kerronex" />
+          <p class="site-author-name" itemprop="name">Kerronex</p>
+           
+              <p class="site-description motion-element" itemprop="description">程序猿/二刺螈<br/>夜猫族/爱折腾</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">130</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="Mailto:bfchengnuo@gmail.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-envelope-o"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://GitHub.com/bfchengnuo" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://sakanoy.com/MyRecord/#/" target="_blank" title="笔记本">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  笔记本
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.cnblogs.com/bfchengnuo" target="_blank" title="博客园">
+                  
+                    <i class="fa fa-fw fa-paw"></i>
+                  
+                  博客园
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              小伙伴们~
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://heartsky.info" title="HeartSky" target="_blank">HeartSky</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.kiuber.me" title="Kiuber" target="_blank">Kiuber</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/nightcharm" title="夜Charm" target="_blank">夜Charm</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#截屏风险"><span class="nav-number">1.</span> <span class="nav-text">截屏风险</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关注debuggable"><span class="nav-number">2.</span> <span class="nav-text">关注debuggable</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关注allowBackup"><span class="nav-number">3.</span> <span class="nav-text">关注allowBackup</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安全的打印日志"><span class="nav-number">4.</span> <span class="nav-text">安全的打印日志</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#让release版本里面不包含日志代码"><span class="nav-number">4.1.</span> <span class="nav-text">让release版本里面不包含日志代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SQLite数据库安全风险"><span class="nav-number">5.</span> <span class="nav-text">SQLite数据库安全风险</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android签名安全"><span class="nav-number">6.</span> <span class="nav-text">Android签名安全</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#获取签名"><span class="nav-number">6.1.</span> <span class="nav-text">获取签名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#签名进行对比"><span class="nav-number">6.2.</span> <span class="nav-text">签名进行对比</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BroadCastReceiver安全风险"><span class="nav-number">7.</span> <span class="nav-text">BroadCastReceiver安全风险</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#解决方案"><span class="nav-number">7.1.</span> <span class="nav-text">解决方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于自定义权限的补充"><span class="nav-number">7.2.</span> <span class="nav-text">关于自定义权限的补充</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">7.3.</span> <span class="nav-text">参考</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#剪切板安全风险"><span class="nav-number">8.</span> <span class="nav-text">剪切板安全风险</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他风险"><span class="nav-number">9.</span> <span class="nav-text">其他风险</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考-1"><span class="nav-number">10.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+    <div style="height: 370px;background-image: url(/image/bj.png);background-repeat: no-repeat; margin-left: 31%;"></div>
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+<span id="sitetime"></span>
+<span class="my-face">(●'◡'●)ﾉ♥</span>
+<script language=javascript>
+function siteTime(){
+window.setTimeout("siteTime()", 1000);
+var seconds = 1000
+var minutes = seconds * 60
+var hours = minutes * 60
+var days = hours * 24
+var years = days * 365
+
+var today = new Date()
+var todayYear = today.getFullYear()
+var todayMonth = today.getMonth()
+var todayDate = today.getDate()
+var todayHour = today.getHours()
+var todayMinute = today.getMinutes()
+var todaySecond = today.getSeconds()
+
+/* Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳) 
+year - 作为date对象的年份，为4位年份值
+month - 0-11之间的整数，做为date对象的月份
+day - 1-31之间的整数，做为date对象的天数
+hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+minutes - 0-59之间的整数，做为date对象的分钟数
+seconds - 0-59之间的整数，做为date对象的秒数
+microseconds - 0-999之间的整数，做为date对象的毫秒数 */
+var t1 = Date.UTC(2016,3,30,8,0,0)
+var t2 = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond)
+var diff = t2-t1
+
+var diffYears = Math.floor(diff/years)
+var diffDays = Math.floor((diff/days)-diffYears*365)
+var diffDaysAll = Math.floor(diff/days)
+var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours)
+var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes)
+var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds)
+document.getElementById("sitetime").innerHTML=" 本站已萌萌哒运行 "+diffDaysAll+" 天 "+diffHours+" 小时 "+diffMinutes+" 分钟 "+diffSeconds+" 秒 "
+}
+siteTime()
+</script>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共521.4k字</span>
+
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'bfchengnuo';
+      var disqus_identifier = '2016/10/27/Android安全开发初步-二/';
+
+      var disqus_title = "Android安全开发初步(二)";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":130,"height":170,"hOffset":30,"vOffset":-10},"mobile":{"show":false},"react":{"opacity":0.7},"log":false});</script></body>
+</html>

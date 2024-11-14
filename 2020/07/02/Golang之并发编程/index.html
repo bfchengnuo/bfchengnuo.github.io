@@ -1,0 +1,1289 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Microsoft Yahei:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Go," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakanoy" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/image/tb.png?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="接上次的基础语法部分，还剩下的主要是并发相关的内容，现在补全；也略微提及了点测试相关的内容；在 Go 中，并发程序主要使用的是 Go 的 goroutine 和 channel；相对传统的语言，简化了很多，调度上的调整也使程序高效了很多；没讲到的应该就是反射和 Web，这两块以后随用随学吧，目前这些东西也够了。没有贴太多的代码，以及剩下的 Go 标准库使用的相关代码都放到这个仓库了： bfchen">
+<meta name="keywords" content="Go">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Golang之并发编程">
+<meta property="og:url" content="https://sakanoy.com/2020/07/02/Golang之并发编程/index.html">
+<meta property="og:site_name" content="Sakanoy">
+<meta property="og:description" content="接上次的基础语法部分，还剩下的主要是并发相关的内容，现在补全；也略微提及了点测试相关的内容；在 Go 中，并发程序主要使用的是 Go 的 goroutine 和 channel；相对传统的语言，简化了很多，调度上的调整也使程序高效了很多；没讲到的应该就是反射和 Web，这两块以后随用随学吧，目前这些东西也够了。没有贴太多的代码，以及剩下的 Go 标准库使用的相关代码都放到这个仓库了： bfchen">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2024-11-14T17:46:09.401Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Golang之并发编程">
+<meta name="twitter:description" content="接上次的基础语法部分，还剩下的主要是并发相关的内容，现在补全；也略微提及了点测试相关的内容；在 Go 中，并发程序主要使用的是 Go 的 goroutine 和 channel；相对传统的语言，简化了很多，调度上的调整也使程序高效了很多；没讲到的应该就是反射和 Web，这两块以后随用随学吧，目前这些东西也够了。没有贴太多的代码，以及剩下的 Go 标准库使用的相关代码都放到这个仓库了： bfchen">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://sakanoy.com/2020/07/02/Golang之并发编程/"/>
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-bounce.css">
+
+  <title> Golang之并发编程 | Sakanoy </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-77463916-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakanoy</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">立于浮华之世,奏响天籁之音.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-mark">
+          <a href="/mark" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-retweet"></i> <br />
+            
+            笔记本
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-book"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-music">
+          <a href="/music" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-music"></i> <br />
+            
+            音乐台
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://sakanoy.com/2020/07/02/Golang之并发编程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Kerronex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/image/tx.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakanoy">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Golang之并发编程
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-02T12:29:02+00:00">
+                2020-07-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Go/" itemprop="url" rel="index">
+                    <span itemprop="name">Go</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-eye"></i> 热度
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-wordcount">
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  4,439
+                </span>
+              
+
+              
+
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <div style="display: none;color: #999" class="note warning" id='timeliness'></div>
+        <script language=javascript>
+          var days = (new Date().getTime() - 1593692942000) / 86400000;
+          if(days > 180) {
+            var infoDom = document.getElementById("timeliness");
+            infoDom.innerHTML = "提醒：本文发布于 " + Math.round(days) + " 天前，文中所描述的信息可能已发生改变，请谨慎使用。";
+            infoDom.style.display = "block"
+          }
+        </script>
+        <p>接上次的基础语法部分，还剩下的主要是并发相关的内容，现在补全；也略微提及了点测试相关的内容；<br>在 Go 中，并发程序主要使用的是 Go 的 goroutine 和 channel；相对传统的语言，简化了很多，调度上的调整也使程序高效了很多；没讲到的应该就是反射和 Web，这两块以后随用随学吧，目前这些东西也够了。<br>没有贴太多的代码，以及剩下的 Go 标准库使用的相关代码都放到这个仓库了： <a href="https://github.com/bfchengnuo/GoCS" target="_blank" rel="noopener">bfchengnuo/GoCS</a><a id="more"></a></p>
+<h2 id="goroutine"><a href="#goroutine" class="headerlink" title="goroutine"></a>goroutine</h2><p>Go 语言的并发主要通过 goroutine 实现。goroutine <strong>类似于</strong>线程，属于<strong>用户态的线程</strong>，我们可以根据需要创建成千上万个 goroutine 并发工作。goroutine 是由 Go 语言的运行时（runtime）调度完成，<strong>而线程是由操作系统调度完成</strong>。<br>Go 语言还提供 channel 用于在多个 goroutine 间进行通信。goroutine 和 channel 是 Go 语言秉承的 CSP（Communicating Sequential Process）现代并发模式的重要实现基础。</p>
+<p>传统上我们实现并发编程的时候，我们通常需要自己维护一个线程池，并且需要自己去包装一个又一个的任务，还要处理好调度问题，一不小心就出问题，还难以调试；那么能不能有一种机制，程序员只需要定义很多个任务，让系统去帮助我们把这些任务分配到 CPU 上实现并发执行呢？<br>Go 语言中的 goroutine 就是这样一种机制，goroutine 的概念类似于线程，但 goroutine 是由 Go 的运行时（runtime）调度和管理的。<strong>Go 程序会智能地将 goroutine 中的任务合理地分配给每个CPU</strong>。<br>Go 语言之所以被称为现代化的编程语言，就是因为它<strong>在语言层面已经内置了调度和上下文切换的机制</strong>。</p>
+<p>在 Go 语言编程中你不需要去自己写进程、线程、协程，你的技能包里只有一个技能：goroutine，当你需要让某个任务并发执行的时候，你只需要把这个任务包装成一个函数，开启一个 goroutine 去执行这个函数就可以了，就是这么简单粗暴。<br>Go 语言中使用 goroutine 非常简单，<strong>只需要在调用函数的时候在前面加上 go 关键字</strong>，就可以为一个函数创建一个 goroutine。<br>一个 goroutine 必定对应一个函数，可以创建多个 goroutine 去执行相同的函数。</p>
+<blockquote>
+<p>主函数也是运行在一个 goroutine 中，我们称为 main goroutine；当主函数返回时，所有的 goroutine 都会被直接打断，程序退出，这也算是一种终结 goroutine 的方式。<br>另一种比较友好的方式就是使用 goroutine 之间的通信来告知其他 goroutine 自行结束。</p>
+</blockquote>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> wg sync.WaitGroup</span><br><span class="line"></span><br><span class="line"><span class="comment">// Go 的并发主要依赖 goroutine 和 channel</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">  <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">10</span>; i++ &#123;</span><br><span class="line">    wg.Add(<span class="number">1</span>) <span class="comment">// 计数 +1</span></span><br><span class="line">    <span class="keyword">go</span> hello(i) <span class="comment">// 值传递，copy</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 等待所有 wg 完成</span></span><br><span class="line">  wg.Wait()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">hello</span><span class="params">(i <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">  <span class="keyword">defer</span> wg.Done() <span class="comment">// goroutine 结束就登记 -1</span></span><br><span class="line">  fmt.Println(<span class="string">"Hello Goroutine!"</span>, i)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>为了避免主线程结束其他打断 goroutine，暂时使用了 sync 的 WaitGroup 进行计数等待。</p>
+<h3 id="可增长栈"><a href="#可增长栈" class="headerlink" title="可增长栈"></a>可增长栈</h3><p>OS 线程（操作系统线程）一般都有固定的栈内存（通常为 2MB）,一个 goroutine 的栈在其生命周期<strong>开始时</strong>只有很小的栈（典型情况下 2KB），goroutine 的栈是<strong>不固定的</strong>，他可以按需增大和缩小，goroutine 的栈大小限制<strong>可以达到 1GB</strong>，虽然极少会用到这个大。所以在 Go 语言中一次创建十万左右的 goroutine 也是可以的。</p>
+<h3 id="GPM调度"><a href="#GPM调度" class="headerlink" title="GPM调度"></a>GPM调度</h3><p>GPM 是 Go 语言运行时（runtime）层面的实现，是 go 语言自己实现的一套调度系统。区别于操作系统调度 OS 线程。</p>
+<ul>
+<li>G 很好理解，就是 goroutine，里面除了存放本 goroutine 信息外 还有与所在 P 的绑定等信息。</li>
+<li>P 管理着<strong>一组</strong> goroutine 队列，P 里面会存储<strong>当前</strong> goroutine 运行的上下文环境（函数指针，堆栈地址及地址边界），P 会对自己管理的 goroutine 队列做一些调度（比如把占用 CPU 时间较长的 goroutine 暂停、运行后续的 goroutine 等等）当自己的队列消费完了就去<strong>全局队列里</strong>取，如果全局队列里也消费完了会<strong>去其他 P 的队列里抢任务</strong>。</li>
+<li>M（machine）是 Go 运行时（runtime）对操作系统内核线程的虚拟， <strong>M 与内核线程一般是一一映射的关系</strong>， 一个 groutine 最终是要放到 M 上执行的；</li>
+</ul>
+<p><strong>P 与 M 一般也是一一对应的</strong>。他们关系是： P 管理着一组 G 挂载在 M 上运行。<br>当一个 G 长久阻塞在一个 M 上时，runtime 会新建一个 M，这时 P 会把其他阻塞的 G 挂载在新建的 M 上。当耗时的 G 阻塞完成或者认为其已经死掉时，会回收旧的 M。</p>
+<p>P 的个数是通过 <code>runtime.GOMAXPROCS</code> 设定（最大 256），Go1.5 版本之后默认为物理线程数。 在并发量大的时候会增加一些 P 和 M，但不会太多，切换太频繁的话得不偿失；这个值可以理解为<strong>有多少个系统线程同时执行 Go 代码</strong>。</p>
+<blockquote>
+<p>Go 运行时的调度器使用 GOMAXPROCS 参数来确定需要使用多少个 OS 线程来同时执行 Go 代码。默认值是机器上的 CPU 核心数。例如在一个 8 核心的机器上，调度器会把 Go 代码同时调度到 8 个 OS 线程上。<br>Go 语言中可以通过 <code>runtime.GOMAXPROCS()</code> 函数设置当前程序并发时占用的 CPU 逻辑核心数。<br>Go1.5 版本之前，默认使用的是单核心执行。Go1.5 版本之后，默认使用全部的 CPU 逻辑核心数（跑满！）。</p>
+</blockquote>
+<p>单从线程调度讲，Go 语言相比起其他语言的优势在于 OS 线程是由 OS 内核来调度的，goroutine 则是由 Go 运行时（runtime）自己的调度器调度的，这个调度器使用一个称为 <code>m:n</code> 调度的技术（复用/调度 m 个 goroutine 到 n 个 OS 线程）。</p>
+<blockquote>
+<p>goroutine 的调度是在用户态下完成的，<strong>不涉及内核态与用户态之间的频繁切换</strong>，包括内存的分配与释放，都是在用户态维护着一块大的内存池，不直接调用系统的 malloc 函数（除非内存池需要改变），成本比调度 OS 线程低很多。<br>另一方面充分利用了多核的硬件资源，近似的把若干 goroutine 均分在物理线程上，再加上本身 goroutine 的超轻量，保证了 go 调度方面的性能。</p>
+</blockquote>
+<p>Go 中的 goroutine 与操作系统线程的区别：</p>
+<ul>
+<li>一个操作系统线程对应用户态多个 goroutine</li>
+<li>go 程序可以同时使用多个操作系统线程</li>
+<li>goroutine 和 OS 线程是多对多的关系，即 <code>m:n</code></li>
+</ul>
+<h2 id="channel"><a href="#channel" class="headerlink" title="channel"></a>channel</h2><p>虽然可以使用共享内存进行数据交换，但是共享内存在不同的 goroutine 中容易发生竞态问题。为了保证数据交换的正确性，必须使用互斥量对内存进行加锁，这种做法势必造成性能问题。<br>Go 语言并发编程模型提倡<strong>通过通信共享内存</strong>而不是<strong>通过共享内存而实现通信</strong>。<br>可以将 channel 看作 goroutine 之间的连接。channel 是可以让一个 goroutine 发送特定值到另一个 goroutine 的通信机制。<br>channel 遵循先进先出（FIFO），保证收发数据的顺序，并且 channel 具有具体的类型，一个 channel 只允许同一种类型通过；它可以进行比较，如果引用的是相同对象即为真。<br>通道有发送（send）、接收(receive）和关闭（close）三种操作。发送和接收都使用 <code>&lt;-</code> 符号。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">  <span class="comment">// 定义</span></span><br><span class="line">  <span class="keyword">var</span> ch1 <span class="keyword">chan</span> <span class="keyword">int</span></span><br><span class="line">  <span class="comment">// 第二个参数是缓冲区大小，可选</span></span><br><span class="line">  <span class="keyword">var</span> ch2 = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>, <span class="number">20</span>)</span><br><span class="line"></span><br><span class="line">  fmt.Println(ch1 == <span class="literal">nil</span>) <span class="comment">// 零值，必须使用 make 初始化后才能使用</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// send</span></span><br><span class="line">  ch2 &lt;- <span class="number">233</span></span><br><span class="line">  <span class="comment">// receive</span></span><br><span class="line">  fmt.Println(&lt;-ch2)</span><br><span class="line">  <span class="comment">// 丢弃</span></span><br><span class="line">  &lt;-ch2</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 手动关闭，非必须，可由 GC 感知回收</span></span><br><span class="line">  <span class="built_in">close</span>(ch2)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>只有在通知接收方 goroutine 所有的数据都发送完毕的时候才需要关闭通道。通道是<strong>可以被垃圾回收机制回收的</strong>，它和关闭文件是不一样的，在结束操作之后关闭文件是必须要做的，但关闭通道不是必须的。<br>对一个关闭的通道来说：</p>
+<ul>
+<li>发送值就会导致 panic。</li>
+<li>进行接收会一直获取值直到通道为空。</li>
+<li>如果没有值的通道执行接收操作会得到对应类型的零值。</li>
+<li>关闭一个已经关闭的通道会导致 panic。</li>
+</ul>
+<p>通道分为带缓存和无缓存，或者叫缓冲，区别就是 make 的时候传没传第二个参数，这两种有点细微区别；</p>
+<ul>
+<li><p>无缓存通道<br>无缓冲的通道又称为阻塞的通道，因为向无缓存通道发送数据，必须要有人在接收值，否则会一直阻塞。<br>当两个 goroutine 进行无缓存通道通信时，就会导致发送接收的同步化，所有又被称为是『同步通道』；<br>通过 channel 可以将多个 goroutine 串联起来。</p>
+</li>
+<li><p>有缓存通道<br>可以看作里面维护了一个队列，可以使用内置的 len 函数获取通道内元素的数量，使用 cap 函数获取通道的容量，虽然我们很少会这么做。<br>其他方面与无缓存类似，只不过是通道满了以后才阻塞；</p>
+</li>
+</ul>
+<p>从管道取内容的时候，为了避免关闭后取完一直是零值，我们可以使用 for-range 的方式，取完之后会自动结束；虽然使用 ok 判断也能实现，但是 range 的方式更加优雅。</p>
+<h3 id="单方向的通道"><a href="#单方向的通道" class="headerlink" title="单方向的通道"></a>单方向的通道</h3><p>多个 goroutine 使用通道进行传值的时候，很多情况是单向的，为了避免乱传，可以使用 Go 提供的单向通道：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// chan&lt;- int  单向向通道输出</span></span><br><span class="line"><span class="comment">// x &lt;- chan int 单向从通道输出</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">squarer</span><span class="params">(out <span class="keyword">chan</span>&lt;- <span class="keyword">int</span>, in &lt;-<span class="keyword">chan</span> <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">  <span class="keyword">for</span> i := <span class="keyword">range</span> in &#123;</span><br><span class="line">    out &lt;- i * i</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">close</span>(out)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在函数传参及任何赋值操作中可以<strong>将双向通道转换为单向通道</strong>，但反过来是不可以的。</p>
+<h2 id="select多路复用"><a href="#select多路复用" class="headerlink" title="select多路复用"></a>select多路复用</h2><p>Go 内置了 select 关键字，可以同时响应多个通道的操作。<br>它使用类似于 switch 语句，它有一系列 case 分支和一个默认的分支。每个 case 会对应一个通道的通信（接收或发送）过程。 select 会一直等待，直到某个 case 的通信操作完成时，就会执行 case 分支对应的语句。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">func1</span><span class="params">()</span></span> &#123;</span><br><span class="line">  ch := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>, <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">10</span>; i++ &#123;</span><br><span class="line">    <span class="keyword">select</span> &#123;</span><br><span class="line">      <span class="keyword">case</span> x := &lt;-ch:</span><br><span class="line">      <span class="comment">// 0  2  4  6  8，因为大小为 1</span></span><br><span class="line">      fmt.Println(x)</span><br><span class="line">      <span class="keyword">case</span> ch &lt;- i:</span><br><span class="line">      fmt.Println(<span class="string">"send "</span>, i)</span><br><span class="line">      <span class="keyword">default</span>:</span><br><span class="line">      fmt.Println(<span class="string">"默认操作"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  time.Sleep(time.Duration(<span class="number">5</span>) * time.Second)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用多路复用使代码更易读，并且有以下特性：</p>
+<ul>
+<li>可处理一个或多个 channel 的发送/接收操作。</li>
+<li>如果多个 case 同时满足，select 会随机选择一个。</li>
+<li>对于没有 case 的 <code>select{}</code> 会一直等待，可用于阻塞 main 函数。</li>
+</ul>
+<h2 id="并发退出"><a href="#并发退出" class="headerlink" title="并发退出"></a>并发退出</h2><p>并发退出的情况是很常见的，让主线程直接结束的方式并不优雅，那就是最好通过通信完成；但是 channel 的消息被消费后其他的『线程』就获取不到了，所以，我们采用 close channel 的方式来广播退出通知：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> done = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">struct</span>&#123;&#125;)</span><br><span class="line"><span class="comment">// 通过 close chan 并发退出</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">cancelled</span><span class="params">()</span> <span class="title">bool</span></span> &#123;</span><br><span class="line">  <span class="keyword">select</span> &#123;</span><br><span class="line">    <span class="keyword">case</span> &lt;-done:</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样在其他的『线程』中使用循环来 if 这个函数即可，主线程将 done 进行 close 其它的就会接受到这个信号，从而退出。</p>
+<h2 id="锁"><a href="#锁" class="headerlink" title="锁"></a>锁</h2><p>当设计操作共享变量的时候，自然就需要用到锁，虽然建议尽量使用 channel 完成逻辑；但是锁总是不可避免的；</p>
+<ul>
+<li>互斥锁<br>能保证只有一个 goroutine 进入临界区，唤醒策略是随机的；<br>互斥锁一般使用 <code>sync.Mutex</code> 的 lock 和 unlock 方法；</li>
+<li>读写互斥锁<br>适用于读多写少的场景，读是不需要加锁的；<br>即如果 goroutine 获取的是读锁，其他 goroutine 还可以获得读锁进行读取；<br>如果 goroutine 获取了写锁，其他 goroutine 都需要等待；<br>读写锁使用 <code>sync.RWMutex</code> 的 lock/unlock 是写锁，rlock/runlock 是读锁；</li>
+</ul>
+<p>Go 语言中可以使用 <code>sync.WaitGroup</code> 来实现并发任务的同步；需要注意<code>sync.WaitGroup</code>是一个结构体，传递的时候要传递指针。<br>请注意，Go 中没有可重入锁的概念，请尽量避免使用，否则会导致死锁；<br>同时也要注意可见性的问题，在多核 CPU 执行期间，互相的缓存是不可见的。</p>
+<h3 id="sync-Once"><a href="#sync-Once" class="headerlink" title="sync.Once"></a>sync.Once</h3><p>如果初始化消耗比较大，那么将初始化延迟进行是个不错的选择，并且是一次性的，例如配置文件的读取，sync.Once 就是来做这个事情的。<br>理论上来讲，一次性初始化需要一个互斥锁和一个布尔变量来记录是否初始化<strong>完成</strong>，还是牵扯指令重排的问题，避免获取到初始化一半的情况；例如用 once 实现的单例模式：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> singleton <span class="keyword">struct</span> &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> instance *singleton</span><br><span class="line"><span class="keyword">var</span> once sync.Once</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">GetInstance</span><span class="params">()</span> *<span class="title">singleton</span></span> &#123;</span><br><span class="line">  once.Do(<span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">    instance = &amp;singleton&#123;&#125;</span><br><span class="line">  &#125;)</span><br><span class="line">  <span class="keyword">return</span> instance</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="sync-Map"><a href="#sync-Map" class="headerlink" title="sync.Map"></a>sync.Map</h3><p>Go 默认提供的 map 是非并发安全的，所以在 sync 下提供了并发安全的 map；它开箱即用表示不用像内置的 map 一样使用 make 函数初始化就能直接使用；同时还内置了 Store、Load、LoadOrStore、Delete、Range 等操作方法（也必须使用这些方法才能保证安全）。</p>
+<h3 id="竞争检测"><a href="#竞争检测" class="headerlink" title="竞争检测"></a>竞争检测</h3><p>但是我们不可能想的那么全面，总有一些漏网之鱼的竞争关系，这时候可以使用 Go 提供的工具来检查，只要在 build、run、test 命令后面加上 <code>-race</code> 的 flag，具体的使用方法参考：<a href="https://golang.google.cn/ref/mem" target="_blank" rel="noopener">https://golang.google.cn/ref/mem</a></p>
+<h2 id="原子操作"><a href="#原子操作" class="headerlink" title="原子操作"></a>原子操作</h2><p>使用锁意味着上下文的切换都资源的消耗，针对<strong>基本类型</strong>我们还可以使用原子操作来保证并发安全，原子操作是 Go 语言提供的方法它在用户态就可以完成，因此性能比加锁操作更好。Go 语言中原子操作由内置的标准库 sync/atomic 提供。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">方法</th>
+<th style="text-align:left">解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">func LoadInt32(addr <em>int32) (val int32) <br>func LoadInt64(addr </em>int64) (val int64) <br>func LoadUint32(addr <em>uint32) (val uint32)<br>func LoadUint64(addr </em>uint64) (val uint64)<br>func LoadUintptr(addr <em>uintptr) (val uintptr)<br>func LoadPointer(addr </em>unsafe.Pointer) (val unsafe.Pointer)</td>
+<td style="text-align:left">读取操作</td>
+</tr>
+<tr>
+<td style="text-align:left">func StoreInt32(addr <em>int32, val int32) <br>func StoreInt64(addr </em>int64, val int64) <br>func StoreUint32(addr <em>uint32, val uint32) <br>func StoreUint64(addr </em>uint64, val uint64) <br>func StoreUintptr(addr <em>uintptr, val uintptr) <br>func StorePointer(addr </em>unsafe.Pointer, val unsafe.Pointer)</td>
+<td style="text-align:left">写入操作</td>
+</tr>
+<tr>
+<td style="text-align:left">func AddInt32(addr <em>int32, delta int32) (new int32) <br>func AddInt64(addr </em>int64, delta int64) (new int64) <br>func AddUint32(addr <em>uint32, delta uint32) (new uint32) <br>func AddUint64(addr </em>uint64, delta uint64) (new uint64) <br>func AddUintptr(addr *uintptr, delta uintptr) (new uintptr)</td>
+<td style="text-align:left">修改操作</td>
+</tr>
+<tr>
+<td style="text-align:left">func SwapInt32(addr <em>int32, new int32) (old int32) <br>func SwapInt64(addr </em>int64, new int64) (old int64) <br>func SwapUint32(addr <em>uint32, new uint32) (old uint32) <br>func SwapUint64(addr </em>uint64, new uint64) (old uint64) <br>func SwapUintptr(addr <em>uintptr, new uintptr) (old uintptr) <br>func SwapPointer(addr </em>unsafe.Pointer, new unsafe.Pointer) (old unsafe.Pointer)</td>
+<td style="text-align:left">交换操作</td>
+</tr>
+<tr>
+<td style="text-align:left">func CompareAndSwapInt32(addr <em>int32, old, new int32) (swapped bool) <br>func CompareAndSwapInt64(addr </em>int64, old, new int64) (swapped bool) <br>func CompareAndSwapUint32(addr <em>uint32, old, new uint32) (swapped bool) <br>func CompareAndSwapUint64(addr </em>uint64, old, new uint64) (swapped bool) <br>func CompareAndSwapUintptr(addr <em>uintptr, old, new uintptr) (swapped bool) <br>func CompareAndSwapPointer(addr </em>unsafe.Pointer, old, new unsafe.Pointer) (swapped bool)</td>
+<td style="text-align:left">比较并交换操作</td>
+</tr>
+</tbody>
+</table>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>Go 语言中的测试依赖 <code>go test</code> 命令。编写测试代码和编写普通的 Go 代码过程是类似的，并不需要学习新的语法、规则或工具。<br>在包目录内，所有以 <code>_test.go</code> 为后缀名的源代码文件都是 <code>go test</code> 测试的一部分，不会被 <code>go build</code> 编译到最终的可执行文件中。在测试文件中有三种类型的函数：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">格式</th>
+<th style="text-align:center">作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">测试函数</td>
+<td style="text-align:center">函数名前缀为 Test</td>
+<td style="text-align:center">测试程序的一些逻辑行为是否正确</td>
+</tr>
+<tr>
+<td style="text-align:center">基准函数</td>
+<td style="text-align:center">函数名前缀为 Benchmark</td>
+<td style="text-align:center">测试函数的性能</td>
+</tr>
+<tr>
+<td style="text-align:center">示例函数</td>
+<td style="text-align:center">函数名前缀为 Example</td>
+<td style="text-align:center">为文档提供示例文档</td>
+</tr>
+</tbody>
+</table>
+<p><code>go test</code> 命令会遍历所有的 <code>*_test.go</code> 文件中符合上述命名规则的函数，然后生成一个临时的 main 包用于调用相应的测试函数，然后构建并运行、报告测试结果，最后清理测试中生成的临时文件。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 测试函数名必须以Test开头，必须接收一个 *testing.T 类型参数</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TestSplit</span><span class="params">(t *testing.T)</span></span> &#123;</span><br><span class="line">  got := Split(<span class="string">"a:b:c"</span>, <span class="string">":"</span>)</span><br><span class="line">  want := []<span class="keyword">string</span>&#123;<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>&#125;    <span class="comment">// 期望的结果</span></span><br><span class="line">  <span class="comment">// 因为 slice 不能比较直接，借助反射包中的方法比较</span></span><br><span class="line">  <span class="keyword">if</span> !reflect.DeepEqual(want, got) &#123; </span><br><span class="line">    t.Errorf(<span class="string">"excepted:%v, got:%v"</span>, want, got) <span class="comment">// 测试失败输出错误提示</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>关于测试的内容暂时不去看太多了，先能玩起来再说，再加上标准库基本就可以写东西了。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p>《Go语言圣经》<br><a href="https://www.liwenzhou.com/posts/Go/14_concurrence/" target="_blank" rel="noopener">https://www.liwenzhou.com/posts/Go/14_concurrence/</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>喜欢就请我吃包辣条吧！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/image/pay/wx.jpg" alt="Kerronex WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/image/pay/zfb.jpg" alt="Kerronex Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Kerronex
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://sakanoy.com/2020/07/02/Golang之并发编程/" title="Golang之并发编程">https://sakanoy.com/2020/07/02/Golang之并发编程/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Go/" rel="tag"><i class="fa fa-tag"></i> Go</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/06/02/WebFlux基础/" rel="next" title="WebFlux基础">
+                <i class="fa fa-chevron-left"></i> WebFlux基础
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/07/03/Java核心编程知识索引/" rel="prev" title="Java核心编程知识索引">
+                Java核心编程知识索引 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        
+          <p class="warninginfo">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+              评论框加载失败，无法访问 Disqus<br><br>
+              你可能需要魔法上网~~
+          </p>
+
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/image/tx.png"
+               alt="Kerronex" />
+          <p class="site-author-name" itemprop="name">Kerronex</p>
+           
+              <p class="site-description motion-element" itemprop="description">程序猿/二刺螈<br/>夜猫族/爱折腾</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">130</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="Mailto:bfchengnuo@gmail.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-envelope-o"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://GitHub.com/bfchengnuo" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://sakanoy.com/MyRecord/#/" target="_blank" title="笔记本">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  笔记本
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.cnblogs.com/bfchengnuo" target="_blank" title="博客园">
+                  
+                    <i class="fa fa-fw fa-paw"></i>
+                  
+                  博客园
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              小伙伴们~
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://heartsky.info" title="HeartSky" target="_blank">HeartSky</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.kiuber.me" title="Kiuber" target="_blank">Kiuber</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/nightcharm" title="夜Charm" target="_blank">夜Charm</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#goroutine"><span class="nav-number">1.</span> <span class="nav-text">goroutine</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#可增长栈"><span class="nav-number">1.1.</span> <span class="nav-text">可增长栈</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GPM调度"><span class="nav-number">1.2.</span> <span class="nav-text">GPM调度</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#channel"><span class="nav-number">2.</span> <span class="nav-text">channel</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#单方向的通道"><span class="nav-number">2.1.</span> <span class="nav-text">单方向的通道</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#select多路复用"><span class="nav-number">3.</span> <span class="nav-text">select多路复用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#并发退出"><span class="nav-number">4.</span> <span class="nav-text">并发退出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#锁"><span class="nav-number">5.</span> <span class="nav-text">锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sync-Once"><span class="nav-number">5.1.</span> <span class="nav-text">sync.Once</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sync-Map"><span class="nav-number">5.2.</span> <span class="nav-text">sync.Map</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#竞争检测"><span class="nav-number">5.3.</span> <span class="nav-text">竞争检测</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#原子操作"><span class="nav-number">6.</span> <span class="nav-text">原子操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试"><span class="nav-number">7.</span> <span class="nav-text">测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">8.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+    <div style="height: 370px;background-image: url(/image/bj.png);background-repeat: no-repeat; margin-left: 31%;"></div>
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+<span id="sitetime"></span>
+<span class="my-face">(●'◡'●)ﾉ♥</span>
+<script language=javascript>
+function siteTime(){
+window.setTimeout("siteTime()", 1000);
+var seconds = 1000
+var minutes = seconds * 60
+var hours = minutes * 60
+var days = hours * 24
+var years = days * 365
+
+var today = new Date()
+var todayYear = today.getFullYear()
+var todayMonth = today.getMonth()
+var todayDate = today.getDate()
+var todayHour = today.getHours()
+var todayMinute = today.getMinutes()
+var todaySecond = today.getSeconds()
+
+/* Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳) 
+year - 作为date对象的年份，为4位年份值
+month - 0-11之间的整数，做为date对象的月份
+day - 1-31之间的整数，做为date对象的天数
+hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+minutes - 0-59之间的整数，做为date对象的分钟数
+seconds - 0-59之间的整数，做为date对象的秒数
+microseconds - 0-999之间的整数，做为date对象的毫秒数 */
+var t1 = Date.UTC(2016,3,30,8,0,0)
+var t2 = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond)
+var diff = t2-t1
+
+var diffYears = Math.floor(diff/years)
+var diffDays = Math.floor((diff/days)-diffYears*365)
+var diffDaysAll = Math.floor(diff/days)
+var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours)
+var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes)
+var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds)
+document.getElementById("sitetime").innerHTML=" 本站已萌萌哒运行 "+diffDaysAll+" 天 "+diffHours+" 小时 "+diffMinutes+" 分钟 "+diffSeconds+" 秒 "
+}
+siteTime()
+</script>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共521.4k字</span>
+
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'bfchengnuo';
+      var disqus_identifier = '2020/07/02/Golang之并发编程/';
+
+      var disqus_title = "Golang之并发编程";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":130,"height":170,"hOffset":30,"vOffset":-10},"mobile":{"show":false},"react":{"opacity":0.7},"log":false});</script></body>
+</html>

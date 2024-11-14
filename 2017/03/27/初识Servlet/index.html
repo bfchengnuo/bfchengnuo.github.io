@@ -1,0 +1,1276 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Microsoft Yahei:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Java,Servlet," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakanoy" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/image/tb.png?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="Servlet 是sun提供的一门专门用于开发动态web资源的技术，传统的步骤分为两步：  编写一个java类，实现servlet接口不过一般是继承自 HttpServlet ，因为大多都是用于http，它默认已经实现了所有未实现的方法，需要那个覆盖那个即可 把开发好的java类部署到web服务器  听起来蛮简单的，其中的道道不少呢">
+<meta name="keywords" content="Java,Servlet">
+<meta property="og:type" content="article">
+<meta property="og:title" content="初识Servlet">
+<meta property="og:url" content="https://sakanoy.com/2017/03/27/初识Servlet/index.html">
+<meta property="og:site_name" content="Sakanoy">
+<meta property="og:description" content="Servlet 是sun提供的一门专门用于开发动态web资源的技术，传统的步骤分为两步：  编写一个java类，实现servlet接口不过一般是继承自 HttpServlet ，因为大多都是用于http，它默认已经实现了所有未实现的方法，需要那个覆盖那个即可 把开发好的java类部署到web服务器  听起来蛮简单的，其中的道道不少呢">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-05-06T09:39:52.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="初识Servlet">
+<meta name="twitter:description" content="Servlet 是sun提供的一门专门用于开发动态web资源的技术，传统的步骤分为两步：  编写一个java类，实现servlet接口不过一般是继承自 HttpServlet ，因为大多都是用于http，它默认已经实现了所有未实现的方法，需要那个覆盖那个即可 把开发好的java类部署到web服务器  听起来蛮简单的，其中的道道不少呢">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://sakanoy.com/2017/03/27/初识Servlet/"/>
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-bounce.css">
+
+  <title> 初识Servlet | Sakanoy </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-77463916-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakanoy</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">立于浮华之世,奏响天籁之音.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-mark">
+          <a href="/mark" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-retweet"></i> <br />
+            
+            笔记本
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-book"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-music">
+          <a href="/music" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-music"></i> <br />
+            
+            音乐台
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://sakanoy.com/2017/03/27/初识Servlet/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Kerronex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/image/tx.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakanoy">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                初识Servlet
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-27T02:33:34+00:00">
+                2017-03-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-eye"></i> 热度
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-wordcount">
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  3,286
+                </span>
+              
+
+              
+
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <div style="display: none;color: #999" class="note warning" id='timeliness'></div>
+        <script language=javascript>
+          var days = (new Date().getTime() - 1490582014000) / 86400000;
+          if(days > 180) {
+            var infoDom = document.getElementById("timeliness");
+            infoDom.innerHTML = "提醒：本文发布于 " + Math.round(days) + " 天前，文中所描述的信息可能已发生改变，请谨慎使用。";
+            infoDom.style.display = "block"
+          }
+        </script>
+        <p>Servlet 是sun提供的一门专门用于开发动态web资源的技术，传统的步骤分为两步：</p>
+<ol>
+<li>编写一个java类，实现servlet接口<br>不过一般是继承自 HttpServlet ，因为大多都是用于http，它默认已经实现了所有未实现的方法，需要那个覆盖那个即可</li>
+<li>把开发好的java类部署到web服务器</li>
+</ol>
+<p>听起来蛮简单的，其中的道道不少呢<a id="more"></a><br>Servlet已经是属于J2EE的其中之一，在java SE 的API中是没有的，不过Tomcat中是自带的，因为他要解析啊</p>
+<h2 id="什么是Servlet"><a href="#什么是Servlet" class="headerlink" title="什么是Servlet"></a>什么是Servlet</h2><p>引用自Wiki上的一句：<br><div class="note info"><p>Servlet（Server Applet），全称Java Servlet，未有中文译文。是用Java编写的服务器端程序。其主要功能在于交互式地浏览和修改数据，生成动态Web内容。<br>狭义的Servlet是指Java语言<strong>实现的一个接口</strong>，广义的Servlet是指任何实现了这个Servlet接口的类，一般情况下，人们将Servlet理解为后者。</p>
+</div></p>
+<p>Servlet运行于支持 Java 的应用服务器中。从实现上讲，<strong>Servlet 可以响应任何类型的请求</strong>，但绝大多数情况下Servlet只用来扩展基于HTTP协议的Web服务器。</p>
+<h3 id="与JSP的关系"><a href="#与JSP的关系" class="headerlink" title="与JSP的关系"></a>与JSP的关系</h3><p>Java服务器页面（JSP）是 HttpServlet 的扩展。由于 HttpServlet 大多是用来响应HTTP请求，并返回Web页面（例如HTML、XML），所以不可避免地，在编写 servlet 时会涉及大量的HTML内容，这给 servlet 的书写效率和可读性带来很大障碍，JSP便是在这个基础上产生的。</p>
+<p>其功能是使用HTML的书写格式，在适当的地方加入 Java 代码片段，将程序员从复杂的 HTML 中解放出来，更专注于 servlet 本身的内容。</p>
+<p>JSP在首次被访问的时候被应用服务器转换为servlet ，在以后的运行中，容器直接调用这个 servlet，而不再访问 JSP 页面。<strong>JSP的实质仍然是 servlet。</strong></p>
+<h2 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h2><p>在 Servlet 中有了生命周期的概念，也就有了相应的方法，比如 <code>init()</code> 和<code>destroy()</code></p>
+<p>当用户第一次访问的时候创建，执行 init 方法完成初始化，此后会一直存在于容器等待客户机的第二次访问<br>web服务器关闭的时候 Servlet 才会销毁，也就是说 <strong>一个Class文件只会存在一个Servlet对象</strong></p>
+<p>但是每一次请求，服务器都会创建一个新的 request 和 response 对象（同时也会创建一个新线程），注意是每一次请求，一个用户就可以发起多次请求，好在它们的生命周期很短，随请求的结束就销毁了，因为一次请求的时间本来就很短<br>每一次请求调用 Servlet 一次，但是对象只有一个</p>
+<p>因为<strong>每一次请求都会有各自的线程进行处理</strong>，虽然解决了一个对象可以同时被访问（也就是说不同的请求可以同时<del>cao</del>执行一个对象[servlet]里的方法），但是存在线程安全问题，当然如果变量是在类里定义的，那对象只有一个，变量也就只有一个</p>
+<h2 id="编写Servlet"><a href="#编写Servlet" class="headerlink" title="编写Servlet"></a>编写Servlet</h2><p>我们写一个最简单的 Servlet ，国际惯例使用 Hello World 测试，本质就是一个Java类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@WebServlet</span>(<span class="string">"/HelloWorld"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorld</span> <span class="keyword">extends</span> <span class="title">HttpServlet</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String msg;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> <span class="keyword">throws</span> ServletException </span>&#123;</span><br><span class="line">        msg = <span class="string">"is Hello World java"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doGet</span><span class="params">(HttpServletRequest req, HttpServletResponse resp)</span> <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">        resp.setContentType(<span class="string">"text/html"</span>);</span><br><span class="line"></span><br><span class="line">        PrintWriter writer = resp.getWriter();</span><br><span class="line">        writer.print(msg);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">destroy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.destroy();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样就会输入 msg 的消息，我是用 IDEA 写的，在类名的上面加上标注(注解) <code>@WebServlet(&quot;/HelloWorld&quot;)</code> 意思是设置 servlet 对应的url地址</p>
+<blockquote>
+<p>  Servlet3.0 之后提供了注解(annotation)，使得不再需要在 web.xml 文件中进行 Servlet 的部署描述，简化开发流程<br>  JDK1. 5版本之后， JAVA提供了一种叫做 Annotation 的新数据类型，中文译为注解或标注，它的出现为铺天盖地的XML配置文件提供了一个完美的解决方案，让  JAVA EE 开发更加方便快速，也更加干净了</p>
+</blockquote>
+<p>如果不想使用注解，还有另一种方式，就是在 <strong>web.xml</strong> 文件中进行手动配置</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">servlet</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>HelloWorld<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">servlet-class</span>&gt;</span>com.bfchengnuo.test.HelloWorld<span class="tag">&lt;/<span class="name">servlet-class</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">servlet</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">servlet-mapping</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>HelloWorld<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/hw<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">servlet-mapping</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>servlet 标签配置名字以及具体的 class，<strong>servlet-mapping</strong> 是设置映射关系，将那个名字的 Servlet 映射到什么虚拟目录(浏览器访问时输入)<br>上面的一段其实和 <code>@WebServlet(name=&quot;HelloWorld&quot;,value=&quot;/hw&quot;)</code> 是完全相同的<br><div class="note warning"><p><strong>当标注(注解)与 web.xml 同时配置时，标注无效。</strong><br>使用标注：由于是在对应的类中配置的信息，因而则可以不用在标注中配置class了。<br>对于 web.xml 中的配置，在标注中通通都有配置<br>在 web.xml 中一个 servlet 可以配置多个 servlet-mapping, 只要在其中指定相同的 servlet-name 即可。标注也可以指定多个的，但不再用 value，而是用urlPatterns 数组。<br><code>@WebServlet(name=&quot;HelloWorld&quot;,urlPatterns={&quot;/HelloWroldServlet&quot;,&quot;/HelloWorld&quot;})</code></p>
+</div></p>
+<p>同时如果需要随服务器加载，可以在 servlet 标签下设置 <code>&lt;load-on-startup&gt;1&lt;/load-on-startup&gt;</code> 数字越小越优先</p>
+<h2 id="关于映射"><a href="#关于映射" class="headerlink" title="关于映射"></a>关于映射</h2><p>映射如果写的是类似 <code>/1.html</code> 这种就是伪静态，因为实际访问的是动态的web资源</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">servlet-mapping</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>HelloWorld<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/hw.html<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">servlet-mapping</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>虽然你在浏览器输入的确实html，但是其实请求的是一个 Servlet<br>映射当然也是支持通配符的，比如 <code>/*</code> 就是映射到任何页面<br><strong>但是只能有两种固定的格式：</strong></p>
+<ol>
+<li><code>*.</code> 开头 + 扩展名  [ 固定扩展名(*.jsp) ]</li>
+<li><code>/</code> 开头并且以 <code>/*</code> 结尾  [固定路径]</li>
+</ol>
+<p>像 <code>/abc/*.html</code> 是错误的,有歧义嘛~ ; 服务器不知道它是路径映射还是扩展映射</p>
+<p>这样也就不可避免的会有存在匹配冲突的情况下，谁匹配更多(也就是更精确)就是那个，和正则类似，<code>*</code>的匹配优先级最低，所以<code>*</code>开头的都很低，一般是最后匹配<br><div class="note primary"><p>缺省的 Servlet 的映射为： / ，当找不到 Servlet 的时候找它<br>其实任何请求都是由 Servlet 进行处理的，当访问静态资源的时候其实就是因为找不到相关的 Servlet 映射，就交给系统缺省的 Servlet 映射负责处理，来找到那些静态的资源，如果静态资源也没用，那就只能映射到 404 页面了<br>如果覆盖了缺省的 Servlet ，那静态资源就访问不到了，只会访问自定义的缺省的 Servlet ，所以不要把 url-pattern 设置为 /</p>
+</div></p>
+<h2 id="ServletContext"><a href="#ServletContext" class="headerlink" title="ServletContext"></a>ServletContext</h2><p>Web容器在启动的时候，会为每一个 web 应用都创建一个 ServletContext 对象，它代表<strong>当前的 web 应用</strong>，注意是当前的web应用不是 Servlet<br>ServletContext 在服务器启动时创建，关闭时销毁，既然它代表web应用，那么就有很多相应的方法，比如获取各种配置等，面向对象思想嘛~<br>上一篇 了解Tomcat 中已经说的很详细了<br>ServletConfig 对象中维护了 ServletContext 对象的引用，所以可以在 Servlet 中通过 <code>this.ServletConfig.getServletContext()</code> 获得 ServletContext 对象<br>当然其实也是直接可以通过 getServletContext 方法获取到的，因为继承的是 HttpServlet 在爷爷辈的 init 方法中已经进行了保存</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(ServletConfig config)</span> <span class="keyword">throws</span> ServletException </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.config = config;</span><br><span class="line">    <span class="keyword">this</span>.init();</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> ServletContext <span class="title">getServletContext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.getServletConfig().getServletContext();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>ServletContext 对象通常称为 context 域</strong></p>
+<h2 id="转发-amp-重定向"><a href="#转发-amp-重定向" class="headerlink" title="转发&amp;重定向"></a>转发&amp;重定向</h2><p>这个用的次数是非常之频繁的，先说明下它和重定向的主要区别：</p>
+<ul>
+<li>重定向：我没有，我给你个地址，让你去找别人要</li>
+<li>转发：我没有，我帮你找别人获取，然后再把你需要的资源给你</li>
+</ul>
+<p>转发对于客户端来说只发一次请求，网址也不变，客户端甚至不会察觉，也不知道这个资源到底是谁的( 嗯，有点像反向代理呢 ，在我的公众号已经写过正向代理和反向代理是什么了)<br>用代码来表达就是：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">RequestDispatcher rd = getServletContext().getRequestDispatcher(<span class="string">"/index.jsp"</span>)</span><br><span class="line">rd.forward(request,response);</span><br><span class="line"><span class="comment">// 一般的写法为</span></span><br><span class="line">request.getRequestDispatcher(<span class="string">"path"</span>).forward(request,response);</span><br></pre></td></tr></table></figure>
+<p>至于这两者的区别，最大的区别就是 ServletContext 转发时路径必须绝对路径，也就是 <code>/</code> 开头<br>使用 request 进行转发既可以使用绝对路径也可以使用相对路径（相对于 web 应用也就是比起上面可以不写 <code>/</code>），一般这种方式用的比较多，大多数是使用绝对路径的</p>
+<p><strong>当然如果需要携带参数需要 Request 域来实现，使用 setAttribute 设置自定义参数，下次再说，当然也可以使用 getParameter 方法来获得 URL 携带的数据</strong></p>
+<p>重定向就是用 sendRedirect 方法设置下路径就可以了，路径就是浏览器中的地址了，所以如果 <code>/</code> 开头就是指的此网站，后面多半需要加 web 应用的名，或者通过 <code>request.getContextPath()</code> 来获取此 web 应用的地址，然后再加 “/xxx.jsp”这样。</p>
+<blockquote>
+<p> 重定向（redirect）后：确认了要跳转的页面的 url，<strong>继续执行 redirect 下面的代码</strong>；执行完后，断开当前的与用户所发出的请求连接，即断开 request 的引用指向，因此 request 里存放的信息也会丢失。<br>转发（forward）后：确认了要转发的页面的地址，现在<strong>停止继续执行后面的代码</strong>，而是先执行转发后的那个 servlet 里的代码，<strong>执行完后再回来继续执行后面的代码</strong>；在这期间 check 和 success 共享一个 request 和 response 对象。</p>
+</blockquote>
+<h2 id="读取-存储问题"><a href="#读取-存储问题" class="headerlink" title="读取/存储问题"></a>读取/存储问题</h2><p>我们可以把一些信息存在 web.xml 文件中，方便修改和获取，在 web.xml 中也有两种形式，一种是属于 Servlet 的，一种是整个web应用的</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">context-param</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>conData<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">param-value</span>&gt;</span>Lolicon<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">context-param</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">servlet</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>HelloWorld<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">servlet-class</span>&gt;</span>com.bfchengnuo.test.HelloWorld<span class="tag">&lt;/<span class="name">servlet-class</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">init-param</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>data<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">param-value</span>&gt;</span>is test data<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">init-param</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">servlet</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>获取方式基本也相同，当然也可以进行设置：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获取 Servlet 中的配置的数据</span></span><br><span class="line">String str = <span class="keyword">this</span>.getServletConfig().getInitParameter(<span class="string">"data"</span>);</span><br><span class="line"><span class="comment">// 获取 web 应用的配置的数据</span></span><br><span class="line">String str2 = <span class="keyword">this</span>.getServletContext().getInitParameter(<span class="string">"conData"</span>);</span><br></pre></td></tr></table></figure>
+<div class="note info"><p>设置初始化参数使用注解也是可以的，类似这样<br><code>@WebServlet(name=&quot;HelloWorld&quot;,urlPatterns={&quot;/HelloWorld&quot;},initParams={@WebInitParam(name=&quot;id&quot;,value=&quot;1&quot;),@WebInitParam(name=&quot;name&quot;,value=&quot;Loli&quot;)})</code></p>
+</div>
+<h3 id="properties"><a href="#properties" class="headerlink" title="properties"></a>properties</h3><p>对于无逻辑性的数据，一般使用：<code>.properties</code> 来进行存储，内容格式非常简单一般就是一行一个 key=val 的形式，详细的介绍见 <a href="https://zh.wikipedia.org/wiki/.properties" target="_blank" rel="noopener">维基百科</a><br>Java中提供了专门的类来处理这种文件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">InputStream resourceAsStream = <span class="keyword">this</span>.getServletContext().getResourceAsStream(<span class="string">"/WEB-INF/classes/a.properties"</span>);</span><br><span class="line">Properties prope = <span class="keyword">new</span> Properties();</span><br><span class="line">prope.load(resourceAsStream);</span><br><span class="line"></span><br><span class="line">String str = prope.getProperty(<span class="string">"key"</span>);</span><br></pre></td></tr></table></figure>
+<p>如果读取资源文件的程序不是 Servlet 类，就只能通过类装载器去读，文件不能太大，因为会被加载进内容，太大会内存溢出<br><code>ParamTest.class.getClassLoader().getResourceAsStream(path)</code><br>类装载器的 path 相对于的是 src 目录，也就是包名的开始目录<br><div class="note warning"><p>由于类装载器只装载一次，在 JVM 没有重启的情况下，修改文件无效<br>解决方案是用传统方式读取，首先通过类装载器获取到文件的绝对路径，再 FileInputStream 读取<br><strong>FileInputStream 的相对路径是相对的 JVM 的启动目录</strong>，所以最好传绝对路径，如果用 ServletContext 去读，相应的 / 就是 web 应用的目录，用类装载器的话相对的目录就是 src 下开始<br>获取路径的方法为：<br><code>HelloWorld.class.getClassLoader().getResourceAsStream(&quot;com/bfchengnuo/xx&quot;).getPath()</code></p>
+</div></p>
+<h2 id="关于-WebServlet的补充"><a href="#关于-WebServlet的补充" class="headerlink" title="关于@WebServlet的补充"></a>关于@WebServlet的补充</h2><p>@WebServlet 主要属性列表：</p>
+<table>
+<thead>
+<tr>
+<th><strong>属性名</strong></th>
+<th><strong>类型</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>指定 Servlet 的 name 属性，等价于 <code>&lt;servlet-name&gt;</code>。如果没有显式指定，则该 Servlet 的取值即为类的全限定名。</td>
+</tr>
+<tr>
+<td>value</td>
+<td>String[]</td>
+<td>该属性等价于 urlPatterns 属性。<strong>两个属性不能同时使用。</strong></td>
+</tr>
+<tr>
+<td>urlPatterns</td>
+<td>String[]</td>
+<td>指定一组 Servlet 的 URL 匹配模式。等价于 <code>&lt;url-pattern&gt;</code>标签。</td>
+</tr>
+<tr>
+<td>loadOnStartup</td>
+<td>int</td>
+<td>指定 Servlet 的加载顺序，等价于 <code>&lt;load-on-startup&gt;</code> 标签。</td>
+</tr>
+<tr>
+<td>initParams</td>
+<td>WebInitParam[]</td>
+<td>指定一组 Servlet 初始化参数，等价于 <code>&lt;init-param&gt;</code>标签。</td>
+</tr>
+<tr>
+<td>asyncSupported</td>
+<td>boolean</td>
+<td>声明 Servlet 是否支持异步操作模式，等价于 <code>&lt;async-supported&gt;</code>标签。</td>
+</tr>
+<tr>
+<td>description</td>
+<td>String</td>
+<td>该 Servlet 的描述信息，等价于 <code>&lt;description&gt;</code> 标签。</td>
+</tr>
+<tr>
+<td>displayName</td>
+<td>String</td>
+<td>该 Servlet 的显示名，通常配合工具使用，等价于 <code>&lt;display-name&gt;</code>标签。</td>
+</tr>
+</tbody>
+</table>
+<p>例如初始化参数：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@WebServlet</span>(name=<span class="string">"HelloWorld"</span>,urlPatterns=&#123;<span class="string">"/HelloWroldServlet"</span>,<span class="string">"/HelloWorld"</span>&#125;,initParams=&#123;<span class="meta">@WebInitParam</span>(name=<span class="string">"id"</span>,value=<span class="string">"yeh"</span>),<span class="meta">@WebInitParam</span>(name=<span class="string">"name"</span>,value=<span class="string">"Loli"</span>)&#125;)</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span> <span class="keyword">extends</span> <span class="title">HttpServlet</span></span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 分开配置</span></span><br><span class="line"><span class="meta">@WebServlet</span>(<span class="string">"hello"</span>)</span><br><span class="line"><span class="meta">@WebInitParam</span>(name=<span class="string">"id"</span>,value=<span class="string">"yeh"</span>)</span><br><span class="line">Public <span class="class"><span class="keyword">class</span> <span class="title">Test</span> <span class="keyword">extends</span> <span class="title">HttpServlet</span></span>&#123;&#125;</span><br></pre></td></tr></table></figure>
+<p>注意格式就好，第二种低版本的 Tomcat 好像不识别</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://blog.csdn.net/zw_2011/article/details/7432839" target="_blank" rel="noopener">http://blog.csdn.net/zw_2011/article/details/7432839</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>喜欢就请我吃包辣条吧！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/image/pay/wx.jpg" alt="Kerronex WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/image/pay/zfb.jpg" alt="Kerronex Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Kerronex
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://sakanoy.com/2017/03/27/初识Servlet/" title="初识Servlet">https://sakanoy.com/2017/03/27/初识Servlet/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"><i class="fa fa-tag"></i> Java</a>
+          
+            <a href="/tags/Servlet/" rel="tag"><i class="fa fa-tag"></i> Servlet</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/26/了解Tomcat/" rel="next" title="了解Tomcat">
+                <i class="fa fa-chevron-left"></i> 了解Tomcat
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/29/AJAX入门/" rel="prev" title="AJAX入门">
+                AJAX入门 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        
+          <p class="warninginfo">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+              评论框加载失败，无法访问 Disqus<br><br>
+              你可能需要魔法上网~~
+          </p>
+
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/image/tx.png"
+               alt="Kerronex" />
+          <p class="site-author-name" itemprop="name">Kerronex</p>
+           
+              <p class="site-description motion-element" itemprop="description">程序猿/二刺螈<br/>夜猫族/爱折腾</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">130</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="Mailto:bfchengnuo@gmail.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-envelope-o"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://GitHub.com/bfchengnuo" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://sakanoy.com/MyRecord/#/" target="_blank" title="笔记本">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  笔记本
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.cnblogs.com/bfchengnuo" target="_blank" title="博客园">
+                  
+                    <i class="fa fa-fw fa-paw"></i>
+                  
+                  博客园
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              小伙伴们~
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://heartsky.info" title="HeartSky" target="_blank">HeartSky</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.kiuber.me" title="Kiuber" target="_blank">Kiuber</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/nightcharm" title="夜Charm" target="_blank">夜Charm</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是Servlet"><span class="nav-number">1.</span> <span class="nav-text">什么是Servlet</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#与JSP的关系"><span class="nav-number">1.1.</span> <span class="nav-text">与JSP的关系</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生命周期"><span class="nav-number">2.</span> <span class="nav-text">生命周期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编写Servlet"><span class="nav-number">3.</span> <span class="nav-text">编写Servlet</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于映射"><span class="nav-number">4.</span> <span class="nav-text">关于映射</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ServletContext"><span class="nav-number">5.</span> <span class="nav-text">ServletContext</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#转发-amp-重定向"><span class="nav-number">6.</span> <span class="nav-text">转发&amp;重定向</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#读取-存储问题"><span class="nav-number">7.</span> <span class="nav-text">读取/存储问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#properties"><span class="nav-number">7.1.</span> <span class="nav-text">properties</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于-WebServlet的补充"><span class="nav-number">8.</span> <span class="nav-text">关于@WebServlet的补充</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">9.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+    <div style="height: 370px;background-image: url(/image/bj.png);background-repeat: no-repeat; margin-left: 31%;"></div>
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+<span id="sitetime"></span>
+<span class="my-face">(●'◡'●)ﾉ♥</span>
+<script language=javascript>
+function siteTime(){
+window.setTimeout("siteTime()", 1000);
+var seconds = 1000
+var minutes = seconds * 60
+var hours = minutes * 60
+var days = hours * 24
+var years = days * 365
+
+var today = new Date()
+var todayYear = today.getFullYear()
+var todayMonth = today.getMonth()
+var todayDate = today.getDate()
+var todayHour = today.getHours()
+var todayMinute = today.getMinutes()
+var todaySecond = today.getSeconds()
+
+/* Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳) 
+year - 作为date对象的年份，为4位年份值
+month - 0-11之间的整数，做为date对象的月份
+day - 1-31之间的整数，做为date对象的天数
+hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+minutes - 0-59之间的整数，做为date对象的分钟数
+seconds - 0-59之间的整数，做为date对象的秒数
+microseconds - 0-999之间的整数，做为date对象的毫秒数 */
+var t1 = Date.UTC(2016,3,30,8,0,0)
+var t2 = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond)
+var diff = t2-t1
+
+var diffYears = Math.floor(diff/years)
+var diffDays = Math.floor((diff/days)-diffYears*365)
+var diffDaysAll = Math.floor(diff/days)
+var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours)
+var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes)
+var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds)
+document.getElementById("sitetime").innerHTML=" 本站已萌萌哒运行 "+diffDaysAll+" 天 "+diffHours+" 小时 "+diffMinutes+" 分钟 "+diffSeconds+" 秒 "
+}
+siteTime()
+</script>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共521.4k字</span>
+
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'bfchengnuo';
+      var disqus_identifier = '2017/03/27/初识Servlet/';
+
+      var disqus_title = "初识Servlet";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":130,"height":170,"hOffset":30,"vOffset":-10},"mobile":{"show":false},"react":{"opacity":0.7},"log":false});</script></body>
+</html>

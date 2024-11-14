@@ -1,0 +1,1230 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Microsoft Yahei:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Linux,定时任务," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakanoy" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/image/tb.png?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="主要侧重下日常常用的命令，然后是基本的使用，并不涉及完整的功能，用到高级功能还是要去搜索啊….有些命令是redhat系列专有的…写的有点混乱">
+<meta name="keywords" content="Linux,定时任务">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux学习笔记(一)">
+<meta property="og:url" content="https://sakanoy.com/2017/01/11/Linux学习笔记/index.html">
+<meta property="og:site_name" content="Sakanoy">
+<meta property="og:description" content="主要侧重下日常常用的命令，然后是基本的使用，并不涉及完整的功能，用到高级功能还是要去搜索啊….有些命令是redhat系列专有的…写的有点混乱">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-01-03T13:57:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux学习笔记(一)">
+<meta name="twitter:description" content="主要侧重下日常常用的命令，然后是基本的使用，并不涉及完整的功能，用到高级功能还是要去搜索啊….有些命令是redhat系列专有的…写的有点混乱">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://sakanoy.com/2017/01/11/Linux学习笔记/"/>
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-bounce.css">
+
+  <title> Linux学习笔记(一) | Sakanoy </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-77463916-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakanoy</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">立于浮华之世,奏响天籁之音.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-mark">
+          <a href="/mark" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-retweet"></i> <br />
+            
+            笔记本
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-book"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-music">
+          <a href="/music" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-music"></i> <br />
+            
+            音乐台
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://sakanoy.com/2017/01/11/Linux学习笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Kerronex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/image/tx.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakanoy">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Linux学习笔记(一)
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-11T12:26:09+00:00">
+                2017-01-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-eye"></i> 热度
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-wordcount">
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  3,112
+                </span>
+              
+
+              
+
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <div style="display: none;color: #999" class="note warning" id='timeliness'></div>
+        <script language=javascript>
+          var days = (new Date().getTime() - 1484137569000) / 86400000;
+          if(days > 180) {
+            var infoDom = document.getElementById("timeliness");
+            infoDom.innerHTML = "提醒：本文发布于 " + Math.round(days) + " 天前，文中所描述的信息可能已发生改变，请谨慎使用。";
+            infoDom.style.display = "block"
+          }
+        </script>
+        <p>主要侧重下日常常用的命令，然后是基本的使用，并不涉及完整的功能，用到高级功能还是要去搜索啊….<br>有些命令是redhat系列专有的…写的有点混乱<br><a id="more"></a></p>
+<h2 id="用户管理"><a href="#用户管理" class="headerlink" title="用户管理"></a>用户管理</h2><p>增加一个用户：<code>useradd 用户名</code><br>设置当前用户的密码（后面可跟用户名设置指定用户密码）：<code>passwd 密码</code><br>删除用户（加-r参数 删除用户目录）：<code>userdel 用户</code><br>创建用户组：<code>groupadd 组名</code><br>修改用户名：<code>usermod -l 新用户名 旧用户名</code><br>修改用户的组：<code>usermod -g 要加入的组名 用户名</code><br>添加附属组：<code>gpasswd -a userName groupName</code><br>锁定用户（ -u 解锁账户 -d 无密码登陆）：<code>passwd -l 用户名</code><br>切换用户，root可省略用户名：<code>su userName</code></p>
+<p>显示当前登陆用户名：whoami<br>显示用户信息：<code>id name</code><br>显示组信息：<code>groups name</code></p>
+<p>用户的密码都加密存在<code>/etc/passwd</code>,格式类似：<br><code>root:x:0:0:root:/root:/bin/bash</code><br><code>[用户名]:密码:UID:GID:身份描述:主目录:登录shell</code></p>
+<h2 id="网络操作"><a href="#网络操作" class="headerlink" title="网络操作"></a>网络操作</h2><p>查看网络状态 ：<code>netstat</code> [-tuln 监听 -an全部]<br>登出：logout<br>查看路由：<code>netstat -rn</code><br>DNS查询：nslookup<br>端口探测（远程登陆不安全）：<code>telnet ip 端口</code><br>路由跟踪：<code>traceroute addrs</code></p>
+<p>下载：<code>wget 下载文件URL</code><br>抓包：<code>tcpdump -i eth0 -nnX port 21</code> （[nn：ip端口显示；X：16进制拆分数据包；port：只查看21端口的）</p>
+<p>启动ftp服务：<code>service vsftpd start</code></p>
+<p>下载文件(远程机用户名@IP:路径 本地路径)<br><code>scp [-r] name@ip:src locaSrc</code><br>上传文件<br><code>scp [-r] file name@ip:src</code></p>
+<p>setup命令可以配置一些常见配置，如ip，图形化界面，redhead系列特有<br><a href="http://bfchengnuo.com/2016/03/22/SSH%E8%BF%9E%E6%8E%A5VBOX%E7%9A%84ubuntu/">手动配置IP看这里</a></p>
+<h2 id="包管理"><a href="#包管理" class="headerlink" title="包管理"></a>包管理</h2><p>已安装的软件都在<code>/var/lib/rpm/</code>中的数据库中<br>安装命令：<code>rpm -ivh 包全名</code> (参数：安装、详细信息、显示进度)<br>其他参数：<br>-U 升级跟包全名<br>-e 卸载<br>-q 查询包信息<br>-qa 全部的已安装包<br>-qi 查询详细信息<br>-qip 未安装包<br>-ql 安装的文件<br>-qf 文件属于那个包<br>-V 校验</p>
+<p>上面的是手动安装，碰到依赖很多的包是很烦人的，所以就有了yum：<br>yum list<br>yum search 关键字<br>yum -y install name<br>yum -y update [xxname]<br>yum -y remove name<br>yum clean (清缓存)</p>
+<p>源码包一般放在 <code>/usr/local/src/name</code><br>安装在 <code>/usr/local/name</code></p>
+<h2 id="权限管理"><a href="#权限管理" class="headerlink" title="权限管理"></a>权限管理</h2><p>u-用户 g-组 o-其他<br>权限（读写执行）对应：r=4 、w=2(不包括删除) 、x=1<br><strong>权限是对下一层的描述，文件的权限就是对文件中数据的描述，目录权限是对文件的描述</strong><br>常用：最高权限：777，一般文件：644，可执行文件：755<br>目录最高权限：w 文件最高权限：x<br>目录有效权限：0、5、7<br>命令：chmod [-R]<br><code>chmod u+x,g-x,o=rw xxx</code> [a=all]</p>
+<p>修改所有者：<code>chown user file</code><br>修改用户组 ：<code>chgrp group file</code> chown命令也可以：<code>chown user:group</code>  除了用<code>:</code>，<code>,</code> 、 <code>.</code>都可以</p>
+<p>umask  用来查看默认权限  第一个是特殊权限（写在后面）<br>文件默认权限是 666  目录是 777；在<code>/etc/profile</code>中定义</p>
+<p>PS：配合下面的 sudo 权限，使用：<code>chmod u+s xxName</code> 命令可以让某个可执行文件在运行时拥有 root 权限，在运行完毕后撤销 root 权限</p>
+<h3 id="ACL权限"><a href="#ACL权限" class="headerlink" title="ACL权限"></a>ACL权限</h3><p>用来解决用户身份不够的问题，可以针对单一用户或组来设置特定的权限，递归时会导致权限溢出，尽量少用<br>查看分区ACL权限是否开启(挂载了ACL)：<code>dumpe2fs -h /dev/sda</code><br>显示：<code>Default mount options:    user_xattr acl</code>即为可用</p>
+<blockquote>
+<p>  dumpe2fs命令是查询指定分区详细文件系统信息的命令<br>  -h：仅显示超级块中信息，而不显示磁盘块组的详细信息</p>
+</blockquote>
+<p><strong>临时开启分区ACL权限：</strong><br>重新挂载根分区，并挂在加入ACL权限：<code>mount -o remount,acl /</code><br><strong>永久开启ACL权限：</strong><br>修改文件<code>/etc/fstab</code>在默认文件系统后加上acl即可</p>
+<blockquote>
+<p>  UUID=24f28fc6-717e-4bcd-a5f7-32b959024e26 /   ext4 defaults,<strong>acl</strong>  0   1</p>
+</blockquote>
+<p>重新挂载：<code>mount -o remount /</code><br>查看(带+的是有ACL权限的)：<code>getfacl fileName</code><br>设定：<code>setfacal -m u:name:rx [-R] file</code>   [m:设定，u:给用户设定，g:给组设定]<br>添加默认ACL权限：<code>setfacal -m d:u:name:rx [-R] file</code><br>mask 最大有效权限，设定的权限和它做逻辑与运算得到的结果是实际权限<br>修改mask：<code>-m m:rx fileName</code><br>-x 删除<br>-b 删除所有</p>
+<h3 id="sudo权限"><a href="#sudo权限" class="headerlink" title="sudo权限"></a>sudo权限</h3><p>root把只能超级用户执行的权限赋予普通用户执行<br><strong>sudo的操作对象是系统命令</strong><br>设置sudo，权限：visudo<br>实际修改的是 <code>/etc/sudoers</code></p>
+<p>格式：<code>root    ALL=(ALL)       ALL</code><br>root：指定个那个用户赋予sudo，前面加%就是给用户组设置<br>第一个ALL：被管理的电脑IP(可以在那台电脑运行sudo命令)<br>第二个ALL：可切换的身份，ALL就是可切换为任意用户，可省略<br>第三个ALL：可以执行的命令，绝对路径，如：/sbin/；写的越详细越安全，参数也限制，可使用通配符<code>!</code>之类，多个条件以<code>,</code>分隔<br><code>sudo -l</code>  查看可以执行的sudo命令</p>
+<h3 id="文件特殊权限"><a href="#文件特殊权限" class="headerlink" title="文件特殊权限"></a>文件特殊权限</h3><p>不要自己去设置，系统会用到</p>
+<ul>
+<li><p>SUID/SetUID</p>
+<p><strong>必须是可执行文件  拥有X权限</strong><br>SUID权限是第一个，代号s，数字表示4，其他操作和其他权限(基本权限rwx)类似<br><strong>执行此程序会变成文件的所有者</strong></p>
+</li>
+<li><p>SGID/SetGID</p>
+<p>  对于文件，要求和SUID一样<br>  权限显示S是无限的权限，有效权限是小s=S+x<br>  <strong>执行文件时，组身份变成文件的所属组</strong><br>  赋予：g+s或者2755<br>  对于目录，<strong>必须拥有r和x</strong>，在目录中创建文件所属组都是上级目录的组，而不是登陆用户的组</p>
+</li>
+<li><p>SBIT/sticky BIT</p>
+<p>  <strong>只能是目录</strong>，其他人需要有最高权限<br>  赋予：o+t 或者1755，<strong>普通用户只能删自己的文件</strong></p>
+</li>
+<li><p>chattr(不可改变位权限)<br>  <code>chattr +i</code> (insert) 被锁定，不能任何修改(对于目录就是不能新建和删除)。root也不可以<br>  <code>chattr +a</code> (append) 不能删，只能增加。增加只能用输出重定向 <code>&gt;&gt;</code>  不能用vi<br>  查看权限：lsattr -a 查看所有文件和目录 -d 查看目录权限</p>
+</li>
+</ul>
+<h2 id="计划任务crontab"><a href="#计划任务crontab" class="headerlink" title="计划任务crontab"></a>计划任务crontab</h2><p>服务是否启动 <code>service crond status</code><br>查看当前用户任务列表： <code>crontab -l</code><br>服务大部分后面会加个d，如果没有安装，安装命令：<br><code>yum install vixie-cron</code><br><code>yum install crontabs</code><br>添加任务（当前用户）：<code>crontab -e</code>  [<strong>-e -u</strong>：指定给用户添加]/[<strong>-l -u</strong>：查看某个用户任务]<br>系统级计划任务在<code>/etc/crontab</code>；用户的配置文件在<code>/var/spool/cron/root</code>或者<code>/var/spool/cron/tabs/root</code><br>执行<code>crontab -e</code>实际上是修改<code>/var/spool/cron/root</code>下面对应当前账号的文件。<br>系统服务crond会每分钟从配置文件刷新定时任务、执行<br>它还存在白名单和黑名单(都是对用户来说)：<br>crontab .allow 白名单（优先，默认不存在）<br>crontab .deny  黑名单（默认存在）</p>
+<p>格式：<code>* * * * * cmd</code><br>分钟 小时 日期 月份 星期 命令<br><code>0-59  0-23 1-31 1-12 0-7  *</code>就是每分钟、小时、、、<br>多个使用逗号分割 ;范围使用<code>-</code><br><code>*/2</code> 每隔 2 分钟；1-59/2 从 1 开始每隔 2 分钟(奇数)<br><code>*</code> 就是所有时间都匹配</p>
+<p>除了使用<code>crontab -e</code>进行添加，还可以将脚本复制到<code>/etc/cron.{daily.weekly...}</code>中的任意一个文件夹下，分别每天、周、月执行【推荐】<br>这种方式其实是使用的anacron，它会检测<code>/etc/cron.{daily.weekly...}</code>和<code>/etc/crontab</code>中的文件是否在系统关机的过程中错过的定时任务,通过命令添加的是不会进行检测的。</p>
+<p><code>/var/spool/anacron/con.{daily.weekly…}</code>内存着最后一次crontab的时间，如果当前时间到记录的时间差大于指定的差值，证明有命令漏执行，就会被anacron进行随机延迟执行，配置文件在<code>/etc/anacrontab</code>可以设置延迟的最大时间，所以这种方式有个缺点就是不知道什么时候执行</p>
+<p>所有定时任务的日志保存在<code>/var/log/cron</code></p>
+<h2 id="定时任务at"><a href="#定时任务at" class="headerlink" title="定时任务at"></a>定时任务at</h2><p>总体和crontab差不多，只不过它是只执行一次的，首先也是看服务有没有运行，服务名是atd<br>同样存在白名单和黑名单：<br>at.allow 白名单（优先，默认不存在）<br>at.deny  黑名单 （默认存在）</p>
+<p><code>at now +5 minutes</code>然后输入执行的命令就行了，ctrl + d 退出<br>atq 查询<br><code>at -c id</code> 查看具体内容<br>atrm 删除</p>
+<h2 id="服务管理"><a href="#服务管理" class="headerlink" title="服务管理"></a>服务管理</h2><p>runlevel 是系统运行级别<br>init X 是设置系统级别</p>
+<p>查看系统自启服务 RPM包服务 (cent6)：<code>chkconfig --list</code></p>
+<blockquote>
+<p>  CentOS7之后 ，chkconfig命令已经被systemctl命令取代</p>
+</blockquote>
+<p>其他命令：<code>ps aux</code>/<code>netstat -tuln -an</code><br>既然能查看就能修改：<code>chkconfig (--level 2345) httpd on/off</code>括号内的可省略<br>添加自启动另一种方法：修改<code>/etc/rc.d/rc.local</code>文件【推荐】<br>以及图形化界面ntsysv，只能修改5等级</p>
+<p>启动服务  <code>server xx start/stop/status/restart</code>(<strong>/etc/init.d/xxx  start</strong>)</p>
+<p>对于源码包，启动服务的server (redhat系列)、chkconfig都是没效果的，想要支持server命令需要创建一个软连接：<br><code>ln -s xxx /etc/init.d/</code>，也就是说server读取的就是<code>/etc/init.d/</code>目录下的文件(实际目录是<code>/etc/rc.d/init.d/</code>)<br>想要被 chkconfig 识别：修改 <strong>init.d</strong> 文件中的软连接的脚本，增加：</p>
+<blockquote>
+<p>  第一行定义运行级别、启动顺序、关闭顺序，顺序号只要不冲突即可<br>  第二行是描述信息<br>  # chkconfig:345 86 76<br>  # description:source package apache</p>
+</blockquote>
+<p>然后执行<code>chkconfig --add xxx</code>即可<br>PS:<code>/etc/rc3.d/</code>下面的文件是运行级别3时 系统开启与关闭分别要执行的服务文件，启动顺序与关闭顺序不能和现有的冲突，k开头的是关闭，s开头是开启</p>
+<p>centos系列可以使用图形化界面管理，命令setup；然后再补充下系统运行级别：</p>
+<blockquote>
+<p>  0 停机，关机<br>  1 单用户，无网络连接，不运行守护进程，不允许非超级用户登录<br>  2 多用户，无网络连接，不运行守护进程<br>  3 多用户，正常启动系统<br>  4 用户自定义<br>  5 多用户，带图形界面<br>  6 重启</p>
+</blockquote>
+<h2 id="一些常用操作"><a href="#一些常用操作" class="headerlink" title="一些常用操作"></a>一些常用操作</h2><h3 id="修改计算机名"><a href="#修改计算机名" class="headerlink" title="修改计算机名"></a>修改计算机名</h3><p>查看计算机名：hostname<br>至于修改关键是<code>/etc/hosts</code>文件和<code>/etc/sysconfig/network</code>文件<br>然后重启reboot或<code>shutdown -r now</code>(<em>-c</em>取消)</p>
+<h3 id="设置默认语言"><a href="#设置默认语言" class="headerlink" title="设置默认语言"></a>设置默认语言</h3><p>临时设置：<code>export LANG=&quot;zh_CN.UTF-8&quot;</code><br>永久生效：修改<code>/etc/sysconfig/i18n</code><br>英文是：<strong>en_US.UTF-8</strong></p>
+<h3 id="设置提示忽略大小写"><a href="#设置提示忽略大小写" class="headerlink" title="设置提示忽略大小写"></a>设置提示忽略大小写</h3><p>编辑<code>~/.inputrc</code>（没有的话，就新建一个），在最后加一行:<br><code>set completion-ignore-case on</code></p>
+<h3 id="管道符"><a href="#管道符" class="headerlink" title="管道符"></a>管道符</h3><p><code>;</code>连接多个命令，无逻辑 如果报错也还是会继续执行下个命令<br><code>1&amp;&amp;2</code> 1正确执行才会执行2<br><code>1||2</code> 1如果不正确执行2；如果1正确2不会执行<br><code>1|2</code>  1的执行结果是2的参数</p>
+<h3 id="目录解释"><a href="#目录解释" class="headerlink" title="目录解释"></a>目录解释</h3><blockquote>
+<p>  /  根目录<br>  /bin  命令保存目录（普通用户就可以读取的命令）<br>  /boot  启动目录，启动相关文件<br>  /dev  设备文件保存目录<br>  /etc  配置文件保存目录<br>  /home  普通用户的家目录<br>  /lib  系统库保存目录<br>  /mnt  系统挂载目录<br>  /media  挂载目录<br>  /root  超级用户的家目录<br>  /tmp  临时目录<br>  /sbin  命令保存目录（超级用户才能使用的目录）<br>  /proc  直接写入内存<br>  /sys<br>  /usr  系统软件资源目录<br>  /usr/bin/  系统命令（普通用户<br>  /usr/sbin/ 系统命令（超级用户）<br>  /var  系统相关文档内容</p>
+<p>  配置文件一般都在 etc下用户名</p>
+</blockquote>
+<h3 id="杂项"><a href="#杂项" class="headerlink" title="杂项"></a>杂项</h3><p>shell连接：<code>ssh name@ip</code><br>创建文件：touch<br>创建文件夹：mkdir<br>统计字符：wc [-c 字节 ；-w 单词； -l 行]<br>分屏显示：more<br>查询字符串：grep 可配合管道符<code>|</code>筛选使用[-i：忽略大小写；-w：搜索整个词汇]，如<code>$grep -i hAL /etc/passwd</code><br>不断显示文件的最后几行：<code>tail -f fileName</code> ；比如：<code>tail  -3 temp</code>是查看最后三行<br>查看文件内容：cat<br>查看硬盘信息：df<br>创建一个软连接：<code>ln -s [原文件] [目标文件]</code></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>喜欢就请我吃包辣条吧！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/image/pay/wx.jpg" alt="Kerronex WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/image/pay/zfb.jpg" alt="Kerronex Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Kerronex
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://sakanoy.com/2017/01/11/Linux学习笔记/" title="Linux学习笔记(一)">https://sakanoy.com/2017/01/11/Linux学习笔记/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux/" rel="tag"><i class="fa fa-tag"></i> Linux</a>
+          
+            <a href="/tags/定时任务/" rel="tag"><i class="fa fa-tag"></i> 定时任务</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/01/Python学习笔记-函数式编程/" rel="next" title="Python学习笔记-函数式编程">
+                <i class="fa fa-chevron-left"></i> Python学习笔记-函数式编程
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/01/13/Linux学习笔记-二/" rel="prev" title="Linux学习笔记(二)">
+                Linux学习笔记(二) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        
+          <p class="warninginfo">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+              评论框加载失败，无法访问 Disqus<br><br>
+              你可能需要魔法上网~~
+          </p>
+
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/image/tx.png"
+               alt="Kerronex" />
+          <p class="site-author-name" itemprop="name">Kerronex</p>
+           
+              <p class="site-description motion-element" itemprop="description">程序猿/二刺螈<br/>夜猫族/爱折腾</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">130</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="Mailto:bfchengnuo@gmail.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-envelope-o"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://GitHub.com/bfchengnuo" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://sakanoy.com/MyRecord/#/" target="_blank" title="笔记本">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  笔记本
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.cnblogs.com/bfchengnuo" target="_blank" title="博客园">
+                  
+                    <i class="fa fa-fw fa-paw"></i>
+                  
+                  博客园
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              小伙伴们~
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://heartsky.info" title="HeartSky" target="_blank">HeartSky</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.kiuber.me" title="Kiuber" target="_blank">Kiuber</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/nightcharm" title="夜Charm" target="_blank">夜Charm</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#用户管理"><span class="nav-number">1.</span> <span class="nav-text">用户管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络操作"><span class="nav-number">2.</span> <span class="nav-text">网络操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#包管理"><span class="nav-number">3.</span> <span class="nav-text">包管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#权限管理"><span class="nav-number">4.</span> <span class="nav-text">权限管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ACL权限"><span class="nav-number">4.1.</span> <span class="nav-text">ACL权限</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sudo权限"><span class="nav-number">4.2.</span> <span class="nav-text">sudo权限</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文件特殊权限"><span class="nav-number">4.3.</span> <span class="nav-text">文件特殊权限</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#计划任务crontab"><span class="nav-number">5.</span> <span class="nav-text">计划任务crontab</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定时任务at"><span class="nav-number">6.</span> <span class="nav-text">定时任务at</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#服务管理"><span class="nav-number">7.</span> <span class="nav-text">服务管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一些常用操作"><span class="nav-number">8.</span> <span class="nav-text">一些常用操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#修改计算机名"><span class="nav-number">8.1.</span> <span class="nav-text">修改计算机名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置默认语言"><span class="nav-number">8.2.</span> <span class="nav-text">设置默认语言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置提示忽略大小写"><span class="nav-number">8.3.</span> <span class="nav-text">设置提示忽略大小写</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#管道符"><span class="nav-number">8.4.</span> <span class="nav-text">管道符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#目录解释"><span class="nav-number">8.5.</span> <span class="nav-text">目录解释</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#杂项"><span class="nav-number">8.6.</span> <span class="nav-text">杂项</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+    <div style="height: 370px;background-image: url(/image/bj.png);background-repeat: no-repeat; margin-left: 31%;"></div>
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+<span id="sitetime"></span>
+<span class="my-face">(●'◡'●)ﾉ♥</span>
+<script language=javascript>
+function siteTime(){
+window.setTimeout("siteTime()", 1000);
+var seconds = 1000
+var minutes = seconds * 60
+var hours = minutes * 60
+var days = hours * 24
+var years = days * 365
+
+var today = new Date()
+var todayYear = today.getFullYear()
+var todayMonth = today.getMonth()
+var todayDate = today.getDate()
+var todayHour = today.getHours()
+var todayMinute = today.getMinutes()
+var todaySecond = today.getSeconds()
+
+/* Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳) 
+year - 作为date对象的年份，为4位年份值
+month - 0-11之间的整数，做为date对象的月份
+day - 1-31之间的整数，做为date对象的天数
+hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+minutes - 0-59之间的整数，做为date对象的分钟数
+seconds - 0-59之间的整数，做为date对象的秒数
+microseconds - 0-999之间的整数，做为date对象的毫秒数 */
+var t1 = Date.UTC(2016,3,30,8,0,0)
+var t2 = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond)
+var diff = t2-t1
+
+var diffYears = Math.floor(diff/years)
+var diffDays = Math.floor((diff/days)-diffYears*365)
+var diffDaysAll = Math.floor(diff/days)
+var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours)
+var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes)
+var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds)
+document.getElementById("sitetime").innerHTML=" 本站已萌萌哒运行 "+diffDaysAll+" 天 "+diffHours+" 小时 "+diffMinutes+" 分钟 "+diffSeconds+" 秒 "
+}
+siteTime()
+</script>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共521.4k字</span>
+
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'bfchengnuo';
+      var disqus_identifier = '2017/01/11/Linux学习笔记/';
+
+      var disqus_title = "Linux学习笔记(一)";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":130,"height":170,"hOffset":30,"vOffset":-10},"mobile":{"show":false},"react":{"opacity":0.7},"log":false});</script></body>
+</html>

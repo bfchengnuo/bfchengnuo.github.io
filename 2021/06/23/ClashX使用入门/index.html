@@ -1,0 +1,1238 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Microsoft Yahei:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="工具," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakanoy" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/image/tb.png?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="起因还要从去年还是前年的那次大规模封杀说起，因为种种原因 SS 原作者早已弃坑，SSR 作者也是如此，以现在的防火墙技术识别 SS 的流量特征应该不难，每次都是大规模的『关机保平安』；我买的机场也开始提供 SS + V2ray 的方式，并且建议优先使用 V2ray，我也就顺势切换了，接下来遇到的一个问题就是 SS 客户端不支持，需要找一个替代的，最好多种协议都支持，一轮调研下来，Clash 脱颖而">
+<meta name="keywords" content="工具">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ClashX使用入门">
+<meta property="og:url" content="https://sakanoy.com/2021/06/23/ClashX使用入门/index.html">
+<meta property="og:site_name" content="Sakanoy">
+<meta property="og:description" content="起因还要从去年还是前年的那次大规模封杀说起，因为种种原因 SS 原作者早已弃坑，SSR 作者也是如此，以现在的防火墙技术识别 SS 的流量特征应该不难，每次都是大规模的『关机保平安』；我买的机场也开始提供 SS + V2ray 的方式，并且建议优先使用 V2ray，我也就顺势切换了，接下来遇到的一个问题就是 SS 客户端不支持，需要找一个替代的，最好多种协议都支持，一轮调研下来，Clash 脱颖而">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2024-11-14T17:46:09.401Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ClashX使用入门">
+<meta name="twitter:description" content="起因还要从去年还是前年的那次大规模封杀说起，因为种种原因 SS 原作者早已弃坑，SSR 作者也是如此，以现在的防火墙技术识别 SS 的流量特征应该不难，每次都是大规模的『关机保平安』；我买的机场也开始提供 SS + V2ray 的方式，并且建议优先使用 V2ray，我也就顺势切换了，接下来遇到的一个问题就是 SS 客户端不支持，需要找一个替代的，最好多种协议都支持，一轮调研下来，Clash 脱颖而">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://sakanoy.com/2021/06/23/ClashX使用入门/"/>
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-bounce.css">
+
+  <title> ClashX使用入门 | Sakanoy </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-77463916-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakanoy</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">立于浮华之世,奏响天籁之音.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-mark">
+          <a href="/mark" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-retweet"></i> <br />
+            
+            笔记本
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-book"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-music">
+          <a href="/music" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-music"></i> <br />
+            
+            音乐台
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://sakanoy.com/2021/06/23/ClashX使用入门/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Kerronex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/image/tx.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakanoy">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                ClashX使用入门
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-06-23T21:42:16+00:00">
+                2021-06-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/其他/" itemprop="url" rel="index">
+                    <span itemprop="name">其他</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-eye"></i> 热度
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-wordcount">
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  6,589
+                </span>
+              
+
+              
+
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <div style="display: none;color: #999" class="note warning" id='timeliness'></div>
+        <script language=javascript>
+          var days = (new Date().getTime() - 1624484536000) / 86400000;
+          if(days > 180) {
+            var infoDom = document.getElementById("timeliness");
+            infoDom.innerHTML = "提醒：本文发布于 " + Math.round(days) + " 天前，文中所描述的信息可能已发生改变，请谨慎使用。";
+            infoDom.style.display = "block"
+          }
+        </script>
+        <p>起因还要从去年还是前年的那次大规模封杀说起，因为种种原因 SS 原作者早已弃坑，SSR 作者也是如此，以现在的防火墙技术识别 SS 的流量特征应该不难，每次都是大规模的『关机保平安』；<br>我买的机场也开始提供 SS + V2ray 的方式，并且建议优先使用 V2ray，我也就顺势切换了，接下来遇到的一个问题就是 SS 客户端不支持，需要找一个替代的，最好多种协议都支持，一轮调研下来，Clash 脱颖而出（当时起码是 Star 最高的），于是就开始使用 ClashX。<a id="more"></a></p>
+<p>不像其他的客户端，可以有完整的 GUI 配置，ClashX 比较传统的使用配置文件方式，说起配置文件，V2ray 本身就以复杂的配置著称，不过换来的是高稳定性与强大的功能。<br>起初我只是找了份模版，然后简单加上节点信息，这样跟之前的 SS 没太大区别，用了好长时间。<br>后来，闲得无聊，搜了下配置文件相关的信息，发现可配置的东西是真的多，功能也是真牛逼，我也没完全掌握，以后用到相关的功能再更新吧。</p>
+<h2 id="版本选择"><a href="#版本选择" class="headerlink" title="版本选择"></a>版本选择</h2><p>Clash 有两个版本，普通版和 Pro 版，对应到 Mac 平台就是 ClashX 和 ClashX Pro，倒不是说 Pro 收费，是 Pro 支持更多的功能，如 TUN、代理集、规则集、脚本等，但是不开源，但是还是建议使用 Pro 版本，获得更好的体验（例如通过 TUN 可接管设备的所有 TCP 和 UDP 流量，可以做软路由等等）。</p>
+<h2 id="基本配置"><a href="#基本配置" class="headerlink" title="基本配置"></a>基本配置</h2><p>首先说明，因为我的机场不提供订阅服务，虽然可以进行转换，但我还是更愿意使用传统的手动增加节点方式，订阅相关的规则暂时略过。</p>
+<p>ClashX 主文件 Config.yaml 内容：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#---------------------------------------------------#</span></span><br><span class="line"><span class="comment">## 配置文件需要放置在 $HOME/.config/clash/*.yaml</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## 这份文件是clashX的基础配置文件，请尽量新建配置文件进行修改。</span></span><br><span class="line"><span class="comment">## ！！！只有这份文件的端口设置会随ClashX启动生效</span></span><br><span class="line"><span class="comment">#---------------------------------------------------#</span></span><br><span class="line"></span><br><span class="line"><span class="attr">port:</span> <span class="number">1090</span></span><br><span class="line"><span class="attr">socks-port:</span> <span class="number">1080</span></span><br><span class="line"><span class="attr">allow-lan:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">mode:</span> <span class="string">Rule</span></span><br><span class="line"><span class="attr">log-level:</span> <span class="string">info</span></span><br><span class="line"><span class="attr">external-controller:</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span><span class="string">:9090</span></span><br><span class="line"></span><br><span class="line"><span class="attr">Proxy:</span></span><br><span class="line"></span><br><span class="line"><span class="string">Proxy</span> <span class="attr">Group:</span></span><br><span class="line"></span><br><span class="line"><span class="attr">Rule:</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">DOMAIN-SUFFIX,google.com,DIRECT</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">DOMAIN-KEYWORD,google,DIRECT</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">DOMAIN,google.com,DIRECT</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">DOMAIN-SUFFIX,ad.com,REJECT</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">GEOIP,CN,DIRECT</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">MATCH,DIRECT</span></span><br></pre></td></tr></table></figure>
+<p>这些都是最基本的端口与规则模式信息，一般情况都是会另新建一个配置文件来配置详细的规则和节点。</p>
+<h2 id="DNS"><a href="#DNS" class="headerlink" title="DNS"></a>DNS</h2><p>这部分的功能非常实用，虽然最开始我完全看不懂，也不知道什么意思，在这里的配置也让我踩坑了好几次，首先来看一个示例配置（Pro 版）：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># DNS 服务器配置(可选；若不配置，程序内置的 DNS 服务会被关闭)</span></span><br><span class="line"><span class="attr">dns:</span></span><br><span class="line"><span class="attr">  enable:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">  listen:</span> <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span><span class="string">:53</span></span><br><span class="line"><span class="attr">  ipv6:</span> <span class="literal">true</span> <span class="comment"># 当此选项为 false 时, AAAA 请求将返回空</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># 以下填写的 DNS 服务器将会被用来解析 DNS 服务的域名</span></span><br><span class="line">  <span class="comment"># 仅填写 DNS 服务器的 IP 地址</span></span><br><span class="line"><span class="attr">  default-nameserver:</span></span><br><span class="line"><span class="bullet">    -</span> <span class="number">223.5</span><span class="number">.5</span><span class="number">.5</span></span><br><span class="line"><span class="bullet">    -</span> <span class="number">114.114</span><span class="number">.114</span><span class="number">.114</span></span><br><span class="line"><span class="attr">  enhanced-mode:</span> <span class="string">fake-ip</span> <span class="comment"># 或 redir-host</span></span><br><span class="line"><span class="attr">  fake-ip-range:</span> <span class="number">198.18</span><span class="number">.0</span><span class="number">.1</span><span class="string">/16</span> <span class="comment"># Fake IP 地址池 (CIDR 形式)</span></span><br><span class="line">  <span class="comment"># use-hosts: true # 查询 hosts 并返回 IP 记录</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># 在以下列表的域名将不会被解析为 fake ip，这些域名相关的解析请求将会返回它们真实的 IP 地址</span></span><br><span class="line"><span class="attr">  fake-ip-filter:</span></span><br><span class="line">    <span class="comment"># 以下域名列表参考自 vernesong/OpenClash 项目，并由 Hackl0us 整理补充</span></span><br><span class="line">    <span class="comment"># === LAN ===</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'*.lan'</span></span><br><span class="line">    <span class="comment"># === Linksys Wireless Router ===</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'*.linksys.com'</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'*.linksyssmartwifi.com'</span></span><br><span class="line">    <span class="comment"># === Apple Software Update Service ===</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'swscan.apple.com'</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'mesu.apple.com'</span></span><br><span class="line">    <span class="comment"># === Windows 10 Connnect Detection ===</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'*.msftconnecttest.com'</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'*.msftncsi.com'</span></span><br><span class="line">    <span class="comment"># === NTP Service ===</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'time.*.com'</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'time.*.gov'</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'time.*.edu.cn'</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'time.*.apple.com'</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'time1.*.com'</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'time2.*.com'</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'time3.*.com'</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'time4.*.com'</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'time5.*.com'</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'time6.*.com'</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'time7.*.com'</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'ntp.*.com'</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'ntp.*.com'</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'ntp1.*.com'</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'ntp2.*.com'</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'ntp3.*.com'</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'ntp4.*.com'</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'ntp5.*.com'</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'ntp6.*.com'</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'ntp7.*.com'</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'*.time.edu.cn'</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'*.ntp.org.cn'</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'+.pool.ntp.org'</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'time1.cloud.tencent.com'</span></span><br><span class="line">    <span class="comment"># === Music Service ===</span></span><br><span class="line">    <span class="comment">## NetEase</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'+.music.163.com'</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'*.126.net'</span></span><br><span class="line">    <span class="comment">## Baidu</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'musicapi.taihe.com'</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'music.taihe.com'</span></span><br><span class="line">    <span class="comment">## Kugou</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'songsearch.kugou.com'</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'trackercdn.kugou.com'</span></span><br><span class="line">    <span class="comment">## Kuwo</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'*.kuwo.cn'</span></span><br><span class="line">    <span class="comment">## JOOX</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'api-jooxtt.sanook.com'</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'api.joox.com'</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'joox.com'</span></span><br><span class="line">    <span class="comment">## QQ</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'+.y.qq.com'</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'+.music.tc.qq.com'</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'aqqmusic.tc.qq.com'</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'+.stream.qqmusic.qq.com'</span></span><br><span class="line">    <span class="comment">## Xiami</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'*.xiami.com'</span></span><br><span class="line">    <span class="comment">## Migu</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'+.music.migu.cn'</span></span><br><span class="line">    <span class="comment"># === Game Service ===</span></span><br><span class="line">    <span class="comment">## Nintendo Switch</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'+.srv.nintendo.net'</span></span><br><span class="line">    <span class="comment">## Sony PlayStation</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'+.stun.playstation.net'</span></span><br><span class="line">    <span class="comment">## Microsoft Xbox</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'xbox.*.microsoft.com'</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'+.xboxlive.com'</span></span><br><span class="line">    <span class="comment"># === Other ===</span></span><br><span class="line">    <span class="comment">## QQ Quick Login</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'localhost.ptlogin2.qq.com'</span></span><br><span class="line">    <span class="comment">## Golang</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'proxy.golang.org'</span></span><br><span class="line">    <span class="comment">## STUN Server</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'stun.*.*'</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">'stun.*.*.*'</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># 支持 UDP / TCP / DoT / DoH 协议的 DNS 服务，可以指明具体的连接端口号。</span></span><br><span class="line">  <span class="comment"># 所有 DNS 请求将会直接发送到服务器，不经过任何代理。</span></span><br><span class="line">  <span class="comment"># Clash 会使用最先获得的解析记录回复 DNS 请求</span></span><br><span class="line"><span class="attr">  nameserver:</span></span><br><span class="line"><span class="attr">    - https:</span><span class="string">//doh.pub/dns-query</span></span><br><span class="line"><span class="attr">    - https:</span><span class="string">//dns.alidns.com/dns-query</span></span><br><span class="line">     </span><br><span class="line">  <span class="comment"># 当 fallback 参数被配置时, DNS 请求将同时发送至上方 nameserver 列表和下方 fallback 列表中配置的所有 DNS 服务器.</span></span><br><span class="line">  <span class="comment"># 当解析得到的 IP 地址的地理位置不是 CN 时，clash 将会选用 fallback 中 DNS 服务器的解析结果。</span></span><br><span class="line">  <span class="comment"># fallback:</span></span><br><span class="line">  <span class="comment">#   - https://dns.google/dns-query</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># 如果使用 nameserver 列表中的服务器解析的 IP 地址在下方列表中的子网中，则它们被认为是无效的，</span></span><br><span class="line">  <span class="comment"># Clash 会选用 fallback 列表中配置 DNS 服务器解析得到的结果。</span></span><br><span class="line">  <span class="comment">#</span></span><br><span class="line">  <span class="comment"># 当 fallback-filter.geoip 为 true 且 IP 地址的地理位置为 CN 时，</span></span><br><span class="line">  <span class="comment"># Clash 会选用 nameserver 列表中配置 DNS 服务器解析得到的结果。</span></span><br><span class="line">  <span class="comment">#</span></span><br><span class="line">  <span class="comment"># 当 fallback-filter.geoip 为 false, 如果解析结果不在 fallback-filter.ipcidr 范围内，</span></span><br><span class="line">  <span class="comment"># Clash 总会选用 nameserver 列表中配置 DNS 服务器解析得到的结果。</span></span><br><span class="line">  <span class="comment">#</span></span><br><span class="line">  <span class="comment"># 采取以上逻辑进行域名解析是为了对抗 DNS 投毒攻击。</span></span><br><span class="line"><span class="attr">  fallback-filter:</span></span><br><span class="line"><span class="attr">    geoip:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">    ipcidr:</span></span><br><span class="line"><span class="bullet">      -</span> <span class="number">240.0</span><span class="number">.0</span><span class="number">.0</span><span class="string">/4</span></span><br><span class="line"><span class="bullet">      -</span> <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span><span class="string">/32</span></span><br><span class="line">    <span class="comment"># domain:</span></span><br><span class="line">    <span class="comment">#   - '+.google.com'</span></span><br><span class="line">    <span class="comment">#   - '+.facebook.com'</span></span><br><span class="line">    <span class="comment">#   - '+.youtube.com'</span></span><br><span class="line"></span><br><span class="line"><span class="attr">tun:</span></span><br><span class="line"><span class="attr">  enable:</span> <span class="literal">true</span> <span class="comment">#如果需要启用 TUN 模式，请设置为 true</span></span><br><span class="line"><span class="attr">  stack:</span> <span class="string">system</span> <span class="comment"># 或 gvisor</span></span><br><span class="line"><span class="attr">  macOS-auto-route:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">  macOS-auto-detect-interface:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">  dns-hijack:</span></span><br><span class="line"><span class="attr">    - tcp:</span><span class="string">//8.8.8.8:53</span></span><br><span class="line"><span class="attr">    - tcp:</span><span class="string">//8.8.4.4:53</span></span><br></pre></td></tr></table></figure>
+<p>clash DNS 请求逻辑：</p>
+<ol>
+<li>当访问一个域名时，nameserver 与 fallback 列表内的所有服务器并发请求，得到域名对应的 IP 地址。</li>
+<li>clash 将选取 nameserver 列表内，解析最快的结果。</li>
+<li>若解析结果中，IP 地址属于国外，那么 clash 将选择 fallback 列表内，解析最快的结果。</li>
+</ol>
+<p>因此，在 nameserver 和 fallback 内都放置无污染、解析速度较快的国内 DNS 服务器，以达到最快的解析速度。<br>但是 fallback 列表内服务器会用在解析境外网站，为了结果绝对无污染，尽量使用支持 DoT/DoH 的服务器。</p>
+<p>DNS 配置注意事项：</p>
+<ol>
+<li>如果您为了确保 DNS 解析结果无污染，请仅保留列表内以 tls:// 或 https:// 开头的 DNS 服务器，但是通常对于国内域名没有必要。</li>
+<li>如果您不在乎可能解析到污染的结果，更加追求速度。请将 nameserver 列表的服务器插入至 fallback 列表内，并移除重复项。</li>
+</ol>
+<p>关于 DNS over HTTPS (DoH) 和 DNS over TLS (DoT) 的选择：<br>对于两项技术双方各执一词，而且会无休止的争论，各有利弊。各位请根据具体需求自行选择，但是配置文件内默认启用 DoT，<del>因为目前国内没有封锁或管制</del>。<br><strong>DoH:</strong> 以 https:// 开头的 DNS 服务器。拥有更好的伪装性，且几乎不可能被运营商或网络管理封锁，但查询效率和安全性可能略低。<br><strong>DoT:</strong> 以 tls:// 开头的 DNS 服务器。拥有更高的安全性和查询效率，但端口有可能被管制或封锁。</p>
+<blockquote>
+<p>这里有个坑，或许是我网络的问题，fallback 中的地址我全部连不上，这就导致一个很严重的后果，国外的网站全部无法命中，甚至 AppStore 都挂了。。。<br>后面通过调整日志等级到 DEBUG 才知道是 DNS 解析的问题。<br>除非你所在的地区 DNS 污染特别严重，否则非常不建议使用 fallback，拖慢速度还不稳定，一般情况 fake-Ip 足够了。</p>
+</blockquote>
+<h3 id="fake-ip"><a href="#fake-ip" class="headerlink" title="fake-ip"></a>fake-ip</h3><p>下面补充说明下这个 fake-ip 是什么东西；</p>
+<blockquote>
+<p>虽然 Fake IP 这个概念早在 2001 年就被提出来了，但是到 Clash 提供 fake-ip 增强模式以后，依然有很多人对 Fake IP 这个概念以及其作用知之甚少。</p>
+<p>参考：<a href="https://blog.skk.moe/post/what-happend-to-dns-in-proxy/" target="_blank" rel="noopener">https://blog.skk.moe/post/what-happend-to-dns-in-proxy/</a></p>
+</blockquote>
+<p>当 TCP 连接建立时，Clash DNS 会直接返回一个保留地址的 IP（即 Fake IP；Clash 默认使用 198.18.0.0/16），同时 Clash 继续解析域名规则和 IP 规则。<br>PS：开启增强模式后可以尝试 nslookup 看一下解析情况。</p>
+<p>由于 TCP/IP 的协议特性，在应用发起 TCP 连接时，会先发出一个 DNS question（发一个 IP Packet），获取要连接的服务器的 IP 地址，然后直接向这个 IP 地址发起连接。<br>在不使用代理的情况下，DNS 查询流程想必大家很熟悉了，如果使用了代理，直连模式下以使用 SOCKS5 代理的浏览器为例：</p>
+<ol>
+<li>浏览器不再需要从自己的 DNS 缓存中寻找域名对应的 ip，因为已经有了 SOCKS5 代理，浏览器可以直接将域名封装在 SOCKS5 流量之中发往代理客户端（clash）</li>
+<li>代理客户端从 SOCKS5 流量中抽出域名并设法获得解析结果</li>
+<li>代理客户端将你的 SOCKS5 流量还原成标准的 TCP 请求</li>
+<li>代理客户端将这个 TCP 连接建立起来，TCP 连接可以承载的是 HTTPS</li>
+</ol>
+<p>传统上，大部分浏览器等应用都会调用系统的内置方法去解析域名，这时候如果你想做一些魔法操作，那么就是在系统这一层上，你可以在本地或者其他地方搭建一个黑魔法 DNS 服务器，然后设置系统的 DNS 为它，就可以实现一些黑魔法效果。</p>
+<p>例如，在上面的 2 和 3 之间，可以插入一步：代理客户端使用 <strong>某种协议</strong> 将浏览器发出的 SOCKS5 的流量重组并发给远端服务器；<br>远端服务器使用相同的协议还原，然后拿到域名，进行解析；这样就实现了域名在远端进行解析。<br>这种就是非直连的方式代理，各有优劣，各自体会。</p>
+<hr>
+<p>然后再说说分流；分流是一个麻烦事。一般情况下，你可能会需要使用域名进行分流（不论是白名单还是黑名单）。不过更多情况下你会使用到基于 IP 的规则来进行分流。<br>这里可以通过 GUI 的界面来观察连接，如果 TUN 显示一个域名使用了大量端口占用了大量的 ip 池资源，可以考虑将它放到 fake-ip-filter 中不使用 fake-ip。</p>
+<p>在域名规则下，如果判断是直连，那么代理客户端没必要进行 DNS 解析，交给原本的流程使用系统接口即可。<br>在 ip 规则下，当然需要先解析域名，然后匹配规则，但是由于某种协议可以封装域名，因此最终还是会讲域名发给远端，也就是你本地匹配规则的 ip 与最终代理请求的 ip 可能并不是一个。</p>
+<h3 id="全局流量代理TUN"><a href="#全局流量代理TUN" class="headerlink" title="全局流量代理TUN"></a>全局流量代理TUN</h3><p>全局流量代理可能会出现在路由器上或者 TUN/TAP 型的支持全局代理客户端上。用户不再主动为每个应用程序设置代理。<strong>此时应用程序是不会感知到代理客户端的存在，它们会正常的发起 TCP 连接</strong>，ClashX 的增强模式或者说 TUN 模式，会接管设备的 TCP 协议栈，并且由于 TCP/IP 协议在拿到 DNS 解析结果之前，连接是不能建立的。</p>
+<p>这时候配合上面说的 DNS 解析过程就比较有趣了，前半部分不变，最终会调用系统接口进行解析域名，这时候会向系统配置的 DNS 服务器发起请求；<br>如果我们在系统的网络设置之中有设置上游 DNS 地址，例如代理客户端可能会修改系统设置中的 DNS 到 127.0.0.1 或者别的 IP、也可能保留用户之前的设置，这无所谓，因为… <strong>操作系统发出的 DNS 解析请求会经过代理客户端并最终被截获</strong>；<br>代理客户端可以将这个解析请求原样发出去、或者用自己的黑魔法，总之都会拿到一个解析结果；<br>代理客户端将这个解析结果返回回去，操作系统拿到了这个解析结果并返回给浏览器 浏览器对这个解析结果的 IP 建立一个 TCP 连接并发送出去，<strong>这个 TCP 连接被代理客户端截获</strong>。<br>由于之前代理客户端进行的 DNS 解析请求这一动作，代理客户端可以找到这个只包含目标 IP 的 TCP 连接原来的目标域名；<br>如果是支持 redir 的代理客户端，那么代理客户端就会直接将域名和 TCP 连接中的其它数据封装成 <strong>某种协议</strong> 发给远端服务器；或者封装成 SOCKS5 后交给支持 SOCKS5 的代理客户端。</p>
+<p>和应用程序直接将流量封装成 SOCKS5 大有不同，在类似于透明代理的环境下浏览器和其它应用程序是正常地发起 TCP 连接。因此除非得到一个 DNS 解析结果，否则 TCP 连接不会建立；代理客户端也会需要通过这个 DNS 查询动作，才能找到之后的 TCP 连接的域名。<br>你大概能够发现，浏览器、应用程序直接设置 SOCKS5 代理的话，可以不在代理客户端发起 DNS 解析请求就能将流量发送给远端服务器；<br>而<strong>在透明代理模式下，不论是否需要 IP 规则分流都需要先进行一次 DNS 解析才能建立连接</strong>。 有没有办法能像直接设置 SOCKS5 代理一样省掉一次 DNS 解析呢？<br>有，就是代理客户端自己不先执行查询动作，丢一个 Fake IP 回去让浏览器、应用程序立刻建立 TCP 连接。</p>
+<p>有了 Fake IP，代理客户端无需进行 DNS 解析。最后不论是浏览器、代理客户端还是远端服务器都不会去和 Fake IP 进行连接，因为在代理客户端这里就已经完成了截获、重新封装。<br>即使按照域名规则分流，代理客户端都没有进行 DNS 解析的需要。只有在遇到了按照 IP 进行分流的规则时，代理客户端才需要进行一次解析拿到一个 IP 用于判断。即便如此，这个 IP 只用于分流规则的匹配，不会被用于实际的连接。</p>
+<p>PS：Clash 的增强模式既有 redir-host 也有 Fake IP，目前流行的是 Fake IP 模式。</p>
+<hr>
+<p>这里有个很有意思的问题，如果操作系统或者浏览器缓存了 Fake IP，但是代理客户端中 Fake IP 和域名的映射表丢失以后，会出现什么状况？可能会出现什么错误信息？<br>你应该大概意识到 Clash 在 Fake IP 模式下偶发的无法上网的原因了。</p>
+<p>在使用 Fake-ip 模式后，Application 拿到的是 Clash DNS 返回的 Fake IP，所以也不会出现某些应用程序拒绝连接一些 IP 的情况；和 redir-host 模式一样，在大部分情况下 fake-ip 模式下也可以完全无视 DNS 污染。</p>
+<h2 id="节点"><a href="#节点" class="headerlink" title="节点"></a>节点</h2><p>这部分可参考 SS-Rule，写的很好，或者可以看看官方推荐的<a href="https://lancellc.gitbook.io/clash/clash-config-file/proxies/config-a-vmess-proxy" target="_blank" rel="noopener">文档</a>或者 wiki，我因为没有订阅连接，只能自己手动配置，下面是我用到的几个：<br>需要注意的是，在 <a href="https://github.com/Dreamacro/clash/releases/tag/v1.9.0" target="_blank" rel="noopener">v1.9</a> 版本后，作者调整了配置的格式（改动很小），下面使用的是最新的个数，详情可以看官方的说明。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">proxies:</span></span><br><span class="line">  <span class="comment"># shadowsocks</span></span><br><span class="line">  <span class="comment"># 支持加密方式：</span></span><br><span class="line">  <span class="comment">#   aes-128-gcm aes-192-gcm aes-256-gcm</span></span><br><span class="line">  <span class="comment">#   aes-128-cfb aes-192-cfb aes-256-cfb</span></span><br><span class="line">  <span class="comment">#   aes-128-ctr aes-192-ctr aes-256-ctr</span></span><br><span class="line">  <span class="comment">#   rc4-md5 chacha20 chacha20-ietf xchacha20</span></span><br><span class="line">  <span class="comment">#   chacha20-ietf-poly1305 xchacha20-ietf-poly1305</span></span><br><span class="line"></span><br><span class="line"><span class="attr">  - name:</span> <span class="string">"ss1"</span></span><br><span class="line"><span class="attr">    type:</span> <span class="string">ss</span></span><br><span class="line"><span class="attr">    server:</span> <span class="string">server</span></span><br><span class="line"><span class="attr">    port:</span> <span class="number">443</span></span><br><span class="line"><span class="attr">    cipher:</span> <span class="string">chacha20-ietf-poly1305</span></span><br><span class="line"><span class="attr">    password:</span> <span class="string">"password"</span></span><br><span class="line">    <span class="comment"># udp: true</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># vmess</span></span><br><span class="line">  <span class="comment"># 支持加密方式：auto / aes-128-gcm / chacha20-poly1305 / none</span></span><br><span class="line"><span class="attr">  - name:</span> <span class="string">"vmess"</span></span><br><span class="line"><span class="attr">    type:</span> <span class="string">vmess</span></span><br><span class="line"><span class="attr">    server:</span> <span class="string">server</span></span><br><span class="line"><span class="attr">    port:</span> <span class="number">443</span></span><br><span class="line"><span class="attr">    uuid:</span> <span class="string">uuid</span></span><br><span class="line"><span class="attr">    alterId:</span> <span class="number">32</span></span><br><span class="line"><span class="attr">    cipher:</span> <span class="string">auto</span></span><br><span class="line">    <span class="comment"># udp: true</span></span><br><span class="line">    <span class="comment"># tls: true</span></span><br><span class="line">    <span class="comment"># skip-cert-verify: true</span></span><br><span class="line">    <span class="comment"># servername: example.com # 优先级高于 wss host</span></span><br><span class="line">    <span class="comment"># network: ws</span></span><br><span class="line">    <span class="comment"># ws-opts:</span></span><br><span class="line">    <span class="comment">#   path: /path</span></span><br><span class="line">    <span class="comment">#   headers:</span></span><br><span class="line">    <span class="comment">#     Host: v2ray.com</span></span><br><span class="line">    <span class="comment">#   max-early-data: 2048</span></span><br><span class="line">    <span class="comment">#   early-data-header-name: Sec-WebSocket-Protocol</span></span><br><span class="line">    </span><br><span class="line"><span class="attr">  - name:</span> <span class="string">"vmess-http"</span></span><br><span class="line"><span class="attr">    type:</span> <span class="string">vmess</span></span><br><span class="line"><span class="attr">    server:</span> <span class="string">server</span></span><br><span class="line"><span class="attr">    port:</span> <span class="number">443</span></span><br><span class="line"><span class="attr">    uuid:</span> <span class="string">uuid</span></span><br><span class="line"><span class="attr">    alterId:</span> <span class="number">32</span></span><br><span class="line"><span class="attr">    cipher:</span> <span class="string">auto</span></span><br><span class="line">    <span class="comment"># udp: true</span></span><br><span class="line">    <span class="comment"># network: http</span></span><br><span class="line">    <span class="comment"># http-opts:</span></span><br><span class="line">    <span class="comment">#   # method: "GET"</span></span><br><span class="line">    <span class="comment">#   # path:</span></span><br><span class="line">    <span class="comment">#   #   - '/'</span></span><br><span class="line">    <span class="comment">#   #   - '/video'</span></span><br><span class="line">    <span class="comment">#   # headers:</span></span><br><span class="line">    <span class="comment">#   #   Connection:</span></span><br><span class="line">    <span class="comment">#   #     - keep-alive</span></span><br><span class="line">    </span><br><span class="line"><span class="attr">  - name:</span> <span class="string">vmess-grpc</span></span><br><span class="line"><span class="attr">    server:</span> <span class="string">server</span></span><br><span class="line"><span class="attr">    port:</span> <span class="number">443</span></span><br><span class="line"><span class="attr">    type:</span> <span class="string">vmess</span></span><br><span class="line"><span class="attr">    uuid:</span> <span class="string">uuid</span></span><br><span class="line"><span class="attr">    alterId:</span> <span class="number">32</span></span><br><span class="line"><span class="attr">    cipher:</span> <span class="string">auto</span></span><br><span class="line"><span class="attr">    network:</span> <span class="string">grpc</span></span><br><span class="line"><span class="attr">    tls:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">    servername:</span> <span class="string">example.com</span></span><br><span class="line">    <span class="comment"># skip-cert-verify: true</span></span><br><span class="line"><span class="attr">    grpc-opts:</span></span><br><span class="line"><span class="attr">      grpc-service-name:</span> <span class="string">"example"</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># socks5</span></span><br><span class="line"><span class="attr">  - name:</span> <span class="string">"socks"</span></span><br><span class="line"><span class="attr">    type:</span> <span class="string">socks5</span></span><br><span class="line"><span class="attr">    server:</span> <span class="string">server</span></span><br><span class="line"><span class="attr">    port:</span> <span class="number">443</span></span><br><span class="line">    <span class="comment"># username: username</span></span><br><span class="line">    <span class="comment"># password: password</span></span><br><span class="line">    <span class="comment"># tls: true</span></span><br><span class="line">    <span class="comment"># skip-cert-verify: true</span></span><br><span class="line">    <span class="comment"># udp: true</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># http</span></span><br><span class="line"><span class="attr">  - name:</span> <span class="string">"http"</span></span><br><span class="line"><span class="attr">    type:</span> <span class="string">http</span></span><br><span class="line"><span class="attr">    server:</span> <span class="string">server</span></span><br><span class="line"><span class="attr">    port:</span> <span class="number">443</span></span><br><span class="line">    <span class="comment"># username: username</span></span><br><span class="line">    <span class="comment"># password: password</span></span><br><span class="line">    <span class="comment"># tls: true # https</span></span><br><span class="line">    <span class="comment"># skip-cert-verify: true</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment"># Trojan</span></span><br><span class="line"><span class="attr">  - name:</span> <span class="string">"trojan"</span></span><br><span class="line"><span class="attr">    type:</span> <span class="string">trojan</span></span><br><span class="line"><span class="attr">    server:</span> <span class="string">server</span></span><br><span class="line"><span class="attr">    port:</span> <span class="number">443</span>  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">"trojan"</span></span><br><span class="line"><span class="attr">    type:</span> <span class="string">trojan</span></span><br><span class="line"><span class="attr">    server:</span> <span class="string">server</span></span><br><span class="line"><span class="attr">    port:</span> <span class="number">443</span></span><br><span class="line"><span class="attr">    password:</span> <span class="string">yourpsk</span></span><br><span class="line">    <span class="comment"># udp: true</span></span><br><span class="line">    <span class="comment"># sni: example.com # aka server name</span></span><br><span class="line">    <span class="comment"># alpn:</span></span><br><span class="line">    <span class="comment">#   - h2</span></span><br><span class="line">    <span class="comment">#   - http/1.1</span></span><br><span class="line">    <span class="comment"># skip-cert-verify: true</span></span><br><span class="line">    </span><br><span class="line"><span class="attr">  - name:</span> <span class="string">trojan-grpc</span></span><br><span class="line"><span class="attr">    server:</span> <span class="string">server</span></span><br><span class="line"><span class="attr">    port:</span> <span class="number">443</span></span><br><span class="line"><span class="attr">    type:</span> <span class="string">trojan</span></span><br><span class="line"><span class="attr">    password:</span> <span class="string">"example"</span></span><br><span class="line"><span class="attr">    network:</span> <span class="string">grpc</span></span><br><span class="line"><span class="attr">    sni:</span> <span class="string">example.com</span></span><br><span class="line">    <span class="comment"># skip-cert-verify: true</span></span><br><span class="line"><span class="attr">    udp:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">    grpc-opts:</span></span><br><span class="line"><span class="attr">      grpc-service-name:</span> <span class="string">"example"</span></span><br><span class="line"></span><br><span class="line"><span class="attr">  - name:</span> <span class="string">trojan-ws</span></span><br><span class="line"><span class="attr">    server:</span> <span class="string">server</span></span><br><span class="line"><span class="attr">    port:</span> <span class="number">443</span></span><br><span class="line"><span class="attr">    type:</span> <span class="string">trojan</span></span><br><span class="line"><span class="attr">    password:</span> <span class="string">"example"</span></span><br><span class="line"><span class="attr">    network:</span> <span class="string">ws</span></span><br><span class="line"><span class="attr">    sni:</span> <span class="string">example.com</span></span><br><span class="line">    <span class="comment"># skip-cert-verify: true</span></span><br><span class="line"><span class="attr">    udp:</span> <span class="literal">true</span></span><br><span class="line">    <span class="comment"># ws-opts:</span></span><br><span class="line">      <span class="comment"># path: /path</span></span><br><span class="line">      <span class="comment"># headers:</span></span><br><span class="line">      <span class="comment">#   Host: example.com</span></span><br></pre></td></tr></table></figure>
+<p>我用的是原版 SS，SSR 上面没贴，如果需要支持 UDP，需要手动开启；Trojan 也支持，听说很牛逼，vmess 如果效果还是不理想可以切换试试看，我暂时还没用过。<br>我主力就是 vmess，订阅模式使用 proxy-providers 来定义，体验应该最好，使用的时候通过 use 关键字。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">proxy-groups:</span></span><br><span class="line"><span class="attr">  - name:</span> <span class="string">Proxy</span></span><br><span class="line"><span class="attr">    type:</span> <span class="string">url-test</span></span><br><span class="line"><span class="attr">    use:</span></span><br><span class="line"><span class="bullet">      -</span> <span class="string">provider1</span></span><br><span class="line"></span><br><span class="line"><span class="attr">proxy-providers:</span></span><br><span class="line"><span class="attr">  provider1:</span></span><br><span class="line"><span class="attr">    type:</span> <span class="string">http</span></span><br><span class="line">    <span class="comment"># 使用 url 在线订阅</span></span><br><span class="line"><span class="attr">    url:</span> <span class="string">"url"</span></span><br><span class="line"><span class="attr">    interval:</span> <span class="number">3600</span></span><br><span class="line"><span class="attr">    path:</span> <span class="string">./conf/provider1.yaml</span></span><br><span class="line"><span class="attr">    health-check:</span></span><br><span class="line"><span class="attr">      enable:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">      interval:</span> <span class="number">600</span></span><br><span class="line"><span class="attr">      url:</span> <span class="attr">http://cp.cloudflare.com/generate_204</span></span><br><span class="line"><span class="attr">  test:</span></span><br><span class="line"><span class="attr">    type:</span> <span class="string">file</span></span><br><span class="line">    <span class="comment"># 从文件中读取</span></span><br><span class="line"><span class="attr">    path:</span> <span class="string">/test.yaml</span></span><br><span class="line">    <span class="comment"># 可以使用正则来过滤节点</span></span><br><span class="line"><span class="attr">    filter:</span> <span class="string">'(香港|台湾|美国).*'</span></span><br><span class="line"><span class="attr">    health-check:</span></span><br><span class="line"><span class="attr">      enable:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">      interval:</span> <span class="number">36000</span></span><br><span class="line"><span class="attr">      url:</span> <span class="attr">http://www.gstatic.com/generate_204</span></span><br></pre></td></tr></table></figure>
+<p>使用 proxy-providers 省去了我们自己维护 proxy 节点，直接从在线或者本地文件读取 proxy 节点信息，其他规则还是我们自己定义，顺便提一嘴，如果你没机场只是偶尔临时用，可以看看 <a href="https://github.com/zu1k/proxypool" target="_blank" rel="noopener">proxypool</a> 这个项目，从互联网爬取免费的节点，还有好心人提供了 proxy-providers 的在线地址，可以临时顶一顶，不过毕竟免费风险还是有的，这个自己取舍。</p>
+<p>订阅模式需要注意的是拉取的不一定只有节点，包括代理组、规则集可能都有，这样就可能面临一个问题，如果你使用远程订阅，你自定义的一些规则等配置在下一次更新订阅后可能会丢失，使用 proxy-providers 是一个很不错的解决方案，我目前就是使用的这种方式来订阅多个机场，并且统一使用我自定义的配置，或者也可以尝试使用 Parser 规则解决。<br>如果你的机场不提供 clash 订阅连接，可以使用在线服务进行转换，这个一搜一大堆不多说。</p>
+<h2 id="代理组"><a href="#代理组" class="headerlink" title="代理组"></a>代理组</h2><p>这部分也很重要，配合上门的节点分组，避免一个节点挂掉还得手动换，选择最佳的节点连接。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">proxy-groups:</span></span><br><span class="line">  <span class="comment"># 代理的转发链, 在 proxies 中不应该包含 relay. 不支持 UDP.</span></span><br><span class="line">  <span class="comment"># 流量: clash &lt;-&gt; http &lt;-&gt; vmess &lt;-&gt; ss1 &lt;-&gt; ss2 &lt;-&gt; 互联网</span></span><br><span class="line"><span class="attr">  - name:</span> <span class="string">"relay"</span></span><br><span class="line"><span class="attr">    type:</span> <span class="string">relay</span></span><br><span class="line"><span class="attr">    proxies:</span></span><br><span class="line"><span class="bullet">      -</span> <span class="string">http</span></span><br><span class="line"><span class="bullet">      -</span> <span class="string">vmess</span></span><br><span class="line"><span class="bullet">      -</span> <span class="string">ss1</span></span><br><span class="line"><span class="bullet">      -</span> <span class="string">ss2</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># url-test 可以自动选择与指定 URL 测速后，延迟最短的服务器</span></span><br><span class="line"><span class="attr">  - name:</span> <span class="string">"auto"</span></span><br><span class="line"><span class="attr">    type:</span> <span class="string">url-test</span></span><br><span class="line"><span class="attr">    proxies:</span></span><br><span class="line"><span class="bullet">      -</span> <span class="string">ss1</span></span><br><span class="line"><span class="attr">    url:</span> <span class="string">'http://www.gstatic.com/generate_204'</span></span><br><span class="line"><span class="attr">    interval:</span> <span class="number">300</span></span><br><span class="line">    </span><br><span class="line"><span class="attr">  - name:</span> <span class="string">"auto"</span></span><br><span class="line"><span class="attr">    type:</span> <span class="string">url-test</span></span><br><span class="line">    <span class="comment"># 使用订阅节点</span></span><br><span class="line"><span class="attr">    use:</span></span><br><span class="line"><span class="bullet">      -</span> <span class="string">provider1</span></span><br><span class="line"><span class="attr">    tolerance:</span> <span class="number">300</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># fallback 可以尽量按照用户书写的服务器顺序，在确保服务器可用的情况下，自动选择服务器</span></span><br><span class="line"><span class="attr">  - name:</span> <span class="string">"fallback-auto"</span></span><br><span class="line"><span class="attr">    type:</span> <span class="string">fallback</span></span><br><span class="line"><span class="attr">    proxies:</span></span><br><span class="line"><span class="bullet">      -</span> <span class="string">ss1</span></span><br><span class="line"><span class="attr">    url:</span> <span class="string">'http://cp.cloudflare.com/generate_204'</span></span><br><span class="line"><span class="attr">    interval:</span> <span class="number">300</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># load-balance 可以使相同 eTLD 请求在同一条代理线路上</span></span><br><span class="line"><span class="attr">  - name:</span> <span class="string">"load-balance"</span></span><br><span class="line"><span class="attr">    type:</span> <span class="string">load-balance</span></span><br><span class="line"><span class="attr">    proxies:</span></span><br><span class="line"><span class="bullet">      -</span> <span class="string">vmess1</span></span><br><span class="line"><span class="attr">    url:</span> <span class="string">'http://www.youtube.com/generate_204'</span></span><br><span class="line"><span class="attr">    interval:</span> <span class="number">300</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># select 用来允许用户手动选择 代理服务器 或 服务器组</span></span><br><span class="line">  <span class="comment"># 您也可以使用 RESTful API 去切换服务器，这种方式推荐在 GUI 中使用</span></span><br><span class="line"><span class="attr">  - name:</span> <span class="string">Proxy</span></span><br><span class="line"><span class="attr">    type:</span> <span class="string">select</span></span><br><span class="line"><span class="attr">    proxies:</span></span><br><span class="line"><span class="bullet">      -</span> <span class="string">ss1</span></span><br><span class="line"><span class="bullet">      -</span> <span class="string">ss2</span></span><br><span class="line"><span class="bullet">      -</span> <span class="string">vmess1</span></span><br><span class="line"><span class="bullet">      -</span> <span class="string">auto</span></span><br></pre></td></tr></table></figure>
+<p>这里注意 Proxy 这个关键组，GUI 默认使用这个（其实是后面的规则配的是这个），它的类型是 select 可以允许我们在 GUI 中手动选择一个节点或者组，默认我使用 auto，也就是 url-test 模式的。<br>如果你在配置文件中设置了 tolerance，Clash 将会计算所有代理服务器的延迟时间，然后以最快的代理服务器的延迟时间为基准，根据 tolerance 的值来筛选其他的代理服务器。只有当一个代理服务器的延迟时间小于基准延迟时间加上 tolerance 时，它才会被选择作为请求的代理服务器，换句话说就是只要在这个范围就不会自动切换，以避免频繁切换带来的体验差。</p>
+<h2 id="规则集"><a href="#规则集" class="headerlink" title="规则集"></a>规则集</h2><p>这个功能只有 Pro 版本才支持，普通版只有规则；简单说就是一组规则的集合，只不过可以在线获取，定时更新，也就是可以直接用别人写好的分流规则，非常爽啊：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">rule-providers:</span></span><br><span class="line"><span class="attr">  apple-direct:</span></span><br><span class="line"><span class="attr">    type:</span> <span class="string">http</span></span><br><span class="line"><span class="attr">    behavior:</span> <span class="string">classical</span></span><br><span class="line"><span class="attr">    url:</span> <span class="string">"https://cdn.jsdelivr.net/gh/Hackl0us/SS-Rule-Snippet@master/Rulesets/Clash/Basic/Apple-direct.yaml"</span></span><br><span class="line"><span class="attr">    path:</span> <span class="string">./ruleset/Apple-direct.yaml</span></span><br><span class="line"><span class="attr">    interval:</span> <span class="number">3600</span></span><br><span class="line"></span><br><span class="line"><span class="attr">  icloud:</span></span><br><span class="line"><span class="attr">    type:</span> <span class="string">http</span></span><br><span class="line"><span class="attr">    behavior:</span> <span class="string">domain</span></span><br><span class="line"><span class="attr">    url:</span> <span class="string">"https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/icloud.txt"</span></span><br><span class="line"><span class="attr">    path:</span> <span class="string">./ruleset/icloud.yaml</span></span><br><span class="line"><span class="attr">    interval:</span> <span class="number">86400</span></span><br><span class="line"></span><br><span class="line"><span class="attr">  apple:</span></span><br><span class="line"><span class="attr">    type:</span> <span class="string">http</span></span><br><span class="line"><span class="attr">    behavior:</span> <span class="string">domain</span></span><br><span class="line"><span class="attr">    url:</span> <span class="string">"https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/apple.txt"</span></span><br><span class="line"><span class="attr">    path:</span> <span class="string">./ruleset/apple.yaml</span></span><br><span class="line"><span class="attr">    interval:</span> <span class="number">86400</span></span><br><span class="line"></span><br><span class="line"><span class="attr">  private:</span></span><br><span class="line"><span class="attr">    type:</span> <span class="string">http</span></span><br><span class="line"><span class="attr">    behavior:</span> <span class="string">domain</span></span><br><span class="line"><span class="attr">    url:</span> <span class="string">"https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/private.txt"</span></span><br><span class="line"><span class="attr">    path:</span> <span class="string">./ruleset/private.yaml</span></span><br><span class="line"><span class="attr">    interval:</span> <span class="number">86400</span></span><br><span class="line"></span><br><span class="line"><span class="attr">  cn:</span></span><br><span class="line"><span class="attr">    type:</span> <span class="string">http</span></span><br><span class="line"><span class="attr">    behavior:</span> <span class="string">classical</span></span><br><span class="line"><span class="attr">    url:</span> <span class="string">"https://cdn.jsdelivr.net/gh/Hackl0us/SS-Rule-Snippet@master/Rulesets/Clash/Basic/CN.yaml"</span></span><br><span class="line"><span class="attr">    path:</span> <span class="string">./ruleset/CN.yaml</span></span><br><span class="line"><span class="attr">    interval:</span> <span class="number">3600</span></span><br><span class="line"></span><br><span class="line"><span class="attr">  ad-keyword:</span></span><br><span class="line"><span class="attr">    type:</span> <span class="string">http</span></span><br><span class="line"><span class="attr">    behavior:</span> <span class="string">classical</span></span><br><span class="line"><span class="attr">    url:</span> <span class="string">"https://cdn.jsdelivr.net/gh/Hackl0us/SS-Rule-Snippet@master/Rulesets/Clash/Basic/common-ad-keyword.yaml"</span></span><br><span class="line"><span class="attr">    path:</span> <span class="string">./ruleset/common-ad-keyword.yaml</span></span><br><span class="line"><span class="attr">    interval:</span> <span class="number">3600</span></span><br><span class="line"></span><br><span class="line"><span class="attr">  foreign:</span></span><br><span class="line"><span class="attr">    type:</span> <span class="string">http</span></span><br><span class="line"><span class="attr">    behavior:</span> <span class="string">classical</span></span><br><span class="line"><span class="attr">    url:</span> <span class="string">"https://cdn.jsdelivr.net/gh/Hackl0us/SS-Rule-Snippet@master/Rulesets/Clash/Basic/foreign.yaml"</span></span><br><span class="line"><span class="attr">    path:</span> <span class="string">./ruleset/foreign.yaml</span></span><br><span class="line"><span class="attr">    interval:</span> <span class="number">3600</span></span><br><span class="line"></span><br><span class="line"><span class="attr">  telegram:</span></span><br><span class="line"><span class="attr">    type:</span> <span class="string">http</span></span><br><span class="line"><span class="attr">    behavior:</span> <span class="string">classical</span></span><br><span class="line"><span class="attr">    url:</span> <span class="string">"https://cdn.jsdelivr.net/gh/Hackl0us/SS-Rule-Snippet@master/Rulesets/Clash/App/social/Telegram.yaml"</span></span><br><span class="line"><span class="attr">    path:</span> <span class="string">./ruleset/Telegram.yaml</span></span><br><span class="line"><span class="attr">    interval:</span> <span class="number">3600</span></span><br><span class="line"></span><br><span class="line"><span class="attr">  lan:</span></span><br><span class="line"><span class="attr">    type:</span> <span class="string">http</span></span><br><span class="line"><span class="attr">    behavior:</span> <span class="string">classical</span></span><br><span class="line"><span class="attr">    url:</span> <span class="string">"https://cdn.jsdelivr.net/gh/Hackl0us/SS-Rule-Snippet@master/Rulesets/Clash/Basic/LAN.yaml"</span></span><br><span class="line"><span class="attr">    path:</span> <span class="string">./ruleset/LAN.yaml</span></span><br><span class="line"><span class="attr">    interval:</span> <span class="number">3600</span></span><br><span class="line"></span><br><span class="line"><span class="attr">  microsoft:</span> <span class="string">&#123;type:</span> <span class="string">http,</span> <span class="attr">behavior:</span> <span class="string">classical,</span> <span class="attr">path:</span> <span class="string">./Filter/Microsoft,</span> <span class="attr">url:</span> <span class="attr">https://cdn.jsdelivr.net/gh/Semporia/Clash-X@master/Filter/Microsoft.yaml,</span> <span class="attr">interval:</span> <span class="number">3600</span><span class="string">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>然后配置下最终规则，整个配置就算完成了：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">rules:</span></span><br><span class="line"><span class="bullet">  -</span> <span class="string">RULE-SET,private,DIRECT</span></span><br><span class="line"><span class="bullet">  -</span> <span class="string">RULE-SET,icloud,DIRECT</span></span><br><span class="line"><span class="bullet">  -</span> <span class="string">RULE-SET,apple,DIRECT</span></span><br><span class="line"><span class="bullet">  -</span> <span class="string">RULE-SET,microsoft,DIRECT</span></span><br><span class="line"><span class="bullet">  -</span> <span class="string">DOMAIN,clash.razord.top,DIRECT</span></span><br><span class="line"><span class="bullet">  -</span> <span class="string">DOMAIN,yacd.haishan.me,DIRECT</span></span><br><span class="line"><span class="bullet">  -</span> <span class="string">RULE-SET,apple-proxy,Proxy</span></span><br><span class="line"><span class="bullet">  -</span> <span class="string">RULE-SET,apple-direct,DIRECT</span></span><br><span class="line"><span class="bullet">  -</span> <span class="string">RULE-SET,cn,DIRECT</span></span><br><span class="line"><span class="bullet">  -</span> <span class="string">RULE-SET,ad-keyword,REJECT</span></span><br><span class="line"><span class="bullet">  -</span> <span class="string">RULE-SET,foreign,Proxy</span></span><br><span class="line"><span class="bullet">  -</span> <span class="string">RULE-SET,telegram,Proxy</span></span><br><span class="line"><span class="bullet">  -</span> <span class="string">RULE-SET,lan,DIRECT</span></span><br><span class="line"><span class="bullet">  -</span> <span class="string">GEOIP,CN,DIRECT</span></span><br><span class="line"><span class="bullet">  -</span> <span class="string">MATCH,Proxy</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># - RULE-SET,apple,DIRECT,no-resolve</span></span><br></pre></td></tr></table></figure>
+<p>这里说下 Clash 支持的几种规则；</p>
+<ul>
+<li>DOMAIN-SUFFIX：域名后缀匹配</li>
+<li>DOMAIN：域名匹配</li>
+<li>DOMAIN-KEYWORD：域名关键字匹配</li>
+<li>IP-CIDR：IP段匹配</li>
+<li>SRC-IP-CIDR：源IP段匹配</li>
+<li>GEOIP：GEOIP 数据库（国家代码）匹配</li>
+<li>DST-PORT：目标端口匹配</li>
+<li>SRC-PORT：源端口匹配</li>
+<li>PROCESS-NAME：源进程名匹配</li>
+<li>RULE-SET：Rule Provider 规则匹配</li>
+<li>MATCH：全匹配</li>
+</ul>
+<p>写法上面已经有示例了，特别的情况，如果你不想让 Clash 进行 DNS 解析，可以在后面加上 no-resolve。<br>自带的两种规则是 REJECT 和 DIRECT，很好理解，广告相关的一般直接使用 REJECT，不需要代理的就使用 DIRECT，剩下的就需要指定我们配的代理组，例如本例的 Proxy。<br><code>MATCH</code>需要位于规则列表末尾，除了那些漏网之鱼。</p>
+<h2 id="脚本"><a href="#脚本" class="headerlink" title="脚本"></a>脚本</h2><p>同样，这也是 Pro 的专有功能，除了全局、直连、规则，还增加了一个更灵活的脚本模式，来应对日益增多的 Rule 规则。但是目前用的人很少，我也没这个需求，暂不关注。<br>如果有更个性化的节点处理需求，可以尝试使用 parsers。</p>
+<h2 id="派生"><a href="#派生" class="headerlink" title="派生"></a>派生</h2><p>如果 Clash 不能满足你的需求，可以尝试 <a href="https://github.com/MetaCubeX/Clash.Meta" target="_blank" rel="noopener">Clash.Meta</a> 版本，对应的 GUI 推荐 <a href="https://github.com/zzzgydi/clash-verge" target="_blank" rel="noopener">clash-verge</a>，可能会满足你的需求。</p>
+<h2 id="参考规则"><a href="#参考规则" class="headerlink" title="参考规则"></a>参考规则</h2><p>这里推荐几个开箱即用的规则：</p>
+<p><a href="https://github.com/DivineEngine/Profiles" target="_blank" rel="noopener">Profiles</a><br><a href="https://github.com/Loyalsoldier/clash-rules" target="_blank" rel="noopener">clash-rules</a><br><a href="https://github.com/Hackl0us/SS-Rule-Snippet" target="_blank" rel="noopener">SS-Rule-Snippet</a><br><a href="https://github.com/Hackl0us/GeoIP2-CN" target="_blank" rel="noopener">GeoIP2-CN</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>喜欢就请我吃包辣条吧！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/image/pay/wx.jpg" alt="Kerronex WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/image/pay/zfb.jpg" alt="Kerronex Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Kerronex
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://sakanoy.com/2021/06/23/ClashX使用入门/" title="ClashX使用入门">https://sakanoy.com/2021/06/23/ClashX使用入门/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/工具/" rel="tag"><i class="fa fa-tag"></i> 工具</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/07/03/Java核心编程知识索引/" rel="next" title="Java核心编程知识索引">
+                <i class="fa fa-chevron-left"></i> Java核心编程知识索引
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2023/05/28/Kubernetes入门/" rel="prev" title="探索Kubernetes容器编排">
+                探索Kubernetes容器编排 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        
+          <p class="warninginfo">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+              评论框加载失败，无法访问 Disqus<br><br>
+              你可能需要魔法上网~~
+          </p>
+
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/image/tx.png"
+               alt="Kerronex" />
+          <p class="site-author-name" itemprop="name">Kerronex</p>
+           
+              <p class="site-description motion-element" itemprop="description">程序猿/二刺螈<br/>夜猫族/爱折腾</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">130</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="Mailto:bfchengnuo@gmail.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-envelope-o"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://GitHub.com/bfchengnuo" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://sakanoy.com/MyRecord/#/" target="_blank" title="笔记本">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  笔记本
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.cnblogs.com/bfchengnuo" target="_blank" title="博客园">
+                  
+                    <i class="fa fa-fw fa-paw"></i>
+                  
+                  博客园
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              小伙伴们~
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://heartsky.info" title="HeartSky" target="_blank">HeartSky</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.kiuber.me" title="Kiuber" target="_blank">Kiuber</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/nightcharm" title="夜Charm" target="_blank">夜Charm</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#版本选择"><span class="nav-number">1.</span> <span class="nav-text">版本选择</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本配置"><span class="nav-number">2.</span> <span class="nav-text">基本配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DNS"><span class="nav-number">3.</span> <span class="nav-text">DNS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#fake-ip"><span class="nav-number">3.1.</span> <span class="nav-text">fake-ip</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#全局流量代理TUN"><span class="nav-number">3.2.</span> <span class="nav-text">全局流量代理TUN</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#节点"><span class="nav-number">4.</span> <span class="nav-text">节点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代理组"><span class="nav-number">5.</span> <span class="nav-text">代理组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#规则集"><span class="nav-number">6.</span> <span class="nav-text">规则集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#脚本"><span class="nav-number">7.</span> <span class="nav-text">脚本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#派生"><span class="nav-number">8.</span> <span class="nav-text">派生</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考规则"><span class="nav-number">9.</span> <span class="nav-text">参考规则</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+    <div style="height: 370px;background-image: url(/image/bj.png);background-repeat: no-repeat; margin-left: 31%;"></div>
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+<span id="sitetime"></span>
+<span class="my-face">(●'◡'●)ﾉ♥</span>
+<script language=javascript>
+function siteTime(){
+window.setTimeout("siteTime()", 1000);
+var seconds = 1000
+var minutes = seconds * 60
+var hours = minutes * 60
+var days = hours * 24
+var years = days * 365
+
+var today = new Date()
+var todayYear = today.getFullYear()
+var todayMonth = today.getMonth()
+var todayDate = today.getDate()
+var todayHour = today.getHours()
+var todayMinute = today.getMinutes()
+var todaySecond = today.getSeconds()
+
+/* Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳) 
+year - 作为date对象的年份，为4位年份值
+month - 0-11之间的整数，做为date对象的月份
+day - 1-31之间的整数，做为date对象的天数
+hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+minutes - 0-59之间的整数，做为date对象的分钟数
+seconds - 0-59之间的整数，做为date对象的秒数
+microseconds - 0-999之间的整数，做为date对象的毫秒数 */
+var t1 = Date.UTC(2016,3,30,8,0,0)
+var t2 = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond)
+var diff = t2-t1
+
+var diffYears = Math.floor(diff/years)
+var diffDays = Math.floor((diff/days)-diffYears*365)
+var diffDaysAll = Math.floor(diff/days)
+var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours)
+var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes)
+var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds)
+document.getElementById("sitetime").innerHTML=" 本站已萌萌哒运行 "+diffDaysAll+" 天 "+diffHours+" 小时 "+diffMinutes+" 分钟 "+diffSeconds+" 秒 "
+}
+siteTime()
+</script>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共521.4k字</span>
+
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'bfchengnuo';
+      var disqus_identifier = '2021/06/23/ClashX使用入门/';
+
+      var disqus_title = "ClashX使用入门";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":130,"height":170,"hOffset":30,"vOffset":-10},"mobile":{"show":false},"react":{"opacity":0.7},"log":false});</script></body>
+</html>

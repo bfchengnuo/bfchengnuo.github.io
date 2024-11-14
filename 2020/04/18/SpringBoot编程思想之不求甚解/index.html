@@ -1,0 +1,1341 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Microsoft Yahei:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Java,Spring,SpringBoot," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakanoy" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/image/tb.png?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="在 Java 领域，SpringBoot 是目前最流行的微服务框架，将使用门槛大幅度的降低，达到开箱即用；那么这也必然使 SB 成为了一个黑盒，如果需要深度定制或者了解内部原理变得有点复杂，希望通过阅读本系列书籍来解开这个黑盒。最重要的部分就是 SB 的主要特性部分，自动装配和自动配置方面的理解；从 SB2.x 开始架构逐步稳定，现在可以尝试大规模使用了。微服务架构作为一种细粒度的 SOA，无论那">
+<meta name="keywords" content="Java,Spring,SpringBoot">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot编程思想之不求甚解">
+<meta property="og:url" content="https://sakanoy.com/2020/04/18/SpringBoot编程思想之不求甚解/index.html">
+<meta property="og:site_name" content="Sakanoy">
+<meta property="og:description" content="在 Java 领域，SpringBoot 是目前最流行的微服务框架，将使用门槛大幅度的降低，达到开箱即用；那么这也必然使 SB 成为了一个黑盒，如果需要深度定制或者了解内部原理变得有点复杂，希望通过阅读本系列书籍来解开这个黑盒。最重要的部分就是 SB 的主要特性部分，自动装配和自动配置方面的理解；从 SB2.x 开始架构逐步稳定，现在可以尝试大规模使用了。微服务架构作为一种细粒度的 SOA，无论那">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2024-11-14T17:46:09.409Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SpringBoot编程思想之不求甚解">
+<meta name="twitter:description" content="在 Java 领域，SpringBoot 是目前最流行的微服务框架，将使用门槛大幅度的降低，达到开箱即用；那么这也必然使 SB 成为了一个黑盒，如果需要深度定制或者了解内部原理变得有点复杂，希望通过阅读本系列书籍来解开这个黑盒。最重要的部分就是 SB 的主要特性部分，自动装配和自动配置方面的理解；从 SB2.x 开始架构逐步稳定，现在可以尝试大规模使用了。微服务架构作为一种细粒度的 SOA，无论那">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://sakanoy.com/2020/04/18/SpringBoot编程思想之不求甚解/"/>
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-bounce.css">
+
+  <title> SpringBoot编程思想之不求甚解 | Sakanoy </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-77463916-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakanoy</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">立于浮华之世,奏响天籁之音.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-mark">
+          <a href="/mark" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-retweet"></i> <br />
+            
+            笔记本
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-book"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-music">
+          <a href="/music" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-music"></i> <br />
+            
+            音乐台
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://sakanoy.com/2020/04/18/SpringBoot编程思想之不求甚解/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Kerronex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/image/tx.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakanoy">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                SpringBoot编程思想之不求甚解
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-18T13:40:50+00:00">
+                2020-04-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-eye"></i> 热度
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-wordcount">
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  10,530
+                </span>
+              
+
+              
+
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <div style="display: none;color: #999" class="note warning" id='timeliness'></div>
+        <script language=javascript>
+          var days = (new Date().getTime() - 1587217250000) / 86400000;
+          if(days > 180) {
+            var infoDom = document.getElementById("timeliness");
+            infoDom.innerHTML = "提醒：本文发布于 " + Math.round(days) + " 天前，文中所描述的信息可能已发生改变，请谨慎使用。";
+            infoDom.style.display = "block"
+          }
+        </script>
+        <p>在 Java 领域，SpringBoot 是目前最流行的微服务框架，将使用门槛大幅度的降低，达到开箱即用；那么这也必然使 SB 成为了一个黑盒，如果需要深度定制或者了解内部原理变得有点复杂，希望通过阅读本系列书籍来解开这个黑盒。<br>最重要的部分就是 SB 的主要特性部分，自动装配和自动配置方面的理解；从 SB2.x 开始架构逐步稳定，现在可以尝试大规模使用了。<br>微服务架构作为一种细粒度的 SOA，无论那种表达方式，只不过是名词之争，架构设计的好坏不在于理论和技术，而在于实施者对业务的理解和专业水平。<a id="more"></a><br>想了一下，直接写到这一篇里了，不再分篇，超长文预警。</p>
+<h2 id="初探SpringBoot"><a href="#初探SpringBoot" class="headerlink" title="初探SpringBoot"></a>初探SpringBoot</h2><p>对于简单的使用没什么可说的，SB 是出了名的简单，这是对于使用来说，也有句话越简单的东西越复杂，关于基本的使用参考官方文档和 API 文档基本就可以了，我之前也写过两篇使用内容为主的：<a href="https://bfchengnuo.com/2017/10/15/SpringBoot%E5%88%9D%E5%B0%9D%E8%AF%95/" target="_blank" rel="noopener">SpringBoot初尝试</a>、<a href="https://bfchengnuo.com/2018/08/26/SpringBoot%E8%BF%9B%E9%98%B6/" target="_blank" rel="noopener">SpringBoot进阶</a><br>上面的两篇可能与本篇有重叠，但是总应该是互补的，侧重点不同。还可以参考我的一篇笔记<a href="https://github.com/bfchengnuo/MyRecord/blob/master/%E7%AC%94%E8%AE%B0/Java/Spring%E5%AE%B6%E6%97%8F/SB_depth.md" target="_blank" rel="noopener">深入SB</a><br>还有一篇未完成的 <a href="https://github.com/bfchengnuo/MyRecord/blob/master/%E7%AC%94%E8%AE%B0/TODO/Spring%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B%E6%A6%82%E8%BF%B0.md" target="_blank" rel="noopener">Spring核心编程概述</a> 待填坑。</p>
+<h3 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h3><p><a href="https://spring.io/projects/spring-boot" target="_blank" rel="noopener">官方</a>列举了六大特性：</p>
+<ol>
+<li>创建独立的 Spring 应用</li>
+<li>嵌入 Tomcat, Jetty 或者 Undertow 等 Web 容器（不需要部署 War 文件）</li>
+<li>提供固化的 starter 依赖，简化构建配置</li>
+<li>当条件满足时，自动装配 Spring 或者第三方类库</li>
+<li>提供运维特性，例如指标信息、健康检查、外部化配置</li>
+<li>绝无代码生成，不需要 XML 配置</li>
+</ol>
+<h3 id="独立的Spring应用"><a href="#独立的Spring应用" class="headerlink" title="独立的Spring应用"></a>独立的Spring应用</h3><p>SpringBoot 除了构建我们熟悉的 Web 应用，在非 Web 应用上也是非常好用的，例如服务提供、调度任务、消息处理等场景。<br>并且，在 Web 应用方面，除了传统的 Servlet 容器，2.x 版本实现了 Reactive Web 容器，也就是 Spring5.x 的 WebFlux。</p>
+<p>按照一般的思路用 SB 构建的应用我们应该叫 SB 应用，然而实际上是 Spring 应用，因为在 SB 的构建过程中，主要的驱动核心是靠 SpringApplication 完成的，所以可以称为 Spring 应用。</p>
+<blockquote>
+<p>Spring Web 时代是利用 ServletContext 生命周期构建 Web Root Spring 应用上下文（ContextLoaderListener）；<br>结合 Servlet 生命周期构建 DispatcherServlet 的 Spring 应用上下文。</p>
+</blockquote>
+<p>所以，在 Spring Web 时代都是被动的回调执行，没有完整的应用主导权，这在使用了嵌入式容器后才改善。</p>
+<h3 id="可执行JAR"><a href="#可执行JAR" class="headerlink" title="可执行JAR"></a>可执行JAR</h3><p>用 SB 构建的应用我们可以非常方便的使用 <code>java -jar</code> 来运行，但是默认的 Maven 打包出来是不支持的，这是因为使用了一个 Maven 插件：spring-boot-maven-plugin，并且一般情况不需要指定版本，因为父工程已经配置好了。<br>可执行 JAR 又被称为 fat jars。<br>PS：开发环境使用 <code>mvn spring-boot:run</code> 命令运行也是同样效果。</p>
+<p>我们知道 jar 文件其实就是一个 zip 包，解压可执行 jar 文件会得到一些目录和文件：</p>
+<ul>
+<li>BOOT-INF/classes<br>存放应用编译后的 class 文件</li>
+<li>BOOT-INF/lib<br>存放依赖的 jar 包</li>
+<li>META-INF/<br>存放相关元信息，例如 MANIFEST.MF</li>
+<li>org/<br>存放 SB 相关 Class 文件</li>
+</ul>
+<p>接下来就是分析为什么这个 jar 可以直接运行了，依赖于 spring-boot-loader；<br>根据 Java 规范，如果使用 -jar 运行，引导配置必须放在 MANIFEST.MF 文件中，它必须在 META-INF 目录下；所以你查看这个文件基本就能了解了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Main-Class: org.springframework.boot.loader.JarLauncher  # Main 函数</span><br><span class="line">Start-Class: com.example.demo.DemoApplication  # 启动类</span><br><span class="line">Spring-Boot-Classes: BOOT-INF/classes/         # 编译之后的 class 文件目录</span><br><span class="line">Spring-Boot-Lib: BOOT-INF/lib/                 # 当前工程依赖的 jar 包目录</span><br><span class="line">Build-Jdk-Spec: 1.8                            # 指定的 JDK 版本</span><br><span class="line">Spring-Boot-Version: 2.1.6.RELEASE             # SpringBoot 版本</span><br></pre></td></tr></table></figure>
+<p>这里主要看 JarLauncher 这个类，相应的，打出来的可执行 war 包就是 WarLauncher；知道了核心类，那么我们就又了另一种启动方式，把 jar 包解压，在解压后的目录可以直接执行：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java org.springframework.boot.loader.JarLauncher</span><br></pre></td></tr></table></figure>
+<p>这样也是可以正常启动 Spring 应用，可以得出 JarLauncher 装载执行了我们的启动类，如果你尝试直接运行启动类，很遗憾是不行的，原因是 lib 依赖库的原因。<br>具体的原因可以查看 JarLauncher 的源码，很简单就不说了（深层次的例如对于 URL 协议的处理就很难理解），里面进行了处理所以才能 jar 或者解压后运行。<br>一句话概括就是：<strong>JarLauncher 实际上是同进程内调用 Start-Class 的 main 方法，并在启动前准备好 CP（classpath）</strong>，war 包亦是如此，不过目录会有所差别，毕竟要兼容 servlet 容器（仅关注 WEB-INF/classes、lib）运行，根据容器的特性就可以做到忽略非规范目录的冲突的包，当然 WebFluex 不行。</p>
+<h3 id="嵌入式Web容器"><a href="#嵌入式Web容器" class="headerlink" title="嵌入式Web容器"></a>嵌入式Web容器</h3><p>从 2.x 开始，Netty 也作为容器加入，不同容器无法共存，Undertow 作为 JBoss 社区推出的新一代兼容 Servlet3.1+ 的容器，用的还是不太广泛。<br>目前最新版本支持 HTTP/2 和 servlet4.0，核心 jar 体积只有 2.2MB，4.0 规范对应 Tomcat 和 Jetty 9.x，Undertow 2.x。<br>因为 SpringFlux 基于 Reactor 框架实现，因此 Netty 容器属于 Reactor 和 Netty 的整合实现；<br>其他的三种容器<strong>也能作为 Reactive Web Server</strong>，默认是 Netty，毕竟 <strong>Servlet3.1+ 也支持 Reactive 异步非阻塞的特性</strong>。<br>另外需要说明的是，嵌入式容器并不是 SB 首创，各个容器早就支持，SB 不过是将整合做到了极致。</p>
+<blockquote>
+<p>Apache Tomcat 官方很早就提供了相应的可执行 jar 的构建插件，但是运行时还是通过解压到临时目录的方式实现；<br>对于 SB，它使用了零压缩模式，所以可以不解压直接读取运行，也正是这个所以重写 JAR 协议的 URL 实现。</p>
+<p>同样，Jetty 天然的可插拔 API 对嵌入式容器开发更加友好，也是 Google 的 GAE 弃用 Tomcat 转为 Jetty 的一个原因；不仅想如果当时有 SB 这种框架或许迁移难度会大幅下降。</p>
+</blockquote>
+<p>在嵌入式 Reactive Web 容器方面，Undertow 用的还是蛮多的，它也对这两种情况各有一个实现。当依赖中存在 WebFlex 的时候，容器的 Starter 就自动装配为 Reactive 容器了。</p>
+<h3 id="自动装配"><a href="#自动装配" class="headerlink" title="自动装配"></a>自动装配</h3><p>关于这点，一开始让我们感觉很神奇，文档也是轻描淡写『@EnableAutoConfiguration 和 @SpringBootApplication <strong>两者选其一</strong>标注在 @Configuration 类上』，但是它没说明这个 @Configuration 是如何装配的。<br>对于 Spring，我们熟悉常见的三种装配方式：</p>
+<ul>
+<li><code>&lt;context:component-scan&gt;</code> 标签</li>
+<li>@Import</li>
+<li>@ComponentScan</li>
+</ul>
+<p>以上三种手段均需要 Spring 上下文引导，前一个可以使用 ClassPathXmlApplicationContext 加载，后者就需要 AnnotationConfigApplicationContext 加载；<br>对于 SB 很显然是通过 SpringApplication 实现的，那么我们可以认为，主启动类承担了 @Configuration 的角色。</p>
+<h4 id="SpringBootApplication"><a href="#SpringBootApplication" class="headerlink" title="@SpringBootApplication"></a>@SpringBootApplication</h4><p>这个注解肯定不陌生，它是很有料的，如果你点进去看源码，相关的分析其实在『<a href="https://bfchengnuo.com/2018/08/26/SpringBoot%E8%BF%9B%E9%98%B6/" target="_blank" rel="noopener">Spring进阶</a>』中已经说的差不多了，这里不再重复，简单说它相当于开启自动装配、标注配置类、开启包扫描；在包扫描上，它排除了一些特定类型，例如同时标注配置类和开启自动装配的，这就避免了使用多次时的冲突问题。<br>PS：配置类源于 @Component 的派生，Spring 称为『模式注解』。</p>
+<p>另外，在这个注解中，使用了大量的 @AliasFor 别名，这属于 JDK 的知识了，只是提醒一下。</p>
+<p>@SpringBootApplication 也并不是一定要标注在引导类上，只要保证 run 方法传递的是标注这个注解的类即可，这一点的原因在进阶文章里也提到过。<br>具体的将也不是非 @SpringBootApplication 不可，官方的说法 @EnableAutoConfiguration 也是没问题的（即使它不是 @Configuration），这里去看进阶篇就足够了，点到为止，之后还会深入分析，这里还不到时候。</p>
+<hr>
+<p>作为 @Configuration 的派生类，也继承了 CGLIB 提生的特性，官方文档中有说明，传统的 @Bean 属于轻量模式（Lite）在 @Configuration 或者 @Component 下的 @Bean 就属于完全模式（Full），会执行 CGLIB 提升。</p>
+<h4 id="SpringBootConfiguration"><a href="#SpringBootConfiguration" class="headerlink" title="@SpringBootConfiguration"></a>@SpringBootConfiguration</h4><p>这个注解如果你看的话跟 @Configuration 没什么不同，但是在 SB 中，官方建议多使用 @SpringBootConfiguration，在做注解元数据解析的时候会有帮助。</p>
+<h3 id="创建自动配置类"><a href="#创建自动配置类" class="headerlink" title="创建自动配置类"></a>创建自动配置类</h3><p>编写自动配置类也是有固定套路的，一般创建名为 xxxAutoConfiguration 的配置类，这个类一般被标注了 @Configuration 和 @Import 注解；<br>对于 @Import 注解，你可以选择导入一个配置类或者 ConfigurationSelector 的实现类。<br>接下来，就是配置执行入口，也就是在 <code>META-INF/spring.factories</code> 文件中配置这个类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># Auto Configure</span><br><span class="line">org.springframework.boot.autoconfigure.EnableAutoConfiguration=\</span><br><span class="line">  com.bfchengnuo.demo.xxxAutoConfiguration</span><br></pre></td></tr></table></figure>
+<p>因为都是注解，解析注解带来的时间成本肯定会影响应用的启动速度，所以在 Spring5.x 的时候加入了 @Indexed 注解，在<strong>编译</strong>的时候就会向 @Component 和其派生注解增加索引，从而减少运行时的消耗。</p>
+<h3 id="Production-Ready特性"><a href="#Production-Ready特性" class="headerlink" title="Production-Ready特性"></a>Production-Ready特性</h3><p>也就是为生产准备的特性，例如指标、健康检查、外部化配置。<br>它是 DevOps 的立足点，当然这个词具体的定义就是仁者见仁智者见智了。<br>对于 SpringBootActuator 国内大部分都不重视，其实还是很有用的，它用于监控和管理 Spring 应用，可以通过 HTTP Endpoint 或者 JMX Bean 与其交互。<br>这里就不继续展开了，内容还是蛮多的，如果以后逐步都用起来了，估计还会单独写吧，个人感觉还是很有前途的。</p>
+<p>下面说说外部化配置，在 SB 中有三种用途：</p>
+<ol>
+<li>Bean 的 @Value 注入</li>
+<li>Spring Environment 读取</li>
+<li>@ConfigurationProperties 的读取</li>
+</ol>
+<p>上面说的是消费方，那么生产源呢，在<a href="https://docs.spring.io/spring-boot/docs/2.2.6.RELEASE/reference/html/spring-boot-features.html#boot-features-external-config" target="_blank" rel="noopener">官方文档</a>中描述了 17 种 PropertySource 的顺序，然而我们平常用的并不多，也就是用用命令行指定来替代 application.yml 中的属性。<br>因为 SB 的规约大于配置思想，让我们省去了大量的配置。</p>
+<h3 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h3><p>纵观 Spring 的一路演变，就是注解驱动之路，在 3.1 之后可谓大变化，增加了 @EnableXXX 模式，包扫描和 ConfigurationSelector（ImportSelector）；到了 4.x 有了 Condition 条件注解，接下来会更加详细的探讨。<br>SB 的特性让其称为微服务的基础组件，也是 SC 的基础设施，或者将 SB 称为微服务的中间件，也是 SB 的出现让 Spring 社区焕发了第二春，简单再说 SC，对于分布式系统要解决的问题有：</p>
+<ul>
+<li>分布式配置</li>
+<li>服务注册和发现</li>
+<li>路由</li>
+<li>服务调用</li>
+<li>负载均衡</li>
+<li>熔断机制</li>
+<li>分布式消息</li>
+</ul>
+<p>Spring 官方最大的优势就是 API 设计能力，也可以说是抽象能力，云平台的现在，Java 已经派生语系处于垄断地位，SC 也慢慢成长（虽然 Netflix 进入维护模式，不过 Alibaba 崛起了）SpringCloudStream 也可以了解一下。</p>
+<h2 id="走向自动装配"><a href="#走向自动装配" class="headerlink" title="走向自动装配"></a>走向自动装配</h2><p>前面的自动装配只是简单的提了一下相当于是结果，这一部分讲述自动装配的发展过程以及其中涉及的一些编程模式。</p>
+<h3 id="注解驱动的发展"><a href="#注解驱动的发展" class="headerlink" title="注解驱动的发展"></a>注解驱动的发展</h3><p>在 Spring2.5 的时候我们常用的 @Autowired、@Component、@Order、@Service、@Qualifier、SpringMVC 相关注解才被加入，之前基本还是 XML 的天下，即使这个版本提供了大量的注解，但是还是离不开 <code>&lt;context:component-scan&gt;</code> 和 <code>&lt;context:annotation-config&gt;</code> 的噩梦。</p>
+<blockquote>
+<p>对于 @Qualifier 这个注解，还有一种『逻辑类型』限定的使用（不带参数，用来缩小匹配范围），例如在 SC 的 @LoadBalanced 中就如此使用。<br>即，你在 @Bean 的时候顺带加一个 @Qualifier，那么在 @Autowired 的时候也加一个 @Qualifier 它会自动找之前定义的时候也有 @Qualifier 的对象，就算有其他的相同的类型的 Bean 也会被过滤，并且这种方式不需要写值。<br>另外，Spring 还有一种缺省机制，也可以说容错机制，在没用 @Qualifier 注解下，即缺省情况下使用 Bean 标识符（方法名、字段名）注入。</p>
+</blockquote>
+<p>到了 3.x 时代，进入了注解驱动的黄金时代，井喷式增长，当然也跟 Java5 的特性有关，通过派生性，有了 @Configuration 这类注解，@Import 也出现了，并且提供 @ImportResource 来解决 XML 遗留问题。<br>通过加入 @Bean 等一些列注解对标 XML 配置，决心替代 XML 了。那么最后的问题，谁来引导 SpringContextConfiguration 呢，不可能通过包扫描标签，那样又是依赖 XML，所以有了 AnnotationConfigApplicationContext，用这个来注册 @Configuration，并且通过前面的 @ImportResource 导入遗留的 XML 配置，虽然这种方式看起来有点别扭。<br>终于，在 3.1 的时候引入 @ComponentScan 替换了包扫描标签，全面进入注解驱动时代；<br>同时，也出现了 @Profile 这类条件化定义 Bean 能力的注解，虽然功能很弱；Web 方面也是突飞猛进，@RequestBody 之类的注解也都出现；<br>并且 3.x 时代还新增了 Environment 之类的 API 接口，@PropertySource 的出现为外部化配置奠定了基础，其他的还有很多，例如缓存的抽象、异步的支持（@Schedule、异步 Web 处理）、校验注解（JSR-303）、@Enable 模块驱动（@EnableWebMvc 等）。<br>所以，3.x 真的是黄金时代，看着都兴奋。</p>
+<hr>
+<p>接下来的 4.x 进入完善时代，上面说过 @Profile 很鸡肋，所以加入了 @Conditional，通过编程的方式来解决 @Profile 灵活性不足的问题，SB 中的 @ConditionalOn* 就是这个的派生。<br>尽管不是强制使用 Java8，但也巧妙的兼容了新的时间 API、@Repeatable 和参数名称发现；也正是有了 @Repeatable 所以 @PropertySource 提升为了可重复标注的注解（Java8 之前可以配合 @PropertySources 使用），@ComponentScan 也是同理；<br>同时，4.2 新增了 @EventListener 作为 ApplicationListener 的另一个选择，@AliasFor 注解也解除了之前派生的一些限制（@GetMapping 一类注解就使用了这个特性），加入 @CrossOrigin 作为 CorsRegistration 的替换方案。<br>其他的一些例如依赖查找 @Lookup 处在比较边缘化的地位，不需要太多了解。</p>
+<hr>
+<p>最后，也就是现在的 5.x 版本，新增的 @Indexed 用来构建索引，加快包扫描，但是存在一定的缺陷，要避免模式注解忽略的问题（例如项目引入两个 jar，一个使用了一个没使用，并且包名相同，那么你在项目里只能扫到使用了 @Indexed 的 Bean，因为没使用的不会存在于 <code>META-INT/spring.components</code> 索引文件中，存在这个文件 Spring 就不会扫描包，只会寻找索引文件对应的 CandidateComponentsIndex 对象）；感兴趣的可以研究一下。<br>同时引入了 JSR-305 适配注解 @NonNull 之类（Spring 中已经大量使用），为 Java 和 Kotlin 之间提供技术杠杆。</p>
+<h3 id="注解编程模型"><a href="#注解编程模型" class="headerlink" title="注解编程模型"></a>注解编程模型</h3><p>Java 语言规范规定，注解不能继承，没有派生子类的功能，所以 Spring 采用了元标注（注解上标注注解）的方式来实现『派生』；<br>需要注意，直到 Spring4.x 才实现了多层次派生性，之前都是深度有限，4.x 版本中的 AnnotationAttributesReadingVisitor 使用了递归方式查找元注解，这个问题才得以解决，不过 SB 最低版本都是依赖 4.x+，所以不用担心。<br>其他的，为了方便使用还添加了很多组合注解，例如 @TransactionalService 就是 @Transactional 和 @Service 的组合；那么如何感知是个问题，常规的思路肯定是反射手段解析元信息，但是 Spring 并没有这么做，使用的是抽象出 AnnotationMetadata 这个接口。<br>为了提高效率，Spring 的类加载机制是通过 ASM 实现的，例如 ClassReader，相对于 ClassLoader 体系，它直接操作字节码，也便于进行字节码提升；这方面的内容很复杂，是一个大的体系，这里不再详细说明。</p>
+<blockquote>
+<p>AnnotationMetadata 有两个实现类：AnnotationMetadataReadingVisitor 和 StandardAnnotationMetadata；<br>前者使用 ASM 方式读取，涉及 AnnotationMetadata 和 ClassMetadata 等对象，丰富性肯定不如 Java 反射 API；<br>后者使用 Java 反射进行读取，用的也很多。</p>
+</blockquote>
+<p>那么 Spring 为什么要两套实现？<br>除了效率的差距，还有一个是场景，如果使用 Java 反射 API，必然需要一个大前提，就是<strong>反射的 Class 必须被 ClassLoader 装载</strong>，但是在 Spring 的包扫描阶段，显然是不可能的，所以使用 ASM 的方式；之后装载之后就可以使用 Java API 了。<br>如果需要进行反射相关操作，不妨试试 Spring 提供的反射工具类：ReflectionUtils；类似的 AnnotationUtils、AnnotatedElementUtils 的工具类 Spring 中也大量使用。<br>同时，在使用元注解的时候要留意属性覆盖的情况，细分可以是显性覆盖（@AliasFor）和隐性覆盖；其中也有一些规则，这里不细说了。</p>
+<h3 id="注解驱动设计模式"><a href="#注解驱动设计模式" class="headerlink" title="注解驱动设计模式"></a>注解驱动设计模式</h3><p>从 @Enable 模式开始说起（模块装配），Spring 中就存在很多，例如 Web Mvc、缓存、JMX、Async 模块等，这都是来自 Spring，并不是 SB 的特性，当然在 SB 和 SC 中也有新增，例如开启自动装配。<br>这个模式简化了装配模式，做到了按需装配，但是缺点是必须手动开启。<br>而想要自定义 @Enable 也很简单，你可以随便拿一个来参考，主要就是利用 @Import 和 @Configuration，当然你也可以试试接口编程的 ImportSelector 接口，其他的 ImportBeanDefinitionRegistrar 用的相对少一点。<br>而原理，主要还是对这些注解的解析，因为这又是一个大的体系，在这也不想多说，简单提一提：</p>
+<blockquote>
+<p>无论是 XML 还是注解驱动的场景，均是通过 AnnotationConfigUtils 的 registerAnnotationConfigProcessors 方法进行装载 ConfigurationClassPostProcessor 类，这个类是最高优先级的 BeanFactoryPostProcessor 实现。</p>
+</blockquote>
+<p>解析 Spring BeanDefinition 的注解元信息最重要的组件是 ConfigurationClassParser，它的两个重载分为不同的实现，就是前面说过的 AnnotationMetadataReadingVisitor 和 StandardAnnotationMetadata；<br>这里也会进行递归调用解析，还记得前面说的轻量模式和完全模式么，就是根据这个来区分进行 CGLIB 提升。</p>
+<h4 id="SpringWeb自动装配"><a href="#SpringWeb自动装配" class="headerlink" title="SpringWeb自动装配"></a>SpringWeb自动装配</h4><p>在 Spring 中除了模块装配，在 3.1 之后，也支持自动装配，仅限于 Web 场景；新引入的 WebApplicationInitializer 构建在 Servlet 3.0  的 ServletContainerInitializer 上，支持编程方式替代传统 web.xml。<br>在 SpringSecurity 也有类似的实现 AbstractSecurityWebApplicationInitializer。</p>
+<p>实现原理还是依赖 Servlet 3.0 的特性，大部分开发人员对 Servlet 规范还是陌生的，新规范带来的运行时插拔可是极大的灵活性（拓展知识 SPI），也不能说新了，毕竟很多年了，现在 4.0 的异步技术又有多少人关注呢。<br>关于这一块的内容，如果感兴趣去稍微看下源码，其实还挺有意思的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">AbstractDispatcherServletInitializer</span><br><span class="line">  |-AbstractAnnotationConfigDispatcherServletInitializer</span><br><span class="line">    |-AbstractContextLoaderInitializer</span><br></pre></td></tr></table></figure>
+<p>在 Web Mvc 中，DispatcherServlet 有专属的 WebApplicationContext，它继承了来自 Root WebApplicationContext 的所有 Bean，也就是我们常说的父子容器。<br>无论哪一个容器，都是基于注解驱动的 Web 应用上下文实现的，一般情况我们选择最具体的就好。</p>
+<h4 id="条件装配"><a href="#条件装配" class="headerlink" title="条件装配"></a>条件装配</h4><p>说的就是 @Profile 和 @Conditional，对于 Profile 只支持简单的 <code>@Profile({&quot;dev&quot;, &quot;prod&quot;})</code>、<code>@Profile(&quot;!dev&quot;)</code> 这种形式，具体的处理原理不多说了，还是分析注解元数据那一套。<br>由于 Profile 太过于局限性，现在基本都是 @Conditional 的天下，实现起来也不复杂。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Conditional</span>(&#123;ProfileCondition.class&#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Profile &#123;</span><br><span class="line">    String[] value();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>看到这个源码，还有什么疑问，肯定是 @Conditional 的天下了。<br>当多个 Conditional 并存时，会使用 @Order 排序，需要注意一下；ConditionEvaluator 的评估有两个阶段，Bean 注册阶段和 Configuration Class 解析阶段。</p>
+<h3 id="SB自动装配"><a href="#SB自动装配" class="headerlink" title="SB自动装配"></a>SB自动装配</h3><p>在 SB 中的自动装配相比上面所说，一个区别就是应用依赖的 Jar 存在变化的可能，因为所在包的路径不确定，所以很多手段都不太合适，或许会想到使用 @ComponentScan 来全局扫描，但是官方文档中明确表示不鼓励这样扫描默认包，因为它会读取所有 Jar 中的类。<br>SB 的自动装配是非侵占性的，对于失效自动装配有两种方式：代码配置（@EnableAutoConfiguration 的 exclude）和外部化配置（<code>spring.autoconfigure.exclude</code>），为了避免侵入性，外部化是优先选择。<br>如果你想看 SB 自动装配的原理，可以进入注解发现是通过 AutoConfigurationImportSelector 来实现的，读一下这个的源码就能猜个差不多，从字面意思：</p>
+<ol>
+<li>加载自动装配的元信息<br>至于为什么需要加载元信息，因为 @Conditional 之类的注解处理时机较晚，所以根据元信息来匹配就减少了自动装配的时间，参考：spring-autoconfigure-metadata.properties</li>
+<li>获取 @EnableAutoConfiguration 标注类的元信息</li>
+<li>获取自动装配的候选类名集合<br>使用 SpringFactoriesLoader 进行读取，采用 Spring 工厂机制的加载器，简单说就是读取 spring.factories 中的配置，合并成一个 Map。</li>
+<li>移除重复对象<br>利用的是 Set 集合去重：<code>return new ArrayList&lt;&gt;(new LinkedHashSet&lt;&gt;(list));</code></li>
+<li>移除我们自己配的『失效自动装配』</li>
+<li>再根据 autoConfigurationMetadata 过滤<br>过滤 spring.factories 中那些当前 ClassLoader 不存在的 Class，可以说是检查是否合法</li>
+<li>触发自动装配导入事件</li>
+</ol>
+<p>SpringFactoriesLoader 在 SB 中大量的使用，这一块的内容确实不少，如果是做基础架构的，还是要深入了解，我这种打酱油的就先点到为止。<br>关于事件，这里贴一个例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 依赖于 spring.factories 配置文件：</span></span><br><span class="line"><span class="comment">// org.springframework.boot.autoconfigure.AutoConfigurationImportListener=\</span></span><br><span class="line"><span class="comment">//   thinking.in.spring.boot.samples.auto.configuration.listener.DefaultAutoConfigurationImportListener</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DefaultAutoConfigurationImportListener</span> <span class="keyword">implements</span> <span class="title">AutoConfigurationImportListener</span> </span>&#123;</span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAutoConfigurationImportEvent</span><span class="params">(AutoConfigurationImportEvent event)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 获取当前 ClassLoader</span></span><br><span class="line">    ClassLoader classLoader = event.getClass().getClassLoader();</span><br><span class="line">    <span class="comment">// 候选的自动装配类名单</span></span><br><span class="line">    List&lt;String&gt; candidates =</span><br><span class="line">      SpringFactoriesLoader.loadFactoryNames(EnableAutoConfiguration.class, classLoader);</span><br><span class="line">    <span class="comment">// 实际的自动装配类名单</span></span><br><span class="line">    List&lt;String&gt; configurations = event.getCandidateConfigurations();</span><br><span class="line">    <span class="comment">// 排除的自动装配类名单</span></span><br><span class="line">    Set&lt;String&gt; exclusions = event.getExclusions();</span><br><span class="line">    <span class="comment">// 输出各自数量</span></span><br><span class="line">    System.out.printf(<span class="string">"自动装配类名单 - 候选数量：%d，实际数量：%d，排除数量：%s\n"</span>,</span><br><span class="line">                      candidates.size(), configurations.size(), exclusions.size());</span><br><span class="line">    <span class="comment">// 输出实际和排除的自动装配类名单</span></span><br><span class="line">    System.out.println(<span class="string">"实际的自动装配类名单："</span>);</span><br><span class="line">    event.getCandidateConfigurations().forEach(System.out::println);</span><br><span class="line">    System.out.println(<span class="string">"排除的自动装配类名单："</span>);</span><br><span class="line">    event.getExclusions().forEach(System.out::println);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>SB 的事件分发相关在后面会说，事件的分发是一个非常重点的内容。</p>
+<p>从生命周期来说，因为 AutoConfigurationImportSelector 实现了 DeferredImportSelector，从名字看这是延迟的（会有一个待处理队列），它在 @Configuration Bean 处理完毕后才会运作，Order 来看也是优先级接近最低的。<br>拓展阅读：ConfigurationClassParser（实际执行 ImportSelector 的地方）</p>
+<p>在顺序方面，可选择的有两种，固定和相对，例如 @AutoConfigureOrder 和 @AutoConfigureBefore，他们两个之间的顺序是先固定然后再根据相对顺序调整。<br>PS：尽量使用 name 属性，别用 value，还是因为 SB 升级导致的破坏性 API 变更，每次升级或多或少都有些。</p>
+<p>关于自动装配的 BasePackages 参考嵌套类：AutoConfigurationPackages.Registrar，为了避免重复导入，会根据名字判断 IoC 有没有，也就是它只会注册一次。<br>因为方法执行在 Bean 初始化阶段，其 BeanDefinition 还有调整的机会，所以可以追加，借此达到夸大搜索范围的目的。</p>
+<h3 id="自定义SB自动装配"><a href="#自定义SB自动装配" class="headerlink" title="自定义SB自动装配"></a>自定义SB自动装配</h3><p>从 spring.factories 这种加载机制可以看出与 SPI 非常像，那么接下来正式开始，首先从命名来看，遵循 SB 的套路使用 *AutoConfiguration 这样的规则，也要看一下他们的包结构，模仿着写；<br>Spring 官方建议自动装配的代码写在 autoconfigure 模块下，starter 模块依赖该模块，并且附加其他需要的依赖，当然官方并没有坚持要分包（jar），开发者完全可以合并到一个模块（jar）。</p>
+<p>Starter 的命名，官方建议是使用 <code>${module}-spring-boot-starter</code> 的命名模式（或者拆分出一个 autoconfigure 模块），使用 spring-boot-configuration-processor 可以帮助 @ConfigurationProperties Bean 生成 IDE 辅助信息。<br>PS：在设置 Key 命名空间的时候，注意不要跟官方冲突，要不然，可能会有奇奇怪怪的问题。</p>
+<p>总体来说跟『创建自动配置类』差不多，毕竟那是基础，编写完自动配置类后将其加入 spring.factories 文件，然后就可以构建 Starter，其中你所依赖的 SB 相关依赖都要设置为 <code>&lt;optional&gt;true&lt;/optional&gt;</code> 不要传递依赖，因为用户使用的 SB 版本可能会与之发生冲突，由于不同环境的 ClassLoader 不确定性，最终导致 Class 文件二进制不兼容的情况，可能表现为 IDE 中正常线上不正常或者反之，例如常见的 NoClassDefFoundError、NoSuchMechanismException 等。</p>
+<blockquote>
+<p>其中可以使用 @ConditionalOn* 之类条件注解来实现，由于 SB 的设计问题，在 2.0 时代真的是改来改去，各种破坏性升级，让人怀疑人生，一般情况为，name 属性是用于第三方库或者高低版本兼容的场景；value 属性用于物理路径非常稳定的情况，一般情况下，还是 name 用的多。</p>
+<p>因为 ConditionEvaluator 在注册 Bean 阶段进行评估，所以 @ConditionalOnBean 和 @ConditionalOnMissingBean 的 Java doc 强烈建议开发人员仅在自动装配中使用该条件注解。<br>这一对注解主要用来判断当前的 Spring 应用上下文是否存在该 Bean，如果存在就直接 autowired，如果不存在就 new。<br>通常，它会和 OnClass 连用，先判断 CP 中是否存在，然后才有后来的容器中是否存在，还要考虑其他依赖是否装配了该 Bean，因为有个顺序问题。</p>
+</blockquote>
+<p>对于属性条件注解 @ConditionalOnProperty，属性来源于 Spring Environment，典型代表就是 Java 系统属性和环境变量，application.yml 也是，都属于 PropertySource。<br>剩下的 Resource 条件注解感兴趣的可以看一下，在书中进行了大量的源码分析，关键是要搞明白 ConditionEvaluator 和 ResourceLoader（ConditionEvaluator 关联的 ResourceLoader 来自 Spring 应用上下文），最终会发现 DefaultResourceLoader 实际上是 Spring 中的唯一 ResourceLoader 实现。<br>个人感觉涉及 Resource 的东西，不说难吧就是很绕，很烦人，I/O 是个折磨人的东西，涉及 Stream、各种 URL 协议之类，Handle 和 Factory。</p>
+<p>SB 自定义的 Condition 基本都是扩展的 SpringBootCondition 而不是直接实现 Condition 接口，可以借鉴下。</p>
+<p>示例工程：<a href="https://github.com/mercyblitz/thinking-in-spring-boot-samples/tree/master/spring-boot-2.0-samples/formatter-spring-boot-starter" target="_blank" rel="noopener">Github</a></p>
+<h2 id="理解SpringApplication"><a href="#理解SpringApplication" class="headerlink" title="理解SpringApplication"></a>理解SpringApplication</h2><p>这一部分从 Spring 应用的生命周期来看，分为初始化阶段、运行阶段、结束阶段。也是很硬核的内容。</p>
+<h3 id="SpringApplication初始化阶段"><a href="#SpringApplication初始化阶段" class="headerlink" title="SpringApplication初始化阶段"></a>SpringApplication初始化阶段</h3><p>初始化阶段主要分为<strong>构造阶段和配置阶段</strong>，构造阶段当然是通过构造器来完成的，不过一般情况我们都用 run 这个静态方法了，它也是走的构造。<br>无论那种，最终都需要传递一个 primarySource，也可以理解成标注了 @EnableAutoConfiguration 的类，最终会被 SpringApplication 的 primarySources 属性保存，接下来会依次执行 WebApplicationType.deduceFromClasspath、setInitializers、setListeners、deduceMainApplicationClass，可以理解为：</p>
+<ul>
+<li>推断 Web 应用类型<br>在此阶段上下文还没有准备，所以使用的是检查当前 ClassLoader 下的基准 Class 的存在性来判断；<br>当 DispatcherHandler 存在，DispatcherServlet 不存在，也就是依赖 WebFlux 下，判断为 Reactive Web 应用；<br>当 Servlet 和 ConfigurableWebApplicationContext 不存在时，非 Web 应用；<br>当 Spring WebFlux 和 Spring Mvc 同时存在，按 Servlet Web 处理。</li>
+<li>加载 Spring 应用上下文初始化器<br>该方法返回所有 spring.factories 资源配置中的 ApplicationContextInitializer实现类名单。<br>并不强制要求实现 Ordered 排序，排序后保存到 initializers 属性中；<br>PS：在调用 run 之前，允许你使用 setter 方法进行覆盖性更新。</li>
+<li>加载 Spring 应用事件监听器</li>
+<li>推断应用引导类</li>
+</ul>
+<p>构造阶段就算到此完成，接下来是配置阶段，该阶段是可选的，主要用于调整或者补充构造阶段的状态，以 SpringApplication 的 setter 方法为代表，是用于调整的相关；补充行为则以 add 方法为代表。推荐使用 SpringApplicationBuilder。<br>大多数情况开发人员无需调整 SpringApplication 的默认状态，作为拓展可以看看 SC 或者 SC Data Flow。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> SpringApplicationBuilder(DemoApplication.class)</span><br><span class="line">  .bannerMode(Banner.Mode.CONSOLE)</span><br><span class="line">  .web(WebApplicationType.NONE)</span><br><span class="line">  .profiles(<span class="string">"dev"</span>)</span><br><span class="line">  .headless(<span class="keyword">false</span>)</span><br><span class="line">  .run(args);</span><br></pre></td></tr></table></figure>
+<p>用的最多的也许是 Banner 相关吧。</p>
+<blockquote>
+<p>关于配置源，1.x 和 2.x 差别较大，2.x 中构造函数由 Object 改为 Class，所以 XML 和 packages 就无法作为参数传递，只能通过 setSources 方法传递。<br>PS：注意 sources 和 primarySources 属性。</p>
+</blockquote>
+<p>其中，sources 属性使用的是 LinkedHashSet 说明具有去重功能，并且有序。</p>
+<h3 id="SpringApplication运行阶段"><a href="#SpringApplication运行阶段" class="headerlink" title="SpringApplication运行阶段"></a>SpringApplication运行阶段</h3><p>这个阶段属于核心过程，围绕 run 方法展开，它会进一步完善所需要的资源准备，随后启动 Spring 应用上下文，伴随 SB 和 Spring 的事件分发，形成完整的 SpringApplication 生命周期。<br>它可以再进行细分，准备、启动、启动后。</p>
+<h4 id="上下文准备阶段"><a href="#上下文准备阶段" class="headerlink" title="上下文准备阶段"></a>上下文准备阶段</h4><p>本阶段的范围是从 run 方法开始到 refreshContext 调用之前；挑主要的说。<br>SpringApplicationRunListeners 属于组合模式的实现，内部关联了 SpringApplicationRunListener 的集合，按照字面意思，应该是 SB 运行时监听器（<del>此处应有监听方法与运行阶段对应表</del>）</p>
+<blockquote>
+<p>结合 SpringFactoriesLoader 机制，可以从 spring.factories 中快速定位其内建实现；<br>对于普通开发者，只需要根据 SpringFactoriesLoader 机制和 SpringApplicationRunListener 的要求就能对该接口进行扩展。</p>
+</blockquote>
+<p>然后，可以得出，EventPublishingRunListener 是 SB 中的唯一内建实现，可以得出，根据 SpringApplication 所关联的 ApplicationListener 实例列表，动态的添加到 SimpleApplicationEventMulticaster 中；<br>SimpleApplicationEventMulticaster 是 Spring 中实现 ApplicationEventMulticaster 接口的类，用于发布 Spring 应用事件（ApplicationEvent），所以可以看出它也充当了 SB 中事件发布者的角色。<br><del>（此处应有 SB 事件与监听方法对照表）</del><br>虽然 SB 与 Spring 事件有很大的关联性，但是他们还是有差异性的，主要体现再顺序和时机上，<a href="https://docs.spring.io/spring-boot/docs/2.2.6.RELEASE/reference/html/spring-boot-features.html#boot-features-application-events-and-listeners" target="_blank" rel="noopener">官方文档</a>中也有提及。</p>
+<h4 id="拓展-理解Spring事件"><a href="#拓展-理解Spring事件" class="headerlink" title="拓展-理解Spring事件"></a>拓展-理解Spring事件</h4><p>Spring 事件是 Spring 应用上下文 ApplicationContext 对象触发的，SB 事件的发布者则为 SpringApplication 关联的 SimpleApplicationEventMulticaster 类型，虽然它也是来自 Spring。<br>Spring 中的事件也采用了 JDK 的观察者模式规范，不过进行了一定的扩展或者说增强。</p>
+<p>对于如何监听具体的 ApplicationEvent 类型，在 3.0 得到改善，ApplicationListener 支持泛型监听，不再监听所有事件靠 instanceof 筛选，但是由于泛型的限制，无法同时监听不同的事件类型，如果继续使用 ApplicationEvent 做泛型，这就又回到了之前。<br>所以，3.0 中引入了 SmartApplicationListener 接口，它通过 supports* 方法来过滤监听的事件类型和事件源类型，例如 ConfigFileApplicationListener。</p>
+<p>上面说过 SB 的事件发布者 SimpleApplicationEventMulticaster 也是来自 Spring，并且是 ApplicationEventMulticaster 接口的实现类，该接口主要承担两个职责：关联 ApplicationListener 和广播 ApplicationEvent。<br>PS：SB 的事件监听器都是经过排序了的。</p>
+<blockquote>
+<p>看源码的朋友们，Spring 4.0 引入的 ResolvableType 是 Spring 为了简化 Java 反射 API 提供的组件，它能够轻松的获取泛型类型等。</p>
+<p>SimpleApplicationEventMulticaster 虽然允许事件广播时 ApplicationListener 异步监听事件，但是无论时 Spring 还是 SB 均没有使用其来提升为异步执行，由于 EventPublishingRunListener 的封装，SB 事件监听器也无法异步执行。</p>
+</blockquote>
+<p>关于 ApplicationEventMulticaster 与 ApplicationContext 的关系，官方文档提到过可以使用 ApplicationEventPublisher 发布 ApplicationEvent；<br>查看 ApplicationContext 可以看到它扩展了 ApplicationEventPublisher，也就是说，<strong>无论那种 Spring 应用上下文，都具备发布 ApplicationEvent 的能力</strong>。<br>PS：获取 ApplicationEventPublisher 可以通过 Aware 方式。仔细看还会发现拓展了 ResourceLoader，所以 ApplicationContext 也是 setResourceLoader 方法的常客。</p>
+<p>我们可以简单的得出结论，ApplicationEventPublisher 的实例就是当前 ApplicationContext。<br>SimpleApplicationEventMulticaster 既是 SB 事件广播的实现，又是 Spring 事件发布的实现。<br>SimpleApplicationEventMulticaster 作为 Spring 中唯一的 ApplicationEventMulticaster 实现，无论是 Spring 还是 SB，都充当同步广播事件对象的角色，开发人员主要关注 ApplicationEvent 的类型和对应的 ApplicationListener 实现即可。<br><del>此处应有 Spring 内建事件一览表</del></p>
+<h4 id="拓展-Spring内建事件"><a href="#拓展-Spring内建事件" class="headerlink" title="拓展-Spring内建事件"></a>拓展-Spring内建事件</h4><p>当 ConfigurableApplicationContext 的 refresh 方法执行到 finishRefresh 方法时，Spring 应用上下文就会发布 ContextRefreshedEvent （上下文就绪）事件；<br>此时应用上下文中的 Bean 已经完成初始化，并能投入使用，通常会使用 <code>ApplicationListener&lt;ContextRefreshedEvent&gt;</code> 监听，获取所需要的 Bean，防止出现 Bean 提早初始化。</p>
+<p>剩下的 Spring 应用上下文启停事件不多说，SC 中还用了下，SB 不常见。<br>只需要正确的理解上下文的 start、stop、close 方法之间的区别。相关类：Lifecycle；</p>
+<p><strong>因为事件源都是用的 ApplicationContext，所以称之为 Spring 上下文事件</strong>。</p>
+<h4 id="拓展-Spring应用上下文事件"><a href="#拓展-Spring应用上下文事件" class="headerlink" title="拓展-Spring应用上下文事件"></a>拓展-Spring应用上下文事件</h4><p>应用上下文 ApplicationContextEvent 与 Spring 事件 ApplicationEvent 的关系嘛，直接看就是继承关系（extends ApplicationEvent）；<br>对于 Spring 事件的监听，4.2 开始可以使用 @EventListener 注解，毕竟开始进军注解驱动编程。</p>
+<blockquote>
+<p>使用 @EventListener 的时候，注意要标注在 IoC 中的 Bean 上，并且需要 public 权限；<br>单一类型监听中，虽然规范要求不能有返回值，但是即使返回值不为 void 也可以执行；<br>在多类型监听中，需要特别处理，不能有返回值，也需要手动进行多个 ApplicationEvent 的过滤。</p>
+<p>异步支持：需要先使用 @EnableAsync 开启，然后使用 @Async 注解。<br>可以使用 @Order 控制顺序。<br>对泛型 ApplicationEvent 支持方面，需要事件实现 ResolvableTypeProvider 接口。<br>相关源码：EventListenerMethodProcessor（生命周期相关）、DefaultEventListenerFactory（适配相关）</p>
+</blockquote>
+<p>因为关联了 ApplicationEventMulticaster 属性，在 close 的时候也没有进行销毁关系，所以即使在 close 后，依然可以发布 Spring 事件，但是因为关联的 ApplicationListener 已经被销毁，所以最终无法被监听。<br>广播实现也很简单，就是通过 ApplicationEvent 找到关联的 ApplicationListener 列表，异步或者同步的调用即可。<br><del>此处应当有这几种方式的对照表</del></p>
+<h4 id="Spring事件小结"><a href="#Spring事件小结" class="headerlink" title="Spring事件小结"></a>Spring事件小结</h4><p>主要包括的是 Spring 事件、事件监听器、事件广播器，以及它们与 Spring 应用上下文的关系。<br>涉及到的事件分为 Spring 事件与 Spring 应用事件，主要以事件源区分，并且开发者可以自定义 ApplicationEvent。<br>进一步是泛型化与注解化。注解化依赖于适配器将其转换为 ApplicationListener，其中有 AOP 相关知识。<br>其中我略去了大量的源码级讲解，没办法，源码看的我头大，目前真的不想再多弄了 (/▽＼)。</p>
+<h4 id="拓展-SB事件"><a href="#拓展-SB事件" class="headerlink" title="拓展-SB事件"></a>拓展-SB事件</h4><p>有了 Spring 的事件基础，再来看 SB 的事件就简单多了，毕竟都是一套体系，如果 SB 仅仅是复用 Spring 相关的 API 那么就更好了，他们各自为政互不干涉，对我们理解很友好。<br>但是再 1.4 之前的版本，其实内部还是很混乱的，主要因为直接复用了 SimpleApplicationEventMulticaster，可能存在重复添加的情况，核心问题在于 spring.factories 中的实例列表是否有必要关联到 Spring 应用上下文中，这就导致 ApplicationListener 也可以监听到 SB 的事件，这其实并不好。</p>
+<p>从 1.4 之后，SB 就进行了微调，SB 事件与 Spring 事件开始独立，互不干扰，也是从这开始核心 API 开始趋于稳定。<br>具体改动可参考 EventPublishingRunListener 的 contextPrepared 方法，不再直接关联 SimpleApplicationEventMulticaster，但是实例依然会加入到 Spring 应用上下文中。<br>也正是因为 SpringApplication 使用了独立的 ApplicationEventMulticaster 对象，虽然 SpringApplication 和 ApplicationContext  都还是使用的 SimpleApplicationEventMulticaster 实例，<strong>但不再是同一个对象</strong>。<br>到这里就完成了隔离，SB 中可以监听 Spring 事件，反之不可，但是多数情况监听的还是 SB 事件。</p>
+<p>在 SB 中，大量使用了 SmartApplicationListener，SB 中事件的事件源多用 SpringApplication。</p>
+<h4 id="拓展-SB内建事件"><a href="#拓展-SB内建事件" class="headerlink" title="拓展-SB内建事件"></a>拓展-SB内建事件</h4><p>在 SB 中，无论你监听 SB 事件还是 Spring 事件，都是通过在 spring.factories 中配置实现的（属性为 ApplicationListener 的实现类）。<br><del>此处应当有 SB 内建事件一览表</del><br>最熟悉的可能是 ConfigFileApplicationListener 和 LoggingApplicationListener，分别负责 SB 应用配置文件的加载和日志系统的初始化（日志框架识别和日志配置文件加载等）。<br>SB 的内建事件根据 EventPublishingRunListener 的生命周期回调方法依次发布。<br>可以理解为 SB 的事件/监听机制是继承于 Spring 的事件/监听机制，例如 SpringApplicationEvent 就继承自 ApplicationEvent。</p>
+<p>其他的类似 ApplicationArguments、ConfigurableEnvironment （对应不同的 Web 类型）就战略性略过了（Spring 应用上下文运行前准备）。</p>
+<h4 id="上下文启动阶段"><a href="#上下文启动阶段" class="headerlink" title="上下文启动阶段"></a>上下文启动阶段</h4><p>本阶段有 refreshContext 方法实现，它首先调用 refresh，执行 ApplicationContext 的启动，然后注册 shutdownHook 线程（JVM shutdown hook 机制），实现优雅的 Spring Bean 销毁生命周期回调。<br>在 1.4 版本之后，重构了 refreshContext 方法，随着这个方法的执行，Spring 应用上下文正式进入 Spring 生命周期，SB 的核心也随之启动，例如自动装配、嵌入式容器等特性，紧接着分发 ContextRefreshedEvent 事件。</p>
+<h4 id="上下文启动后阶段"><a href="#上下文启动后阶段" class="headerlink" title="上下文启动后阶段"></a>上下文启动后阶段</h4><p>这里主要是 afterRefresh 方法，具体的实现在 2.0 也有略微调整，主要为不再具有执行 ApplicationRunner 或者 CommandLineRunner 的能力，不过并不会影响它们的执行，只是执行时机相对延后了，最后分发 ApplicationStartedEvent 事件。</p>
+<p>同时 ApplicationStartedEvent 的语义也有所变化，1.5 中加入了 ApplicationStartingEvent 事件，虽然 ApplicationStartedEvent 标注为 2.0 加入，其实在 1.x 就存在，2.0 对其进行了调整，关联了 ConfigurableApplicationContext 对象。<br>简单说就是，ApplicationStartingEvent 充当了之前 ApplicationStartedEvent 的角色，ApplicationStartedEvent 被延后触发。</p>
+<h3 id="SpringApplication结束阶段"><a href="#SpringApplication结束阶段" class="headerlink" title="SpringApplication结束阶段"></a>SpringApplication结束阶段</h3><p>各个版本中此阶段的实现比较稳定，可分为正常结束和异常结束。<br>当 ApplicationReadyEvent 事件触发后 SpringApplication 的生命周期进入尾声，除非发生异常，进入异常分支，这其中在不同版本中的实现都有细微变化，不过影响不大。<br>而如果进入异常分支，基本就意味着 Spring 应用运行失败，可参考 SpringApplicationRunListener。</p>
+<p>对于 SB 的异常处理，1.1 开始就替换为 Throwable，同时拥有故障分析器：FailureAnalysis，它会在上下文关闭之前执行错误分析并输出报告。<br>其中 FailureAnalysis 仅分析故障，报告则由 FailureAnalysisReporter 负责（也是由工厂机制加载排序，默认仅存在一个）。<br>当然你也可以自定义这两个的实现，一样配置到 spring.factories 中，1.x 与 2.x 有所不同，SC Data Flow 用户关注一下。</p>
+<h3 id="应用退出阶段"><a href="#应用退出阶段" class="headerlink" title="应用退出阶段"></a>应用退出阶段</h3><p>这里主要是 ShutdownHook 线程，在 JVM 退出时能够确保完成 Spring 生命周期回调，进行资源释放，例如 JDBC 连接、会话状态等。<br>这里也可以细分正常退出和异常退出，还有个退出码，不知道有没有人关注，用 IDEA 的时候会打印出来，非 0 就是异常退出，相关源码：ExitCodeGenerator。<br>因为 IDEA 可以获取子进程的退出码，但是真实环境下基本不可用，除非你是用 SC Data Flow 之类。<br>异常退出由 SpringApplication 的 handleRunFailure 方法负责，由于用的不多，不多展开了。</p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>Spring IO Platform 项目是为了统一 Maven 管理的项目，2019 年后不再维护，被 spring-boot-dependencies 和 spring-boot-starter-parent 取代。</p>
+<p>当相应的 starter 添加到 ClassPath 后，其关联的特性随应用的启动而自动装载，这种机制称为自动装配（AutomaticallyConfigure）。</p>
+<p>使用 @HandlesTypes 来进行过滤，选择出自己关系的类型。</p>
+<p>SB 根据 Web 类型推断来创建对应的 Spring 应用上下文，我们最常用的 Servlet 类型就是用 AnnotationConfigWebApplicationContext。<br>WebApplicationType 还可以作为 ConfigurableEnvironment 对象具体类型的条件，所以 applicationContextClass 的属性设定后还需要对 webApplicationType 设置。</p>
+<p>在 spring.factories 中声明的资源，可能存在重复执行的情况，所以建议凡是使用 Spring 工厂加载机制的场景，建议覆盖 hashCode 和 equals。</p>
+<p>SB 的事件监听器均由 Spring 工厂加载机制加载并初始化，它们并非 Spring Bean，<strong>因此无法享受注解驱动和 Bean 生命周期管理回调接口的『福利』</strong>，不过这并不影响他们获得 Spring Bean，因为有关联的 ConfigurableApplicationContext 对象。<br>这个要对比  ApplicationRunner 和 CommandLineRunner  看。</p>
+<p>SB 引入 SpringApplication 大概是对 Spring 应用上下文的生命周期的补充。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>喜欢就请我吃包辣条吧！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/image/pay/wx.jpg" alt="Kerronex WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/image/pay/zfb.jpg" alt="Kerronex Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Kerronex
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://sakanoy.com/2020/04/18/SpringBoot编程思想之不求甚解/" title="SpringBoot编程思想之不求甚解">https://sakanoy.com/2020/04/18/SpringBoot编程思想之不求甚解/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"><i class="fa fa-tag"></i> Java</a>
+          
+            <a href="/tags/Spring/" rel="tag"><i class="fa fa-tag"></i> Spring</a>
+          
+            <a href="/tags/SpringBoot/" rel="tag"><i class="fa fa-tag"></i> SpringBoot</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/04/11/Java中的日志框架/" rel="next" title="Java中的日志框架">
+                <i class="fa fa-chevron-left"></i> Java中的日志框架
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/04/25/TypeScript基础语法/" rel="prev" title="TypeScript基础语法">
+                TypeScript基础语法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        
+          <p class="warninginfo">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+              评论框加载失败，无法访问 Disqus<br><br>
+              你可能需要魔法上网~~
+          </p>
+
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/image/tx.png"
+               alt="Kerronex" />
+          <p class="site-author-name" itemprop="name">Kerronex</p>
+           
+              <p class="site-description motion-element" itemprop="description">程序猿/二刺螈<br/>夜猫族/爱折腾</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">130</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="Mailto:bfchengnuo@gmail.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-envelope-o"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://GitHub.com/bfchengnuo" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://sakanoy.com/MyRecord/#/" target="_blank" title="笔记本">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  笔记本
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.cnblogs.com/bfchengnuo" target="_blank" title="博客园">
+                  
+                    <i class="fa fa-fw fa-paw"></i>
+                  
+                  博客园
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              小伙伴们~
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://heartsky.info" title="HeartSky" target="_blank">HeartSky</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.kiuber.me" title="Kiuber" target="_blank">Kiuber</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/nightcharm" title="夜Charm" target="_blank">夜Charm</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#初探SpringBoot"><span class="nav-number">1.</span> <span class="nav-text">初探SpringBoot</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特性"><span class="nav-number">1.1.</span> <span class="nav-text">特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#独立的Spring应用"><span class="nav-number">1.2.</span> <span class="nav-text">独立的Spring应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可执行JAR"><span class="nav-number">1.3.</span> <span class="nav-text">可执行JAR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#嵌入式Web容器"><span class="nav-number">1.4.</span> <span class="nav-text">嵌入式Web容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自动装配"><span class="nav-number">1.5.</span> <span class="nav-text">自动装配</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SpringBootApplication"><span class="nav-number">1.5.1.</span> <span class="nav-text">@SpringBootApplication</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SpringBootConfiguration"><span class="nav-number">1.5.2.</span> <span class="nav-text">@SpringBootConfiguration</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建自动配置类"><span class="nav-number">1.6.</span> <span class="nav-text">创建自动配置类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Production-Ready特性"><span class="nav-number">1.7.</span> <span class="nav-text">Production-Ready特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#后记"><span class="nav-number">1.8.</span> <span class="nav-text">后记</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#走向自动装配"><span class="nav-number">2.</span> <span class="nav-text">走向自动装配</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#注解驱动的发展"><span class="nav-number">2.1.</span> <span class="nav-text">注解驱动的发展</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注解编程模型"><span class="nav-number">2.2.</span> <span class="nav-text">注解编程模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注解驱动设计模式"><span class="nav-number">2.3.</span> <span class="nav-text">注解驱动设计模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SpringWeb自动装配"><span class="nav-number">2.3.1.</span> <span class="nav-text">SpringWeb自动装配</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#条件装配"><span class="nav-number">2.3.2.</span> <span class="nav-text">条件装配</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SB自动装配"><span class="nav-number">2.4.</span> <span class="nav-text">SB自动装配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义SB自动装配"><span class="nav-number">2.5.</span> <span class="nav-text">自定义SB自动装配</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#理解SpringApplication"><span class="nav-number">3.</span> <span class="nav-text">理解SpringApplication</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SpringApplication初始化阶段"><span class="nav-number">3.1.</span> <span class="nav-text">SpringApplication初始化阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SpringApplication运行阶段"><span class="nav-number">3.2.</span> <span class="nav-text">SpringApplication运行阶段</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#上下文准备阶段"><span class="nav-number">3.2.1.</span> <span class="nav-text">上下文准备阶段</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#拓展-理解Spring事件"><span class="nav-number">3.2.2.</span> <span class="nav-text">拓展-理解Spring事件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#拓展-Spring内建事件"><span class="nav-number">3.2.3.</span> <span class="nav-text">拓展-Spring内建事件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#拓展-Spring应用上下文事件"><span class="nav-number">3.2.4.</span> <span class="nav-text">拓展-Spring应用上下文事件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Spring事件小结"><span class="nav-number">3.2.5.</span> <span class="nav-text">Spring事件小结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#拓展-SB事件"><span class="nav-number">3.2.6.</span> <span class="nav-text">拓展-SB事件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#拓展-SB内建事件"><span class="nav-number">3.2.7.</span> <span class="nav-text">拓展-SB内建事件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#上下文启动阶段"><span class="nav-number">3.2.8.</span> <span class="nav-text">上下文启动阶段</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#上下文启动后阶段"><span class="nav-number">3.2.9.</span> <span class="nav-text">上下文启动后阶段</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SpringApplication结束阶段"><span class="nav-number">3.3.</span> <span class="nav-text">SpringApplication结束阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#应用退出阶段"><span class="nav-number">3.4.</span> <span class="nav-text">应用退出阶段</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他"><span class="nav-number">4.</span> <span class="nav-text">其他</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+    <div style="height: 370px;background-image: url(/image/bj.png);background-repeat: no-repeat; margin-left: 31%;"></div>
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+<span id="sitetime"></span>
+<span class="my-face">(●'◡'●)ﾉ♥</span>
+<script language=javascript>
+function siteTime(){
+window.setTimeout("siteTime()", 1000);
+var seconds = 1000
+var minutes = seconds * 60
+var hours = minutes * 60
+var days = hours * 24
+var years = days * 365
+
+var today = new Date()
+var todayYear = today.getFullYear()
+var todayMonth = today.getMonth()
+var todayDate = today.getDate()
+var todayHour = today.getHours()
+var todayMinute = today.getMinutes()
+var todaySecond = today.getSeconds()
+
+/* Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳) 
+year - 作为date对象的年份，为4位年份值
+month - 0-11之间的整数，做为date对象的月份
+day - 1-31之间的整数，做为date对象的天数
+hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+minutes - 0-59之间的整数，做为date对象的分钟数
+seconds - 0-59之间的整数，做为date对象的秒数
+microseconds - 0-999之间的整数，做为date对象的毫秒数 */
+var t1 = Date.UTC(2016,3,30,8,0,0)
+var t2 = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond)
+var diff = t2-t1
+
+var diffYears = Math.floor(diff/years)
+var diffDays = Math.floor((diff/days)-diffYears*365)
+var diffDaysAll = Math.floor(diff/days)
+var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours)
+var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes)
+var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds)
+document.getElementById("sitetime").innerHTML=" 本站已萌萌哒运行 "+diffDaysAll+" 天 "+diffHours+" 小时 "+diffMinutes+" 分钟 "+diffSeconds+" 秒 "
+}
+siteTime()
+</script>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共521.4k字</span>
+
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'bfchengnuo';
+      var disqus_identifier = '2020/04/18/SpringBoot编程思想之不求甚解/';
+
+      var disqus_title = "SpringBoot编程思想之不求甚解";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":130,"height":170,"hOffset":30,"vOffset":-10},"mobile":{"show":false},"react":{"opacity":0.7},"log":false});</script></body>
+</html>

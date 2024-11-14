@@ -1,0 +1,1305 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Microsoft Yahei:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Java," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakanoy" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/image/tb.png?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="想要有更强的竞争力，这部分一定是得学的，并且小公司的话，你也不太可能只仅仅开发，这些也要全要搞。多了解一些总不是坏事，想要走的更远的话。介绍下 JDK 或者第三方的一些工具来祝你优化你的程序！">
+<meta name="keywords" content="Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java性能监控与调优">
+<meta property="og:url" content="https://sakanoy.com/2019/03/29/Java性能监控与调优/index.html">
+<meta property="og:site_name" content="Sakanoy">
+<meta property="og:description" content="想要有更强的竞争力，这部分一定是得学的，并且小公司的话，你也不太可能只仅仅开发，这些也要全要搞。多了解一些总不是坏事，想要走的更远的话。介绍下 JDK 或者第三方的一些工具来祝你优化你的程序！">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://sakanoy.com/image/dev/JVM内存结构.png">
+<meta property="og:updated_time" content="2019-03-30T07:17:48.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java性能监控与调优">
+<meta name="twitter:description" content="想要有更强的竞争力，这部分一定是得学的，并且小公司的话，你也不太可能只仅仅开发，这些也要全要搞。多了解一些总不是坏事，想要走的更远的话。介绍下 JDK 或者第三方的一些工具来祝你优化你的程序！">
+<meta name="twitter:image" content="https://sakanoy.com/image/dev/JVM内存结构.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://sakanoy.com/2019/03/29/Java性能监控与调优/"/>
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-bounce.css">
+
+  <title> Java性能监控与调优 | Sakanoy </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-77463916-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakanoy</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">立于浮华之世,奏响天籁之音.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-mark">
+          <a href="/mark" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-retweet"></i> <br />
+            
+            笔记本
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-book"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-music">
+          <a href="/music" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-music"></i> <br />
+            
+            音乐台
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://sakanoy.com/2019/03/29/Java性能监控与调优/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Kerronex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/image/tx.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakanoy">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Java性能监控与调优
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-29T14:48:50+00:00">
+                2019-03-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-eye"></i> 热度
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-wordcount">
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  5,564
+                </span>
+              
+
+              
+
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <div style="display: none;color: #999" class="note warning" id='timeliness'></div>
+        <script language=javascript>
+          var days = (new Date().getTime() - 1553870930000) / 86400000;
+          if(days > 180) {
+            var infoDom = document.getElementById("timeliness");
+            infoDom.innerHTML = "提醒：本文发布于 " + Math.round(days) + " 天前，文中所描述的信息可能已发生改变，请谨慎使用。";
+            infoDom.style.display = "block"
+          }
+        </script>
+        <p>想要有更强的竞争力，这部分一定是得学的，并且小公司的话，你也不太可能只仅仅开发，这些也要全要搞。多了解一些总不是坏事，想要走的更远的话。<br>介绍下 JDK 或者第三方的一些工具来祝你优化你的程序！<a id="more"></a></p>
+<h2 id="JVM参数"><a href="#JVM参数" class="headerlink" title="JVM参数"></a>JVM参数</h2><p>首先来了解下 JVM 参数的类型，一般来说，可以分为下面的三大类：</p>
+<ul>
+<li>标准参数<br>在 JVM 的各个版本中基本不变，比较稳定的。<br>例如：<code>-help</code>、 <code>-server</code>、 <code>-client</code>、 <code>-version</code>、<code>-cp</code>、 <code>-classpath</code></li>
+<li>X 参数<br>非标准化参数，有可能会变，但是变化比较小。<br>例如，解释执行：<code>-Xint</code>、第一次使用就编译成本地代码：<code>-Xcomp</code> 、混合模式（默认）：<code>-Xmixed</code></li>
+<li>XX 参数<br>使用的最多的一类参数，相对不稳定，主要用于 JVM 调优和 Debug。<br>它还可以再分类，例如：<br>布尔类型：<code>-XX:[+-]&lt;name&gt;</code> 表示启用或者禁用某个属性，启用 G1 垃圾收集器 <code>-XX:+UseG1GC</code>。<br>非布尔类型，也就是 K-V 的形式：<code>-XX:&lt;name&gt;=&lt;val&gt;</code> 就是用来调整属性的。</li>
+</ul>
+<p>我们见的最多的应该是 -Xms 和 -Xmx 了，然而它俩其实是 XX 参数，是一种简写形式。<br>-Xms 等价于 <code>-XX:InitialHeapSize</code> ；-Xmx 等价于 <code>-XX:MaxHeapSize</code> ；-Xss 等价于 <code>-XX:ThreadStackSize</code></p>
+<h3 id="查看JVM运行时参数"><a href="#查看JVM运行时参数" class="headerlink" title="查看JVM运行时参数"></a>查看JVM运行时参数</h3><p>使用到的参数有：</p>
+<ul>
+<li>-XX:+PrintFlagsInitial<br>查看初始值</li>
+<li>-XX:+PrintFlagsFinal<br>查看最终值</li>
+<li>-XX:+UnlockExperimentalVMOptions<br>解锁实验参数，有些参数需要解锁后才可以设置。</li>
+<li>-XX:+UnlockDiagnosticVMOptions<br>解锁诊断参数</li>
+<li>-XX:+PrintCommandLineFlags<br>打印命令行参数</li>
+</ul>
+<h3 id="PrintFlagsFinal"><a href="#PrintFlagsFinal" class="headerlink" title="PrintFlagsFinal"></a>PrintFlagsFinal</h3><p>打印的值有两类，<code>=</code> 表示默认值；<code>:=</code> 表示被用户或者 JVM 修改后的值。<br>可以在命令行中使用 <code>java -XX:+PrintFlagsFinal -version</code> 来体验一把。</p>
+<h3 id="jps"><a href="#jps" class="headerlink" title="jps"></a>jps</h3><p>专门用来查看 Java 进程的，跟 Linux 中的 ps 指令类似，可以使用 <code>jps -l</code> 来查看详细信息，更多的参数介绍可以在官方的文档中找到。</p>
+<h3 id="jinfo"><a href="#jinfo" class="headerlink" title="jinfo"></a>jinfo</h3><p>可以用来查看正在运行的 JVM 进程的参数，不过需要你知道参数的名字才行，例如：<code>jinfo -flag MaxHeapSize [pid]</code> 、查看垃圾回收器的：<code>jinfo -flag [UseConcMarkSweepGC, UseG1GC] [pid]</code></p>
+<h3 id="jstat"><a href="#jstat" class="headerlink" title="jstat"></a>jstat</h3><p>可以查看 JVM 统计信息，例如类装载（-class）、垃圾收集（-gc）、JIT编译信息。<br>举个例子：<code>jstat -class [pid] 1000 10</code> 后面两个是可选的，意思是每隔 1000ms 输出一次，一共输出 10 次。<br>至于输出的是什么，文档里都有写，C 结尾表示的就是总量，U 结尾就是表示的已使用。</p>
+<h3 id="内存结构"><a href="#内存结构" class="headerlink" title="内存结构"></a>内存结构</h3><p>简单起见可以参考这张图：</p>
+<p><img src="/image/dev/JVM内存结构.png" alt="JVM内存结构"></p>
+<p>非堆区也叫 Metaspace，是 JDK8+ 才有的，它移除了永久代的概念，使用堆外直接内存；其中的 CCS 不一定存在，当启用了指针压缩（64 -&gt; 32）才会有，CodeCache 是跟 JIT 编译相关的，还有一些其他的东西。<br>之前也看到过 64 位的 JVM 跟 32 位的 JVM 其实变化很大的，指针膨胀就是个大问题。</p>
+<h2 id="关于内存溢出"><a href="#关于内存溢出" class="headerlink" title="关于内存溢出"></a>关于内存溢出</h2><p>OOM 应该是常见的一种情况了，常见的分析思路就是看 Dump 文件，也就是内存镜像文件，发生 OOM 时自动导出这个文件可以这样配置：<code>-XX:+HeapDumpOnOutOfMemoryError</code> 、<code>-XX:HeapDumpPath=./</code></p>
+<p>除了自动导出，还可以使用 jmap 命令来手动导出。<br>例：<code>jmap -dump:format=b,file=heap.hprof [pid]</code> 、<code>jmap -heap [pid]</code></p>
+<h3 id="使用MAT分析"><a href="#使用MAT分析" class="headerlink" title="使用MAT分析"></a>使用MAT分析</h3><p>这是 Eclipse 的一个工具，非常好用，官方地址：<a href="https://www.eclipse.org/mat/" target="_blank" rel="noopener">https://www.eclipse.org/mat/</a><br>载入 hprof 文件后，主页就会展示内存占用的分布情况，并且猜测那一块会有 OOM 的可能。<br>常用的就两个功能，查看对象的数量和查看对象占用的内存，一般来说只看强引用就行。<br>这个软件的详细用法 Google 一下。</p>
+<h2 id="死循环与死锁"><a href="#死循环与死锁" class="headerlink" title="死循环与死锁"></a>死循环与死锁</h2><p>这里要介绍下 jstack 这个命令，它可以看到线程信息，当发现我们的 CPU 飙高，就有可能发生了死循环或者死锁的情况。<br>使用 jstack 输出指定 pid 的情况，然后重定向到一个文件里，拿下来分析就好了。</p>
+<p>PS：使用 <code>top -p [pid] -H</code> 命令可以查看某个进程里面的线程情况，使用 <code>printf &quot;%x&quot; xxx</code> 可以将十进制的 pid 转换为 16 进制。</p>
+<h2 id="jvisualvm可视化"><a href="#jvisualvm可视化" class="headerlink" title="jvisualvm可视化"></a>jvisualvm可视化</h2><p>jvisualvm 是 JDK 自带的一个工具，使用它可以可视化的监控 Java 程序的运行情况，当然，远程的也是可以进行监控的，不过需要设置了 JMX 才行。<br>然后，它可以安装第三方插件，推荐的两个插件是：VisualGC 和 BtraceWorkbench。</p>
+<p>插件地址：<a href="http://visualvm.github.io/pluginscenters.html" target="_blank" rel="noopener">http://visualvm.github.io/pluginscenters.html</a><br>需要先把对应版本的源添加进配置里才可以下载安装。<br>并且官网是有中文版的教程的，可以看一看。</p>
+<h2 id="Btrace调试"><a href="#Btrace调试" class="headerlink" title="Btrace调试"></a>Btrace调试</h2><p>它的作用是在我们的应用程序不重启不修改，正在运行的情况下动态修改字节码，达到监控调试的目的。<br>使用步骤按照官方文档，设置个 <strong>BTRACE_HOME</strong> 的环境变量就可以了，运行方式有两种，一种直接命令行：<code>btrace &lt;PID&gt; &lt;trace_script&gt;</code> ，另一种可以使用 jvisualvm 插件来配合实现。<br>脚本代码非常简单，跟我们的 Java 代码也很类似（拦截器），所以不要怕。</p>
+<p>至于下载地址，在 Github 上搜就可以了，项目主页：<a href="https://github.com/btraceio/btrace" target="_blank" rel="noopener">https://github.com/btraceio/btrace</a></p>
+<p>脚本示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@BTrace</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PrintArgSimple</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 在那个类，那个方法，什么时候进行拦截</span></span><br><span class="line">  <span class="meta">@OnMethod</span>(</span><br><span class="line">    clazz=<span class="string">"com.imooc.monitor_tuning.chapter4.Ch4Controller"</span>,</span><br><span class="line">    method=<span class="string">"arg1"</span>,</span><br><span class="line">    location=<span class="meta">@Location</span>(Kind.ENTRY)</span><br><span class="line">  )</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">anyRead</span><span class="params">(@ProbeClassName String pcn, @ProbeMethodName String pmn, AnyType[] args)</span> </span>&#123;</span><br><span class="line">    BTraceUtils.printArray(args);</span><br><span class="line">    BTraceUtils.println(pcn+<span class="string">","</span>+pmn);</span><br><span class="line">    BTraceUtils.println();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编写脚本所依赖的几个 jar 包在你下载的安装包里都有，使用也非常简单，直接跟类名就行，他没有包的概念，并且跟程序是独立的。</p>
+<p>使用 -cp 来指定额外的 classpath 依赖第三方的类库。</p>
+<h3 id="拦截方法"><a href="#拦截方法" class="headerlink" title="拦截方法"></a>拦截方法</h3><p>包括构造方法也是可以的，使用的是字节码风格 <code>&lt;init&gt;</code>。<br>默认是在入口的时候进行拦截，其他的拦截时机：</p>
+<ul>
+<li>ENTRY：入口（默认）</li>
+<li>RETURN：返回</li>
+<li>THROW：异常</li>
+<li>Line：行</li>
+</ul>
+<p>如果你的代码有异常，但是被 try 给吃掉了，那么如何确定代码是否抛异常了呢，可以使用官方提供的一个代码示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@BTrace</span> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PrintOnThrow</span> </span>&#123;    </span><br><span class="line">  <span class="comment">// store current exception in a thread local</span></span><br><span class="line">  <span class="comment">// variable (@TLS annotation). Note that we can't</span></span><br><span class="line">  <span class="comment">// store it in a global variable!</span></span><br><span class="line">  <span class="meta">@TLS</span> </span><br><span class="line">  <span class="keyword">static</span> Throwable currentException;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// introduce probe into every constructor of java.lang.Throwable</span></span><br><span class="line">  <span class="comment">// class and store "this" in the thread local variable.</span></span><br><span class="line">  <span class="meta">@OnMethod</span>(</span><br><span class="line">    clazz=<span class="string">"java.lang.Throwable"</span>,</span><br><span class="line">    method=<span class="string">"&lt;init&gt;"</span></span><br><span class="line">  )</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">onthrow</span><span class="params">(@Self Throwable self)</span> </span>&#123;<span class="comment">//new Throwable()</span></span><br><span class="line">    currentException = self;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@OnMethod</span>(</span><br><span class="line">    clazz=<span class="string">"java.lang.Throwable"</span>,</span><br><span class="line">    method=<span class="string">"&lt;init&gt;"</span></span><br><span class="line">  )</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">onthrow1</span><span class="params">(@Self Throwable self, String s)</span> </span>&#123;<span class="comment">//new Throwable(String msg)</span></span><br><span class="line">    currentException = self;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@OnMethod</span>(</span><br><span class="line">    clazz=<span class="string">"java.lang.Throwable"</span>,</span><br><span class="line">    method=<span class="string">"&lt;init&gt;"</span></span><br><span class="line">  )</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">onthrow1</span><span class="params">(@Self Throwable self, String s, Throwable cause)</span> </span>&#123;<span class="comment">//new Throwable(String msg, Throwable cause)</span></span><br><span class="line">    currentException = self;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@OnMethod</span>(</span><br><span class="line">    clazz=<span class="string">"java.lang.Throwable"</span>,</span><br><span class="line">    method=<span class="string">"&lt;init&gt;"</span></span><br><span class="line">  )</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">onthrow2</span><span class="params">(@Self Throwable self, Throwable cause)</span> </span>&#123;<span class="comment">//new Throwable(Throwable cause)</span></span><br><span class="line">    currentException = self;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// when any constructor of java.lang.Throwable returns</span></span><br><span class="line">  <span class="comment">// print the currentException's stack trace.</span></span><br><span class="line">  <span class="meta">@OnMethod</span>(</span><br><span class="line">    clazz=<span class="string">"java.lang.Throwable"</span>,</span><br><span class="line">    method=<span class="string">"&lt;init&gt;"</span>,</span><br><span class="line">    location=<span class="meta">@Location</span>(Kind.RETURN)</span><br><span class="line">  )</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">onthrowreturn</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (currentException != <span class="keyword">null</span>) &#123;</span><br><span class="line">      BTraceUtils.Threads.jstack(currentException);</span><br><span class="line">      BTraceUtils.println(<span class="string">"====================="</span>);</span><br><span class="line">      currentException = <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同样，你可以判断方法的某行代码是否执行：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@BTrace</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PrintLine</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@OnMethod</span>(</span><br><span class="line">    clazz=<span class="string">"com.imooc.monitor_tuning.chapter4.Ch4Controller"</span>,</span><br><span class="line">    <span class="comment">// 支持使用正则表达式： /.*/</span></span><br><span class="line">    method=<span class="string">"exception"</span>,</span><br><span class="line">    location=<span class="meta">@Location</span>(value=Kind.LINE, line=<span class="number">20</span>)</span><br><span class="line">  )</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">anyRead</span><span class="params">(@ProbeClassName String pcn, @ProbeMethodName String pmn, <span class="keyword">int</span> line)</span> </span>&#123;</span><br><span class="line">    BTraceUtils.println(pcn+<span class="string">","</span>+pmn + <span class="string">","</span> +line);</span><br><span class="line">    BTraceUtils.println();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在处理方法参数类型的时候，你可以使用 AnyType 来接收，也可以使用确定的类型。</p>
+<p>生产环境下可以使用，但是要注意，被修改的字节码是不会被还原的，除非重启 JVM。</p>
+<h2 id="tomcat调试"><a href="#tomcat调试" class="headerlink" title="tomcat调试"></a>tomcat调试</h2><p>使用 jpda 可以进行远程调试，相关的开启方法自行 Google，在配置文件中设置好端口后，在本地的 IDE 里直接填上就可以了。</p>
+<p>tomcat 自带的管理界面比较简陋，更好的方案是使用 <strong>psi-probe</strong> 来监控，可以在 Github 上找到。</p>
+<p>优化方面，主要着重的配置是：</p>
+<ul>
+<li>maxConnections<br>猫能够接受和处理的最大连接数，在 8+ 版本，使用了 NIO 技术，多路复用提高了性能。<br>使用 NIO 的情况下，默认是 10000</li>
+<li>acceptCount<br>当连接数超出了最大值，进入一个等待队列，这个属性控制队列的大小，默认 100</li>
+<li>maxThreads<br>配置工作线程的个数，默认是 200，同时并发处理的个数。</li>
+<li>minSpareThreads<br>最小空闲的工作线程数，不要太小。</li>
+<li>enableLookups<br>使用  <code>request.getRemoteHost()</code> 时进行 DNS 查询，建议禁用，8.5 默认禁用。</li>
+<li>autoDeploy<br>猫运行时，要不要周期性的检查是不是有新应用需要部署，需要开一个线程来周期性检测，生产环境要关闭，默认开启。</li>
+<li>reloadable<br>来监控 <code>/WEB-INF/classes/</code> 和 <code>/WEB-INF/lib</code> 的变化，同理建议禁用，8.5 默认禁用。<br>开发环境，用来支持热加载还是不错的。</li>
+<li>protocol<br>在 server.xml 文件中配置，8+ 版本默认的使用 NIO，如果是高并发可以尝试使用 APR ，它使用的是 native 方法，性能会有一定提升。</li>
+<li>分布式情况下，如果使用了 SpringSession 类似的解决方案，建议禁用猫的 session，尤其是使用 JSP 的时候。</li>
+</ul>
+<p>参考文档：docs/config/http.html、docs/config/host.html、docs/config/context.html</p>
+<h2 id="nginx优化"><a href="#nginx优化" class="headerlink" title="nginx优化"></a>nginx优化</h2><p>配置文件的解读就不说了，Google 很多，要注意的是，配置反向代理要关闭 selinux，setenforce 0。<br>使用 <code>nginx -V</code> 可以查看编译参数。</p>
+<p>使用 nginx 提供的 <strong>ngx_http_stub_status</strong> 配置来监控连接信息，要使用它需要将这个模块加入编译参数才行。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">location = /nginx_status &#123;</span><br><span class="line">  stub_status on;</span><br><span class="line">  access_log off;</span><br><span class="line">  allow 127.0.0.1;</span><br><span class="line">  deny all;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>还有一个好用的工具 ngxtop，使用 python 的 pip 包管理直接 install 就好。<br>在 Github 上可以找到它的官方文档（不过这个项目已经不活跃了）。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 基本使用</span><br><span class="line">ngxtop -c /etc/nginx/nginx.conf</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 查询状态是 200 的</span><br><span class="line">ngxtop -c /etc/nginx/nginx.conf -i 'status == 200'</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 查询访问最多的 ip</span><br><span class="line">ngxtop -c /etc/nginx/nginx.conf -g remote_addr</span><br></pre></td></tr></table></figure>
+<p>再来介绍另一款图形化的监控工具：Nginx-rrd，这个是基于 PHP 来做的，所以需要 PHP 的相关依赖，然后需要在 php-fpm 中跟 nginx 统一用户，具体的配置还蛮多的，可以去 Google 一下。<br>它的原理是使用定时任务来扫描，每次都会存储成一张张的图片，最后使用 web 端来进行展示。</p>
+<p>PS：这些监控工具都是基于 ngx_http_stub_status 来做的，所以上面那个 location 配置不能少。</p>
+<hr>
+<p>一些常见的基本的 Nginx 优化：</p>
+<ul>
+<li>增加工作线程数和并发连接数<br>默认情况下，Nginx 只有一个工作线程，并发数为 1024。</li>
+<li>启用长连接<br>默认对客户端使用的是长连接，也可以对反向代理的后端使用长连接。</li>
+<li>启用缓存、压缩</li>
+<li>操作系统参数优化</li>
+</ul>
+<p>下面见一个示例的配置文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"># 配置工作线程，受限于 CPU 的数量，一般配置与 CPU 的数量相等。</span><br><span class="line">worker_processes  1;</span><br><span class="line"></span><br><span class="line">events &#123;</span><br><span class="line">	# 每一个线程打开的最大连接数，包含 nginx 与客户端和 nginx 与 upstream 之间的连接</span><br><span class="line">	# 受限于操作系统，需要修改操作系统参数，默认 1024</span><br><span class="line">	worker_connections  10240;</span><br><span class="line">	# 可以一次建立多个连接</span><br><span class="line">	multi_accept on;</span><br><span class="line">	use epoll;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># 配置与后端的长连接示例</span><br><span class="line">server &#123;</span><br><span class="line">	listen 80;</span><br><span class="line">	server_name loli.com;</span><br><span class="line"></span><br><span class="line">	# 配置反向代理的集群</span><br><span class="line">	upstream server_pool&#123;</span><br><span class="line">    server localhost:8080 weight=1 max_fails=2 fail_timeout=30s;</span><br><span class="line">    server localhost:8081 weight=1 max_fails=2 fail_timeout=30s;</span><br><span class="line">    # 300个长连接</span><br><span class="line">    keepalive 300;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	# 配置反向代理</span><br><span class="line">	location / &#123; </span><br><span class="line">		proxy_http_version 1.1;</span><br><span class="line">		proxy_set_header Upgrade $http_upgrade;</span><br><span class="line">		proxy_set_header Connection &quot;upgrade&quot;;</span><br><span class="line">		proxy_pass http://server_poll/;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后可以使用 <code>nginx -t</code> 来测试下配置文件是否正确。<br>开启缓存和压缩：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"># 开启gzip</span><br><span class="line">gzip on;</span><br><span class="line"># 启用gzip压缩的最小文件，小于设置值的文件将不会压缩</span><br><span class="line">gzip_min_length 1k;</span><br><span class="line"># gzip 压缩级别，1-10，数字越大压缩的越好，也越占用CPU时间，后面会有详细说明</span><br><span class="line">gzip_comp_level 2;</span><br><span class="line"># 进行压缩的文件类型。javascript有多种形式。其中的值可以在 mime.types 文件中找到。</span><br><span class="line">gzip_types text/plain application/javascript application/x-javascript text/css application/xml text/javascript application/x-httpd-php image/jpeg image/gif image/png font/ttf font/otf image/svg+xml;</span><br><span class="line"># 是否在http header中添加Vary: Accept-Encoding，建议开启</span><br><span class="line">gzip_vary on;</span><br><span class="line"># 禁用IE 6 gzip</span><br><span class="line">gzip_disable &quot;MSIE [1-6]\.&quot;;</span><br><span class="line"></span><br><span class="line"># 开启缓存</span><br><span class="line">location ~* ^.+\.(ico|gif|jpg|jpeg|png)$ &#123; </span><br><span class="line">    access_log   off; </span><br><span class="line">    expires      30d;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">location ~* ^.+\.(css|js|txt|xml|swf|wav)$ &#123;</span><br><span class="line">    access_log   off;</span><br><span class="line">    expires      24h;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">location ~* ^.+\.(html|htm)$ &#123;</span><br><span class="line">    expires      1h;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">location ~* ^.+\.(eot|ttf|otf|woff|svg)$ &#123;</span><br><span class="line">    access_log   off;</span><br><span class="line">    expires max;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># 格式</span><br><span class="line"># expires 30s;</span><br><span class="line"># expires 30m;</span><br><span class="line"># expires 2h;</span><br><span class="line"># expires 30d;</span><br></pre></td></tr></table></figure>
+<p>操作系统参数优化：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> /etc/sysctl.conf</span><br><span class="line"><span class="meta">#</span> ipv4 相关优化</span><br><span class="line"><span class="meta">#</span> 防止一个套接字在有过多试图连接到达时引起过载，默认为 0 表示关闭</span><br><span class="line">sysctl -w net.ipv4.tcp_syncookies = 1</span><br><span class="line"><span class="meta">#</span> os 的一个等待队列，默认 128，连接队列</span><br><span class="line">sysctl -w net.core.somaxconn = 1024</span><br><span class="line"><span class="meta">#</span> timewait 超时时间，在 tcp 的四次挥手时的状态，此状态下虽然已经断开，但是不能拿来用，没必要太长</span><br><span class="line">sysctl -w net.ipv4.tcp_fin_timeout = 10</span><br><span class="line"><span class="meta">#</span> os 直接使用 timewait 的连接，默认 0 表示关闭</span><br><span class="line">sysctl -w net.ipv4.tcp_tw_reuse = 1</span><br><span class="line"><span class="meta">#</span> timewait 回收禁用，默认 0，为了不必要的麻烦</span><br><span class="line">sysctl -w net.ipv4.tcp_tw_recycle = 0</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 每个进程打开文件数量的限制</span><br><span class="line"><span class="meta">#</span> /etc/security/limits.conf</span><br><span class="line">* hard nofile 204800</span><br><span class="line">* soft nofile 204800</span><br><span class="line">* soft core unlimited</span><br><span class="line">* soft stack 204800</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> nginx 的 TCP 优化</span><br><span class="line">http &#123;</span><br><span class="line"><span class="meta">	#</span> 减少文件在应用和内核之间拷贝</span><br><span class="line">  sendfile           on;</span><br><span class="line"><span class="meta">  #</span> 当数据包达到一定大小再发送</span><br><span class="line">  tcp_nopush         on;</span><br><span class="line"><span class="meta">  #</span> 有数据随时发送</span><br><span class="line">  tcp_nodelay        off;</span><br><span class="line">  ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>更多详细配置参考：<br><a href="https://wsgzao.github.io/post/sysctl/" target="_blank" rel="noopener">https://wsgzao.github.io/post/sysctl/</a><br><a href="https://imququ.com/post/my-nginx-conf-for-wpo.html" target="_blank" rel="noopener">https://imququ.com/post/my-nginx-conf-for-wpo.html</a><br><a href="http://sfau.lt/b5DA5u" target="_blank" rel="noopener">http://sfau.lt/b5DA5u</a></p>
+<h2 id="垃圾回收"><a href="#垃圾回收" class="headerlink" title="垃圾回收"></a>垃圾回收</h2><p>如何选择垃圾收集器呢？</p>
+<ul>
+<li>优先调整堆大小，让服务器自己来选择</li>
+<li>如果内存小于 100M，使用串行收集器</li>
+<li>如果是单核，并且没有停顿时间的要求，串行或者 JVM 自己选</li>
+<li>如果允许停顿时间超过 1 秒，选择并行或者 JVM 自己选</li>
+<li>如果响应时间很重要，并且不能超过 1 秒，使用并发收集器</li>
+</ul>
+<p>几种垃圾收集器在之前的笔记里都有介绍，这里只作补充。<br>对于并行的 GC，是有自适应的特性的，就是说你给定几个指标（吞吐量、停顿时间等）它会自动调整堆大小，但这不是最优的方案，因为动态调整也是消耗性能的。<br>对应 Web 应用，我们还是比较关注停顿时间的，所以一般都是用并发的 GC，例如 CMS，这类收集器是对 CPU 敏感的，虽然跟用户线程并发执行，但是用户线程的 cpu 资源就少了，并且会产生浮动垃圾和空间碎片，在 G1 出现之前使用还是非常广泛的，在 J8 中官方推荐使用 G1。</p>
+<p>G1 在 JDK7 开始提供，到 J8 已经比较成熟了，适用于大内存、低停顿的场景，在 J9 里 G1 已经成为默认的收集器，并且将 CMS 设置为废弃。<br>在 G1 中，老年代新生代是逻辑上的称呼了，它将堆分为一个个的 Region，还有一些成为 H 区用来存放大对象（超过了 Region 的一半）。<br>G1 中的 YoungGC 和传统的并没有什么区别，但是它没有了 FullGC，多了个 MixedGC，它回收所有 Young 和部分 Old，它也有并发标记的过程，默认堆的占有率达到 45% 就会触发。在每次 YGC 之后和 MGC 之前，会检查垃圾占比是否达到了某一个阀值，只有达到了才会发生 MGC。<br>G1 的相关概念和参数还多得多，这里不再一一举例。</p>
+<p>G1 最佳实践：</p>
+<ul>
+<li>年轻代大小避免使用  -Xmn、 -XX:NewRatio 等显式设置，会覆盖暂停时间目标值</li>
+<li>暂停时间目标时间不要太严苛，其吞吐量目标是 90% 的应用程序时间和 10% 的垃圾回收时间，太严苛会直接影响吞吐量。</li>
+</ul>
+<p>当发生了下面的几种情况，可以考虑切换到 G1 了：</p>
+<ul>
+<li>50% 以上的堆被存活对象占用</li>
+<li>对象分配和晋升的速度变化非常大</li>
+<li>垃圾回收时间特别长，超过了 1 秒</li>
+</ul>
+<p>调优的过程就是在<strong>吞吐量</strong>和<strong>响应时间</strong>之间找平衡的过程，并且……在 J12 又带来了新的收集器 ZGC….。</p>
+<p>参考资料：<br><a href="https://docs.oracle.com/javase/specs/jvms/se8/html/" target="_blank" rel="noopener">J8 JVM 规范</a><br><a href="https://docs.oracle.com/javase/8/docs/" target="_blank" rel="noopener">J8文档</a><br><a href="https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/collectors.html#sthref28" target="_blank" rel="noopener">J8 GC选择</a></p>
+<h3 id="日志分析"><a href="#日志分析" class="headerlink" title="日志分析"></a>日志分析</h3><p>既然是分析日志，那么首先得拿到日志，使用这些参数来开启，然后就有日志文件了，直接读也是可以的，不过可视化更方便，可以使用这个<a href="https://gceasy.io/" target="_blank" rel="noopener">在线分析</a>，或者使用 GCViewer（在 Github）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">-XX:+PrintGCDetails</span><br><span class="line">-XX:+PrintGCTimeStamps</span><br><span class="line">-XX:+PrintGCDateStamps</span><br><span class="line">-Xloggc:$CATALINA HOME/logs/gc.log</span><br><span class="line"></span><br><span class="line">## 下面的不用也可以</span><br><span class="line">-XX:+PrintHeapAtGC</span><br><span class="line">-XX:+PrintTenuringDistribution</span><br></pre></td></tr></table></figure>
+<h3 id="GC调优"><a href="#GC调优" class="headerlink" title="GC调优"></a>GC调优</h3><p>先来看并行的 ParallelGC，指导原则：</p>
+<ul>
+<li>除非确定，否则不要设置最大堆内存</li>
+<li>优先设置吞吐量目标</li>
+<li>如果吞吐量目标达不到，调大最大内存，不能让 OS 使用 Swap，如果仍然达不到，降低目标</li>
+<li>吞吐量能达到，GC 时间太长，设置停顿时间的目标</li>
+</ul>
+<p>这些在 Oracle 官方文档里都有写的。<br>关于 G1 的调优，参考上面的 G1 最佳实践规则就可以了。</p>
+<p>调优过程要一个参数一个参数的设置，避免不知道是改的那个参数起的作用，然后这是个循序渐进的过程，不太可能一步到位的。<br>这一块的内容，还是去慕课网看视频比较好，文字不太好描述。</p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>JVM 是基于栈的架构，相比经典的基于寄存器的架构来说，它的指令更短，但是指令数量会更多。<br>例如一个经典的问题，i++ 和 ++i 那个效率高，在 fori 循环里是很常用的，可以分析字节码，会发现这两种形式翻译的字节码是一样的，所以他们的效率其实是一样的。<br>然后再看下面的一段代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">test</span><span class="params">()</span></span>&#123;</span><br><span class="line">  String s = <span class="string">"hello"</span>;</span><br><span class="line">  <span class="keyword">try</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> s;</span><br><span class="line">  &#125;<span class="keyword">finally</span>&#123;</span><br><span class="line">    s = <span class="string">"ll"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那么到底返回的是那个呢，答案是 hello，通过字节码可以看出，因为字符串是不可变对象，会将 hello 和 ll 同时压入两个本地变量，在走到 return 的时候把第一个也就是 hello 返回，然后又将第二个 ll 赋值给了第一个本地变量。</p>
+<hr>
+<p>我们知道在使用 + 进行字符串拼接时，默认会转换为 StringBuilder，那么这是绝对的么？</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">f1</span><span class="params">()</span></span>&#123;</span><br><span class="line">  <span class="keyword">final</span> String s1 = <span class="string">"hello"</span>;</span><br><span class="line">  <span class="keyword">final</span> String s2 = s1 + <span class="string">"Loli"</span>;</span><br><span class="line">  String s3 = s1 + s2;</span><br><span class="line">  System.out.println(s3);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">f2</span><span class="params">()</span></span>&#123;</span><br><span class="line">  <span class="keyword">final</span> String s1 = <span class="string">"hello"</span>;</span><br><span class="line">  String s2 = s1 + <span class="string">"Loli"</span>;</span><br><span class="line">  String s3 = s1 + s2;</span><br><span class="line">  System.out.println(s3);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以去分析字节码，这里就直接说结论，当 String 类型为 final 时，是在编译阶段就直接确定了，不会再进行拼接。<br>关于 String，还有一个很有趣的地方：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">  String s = <span class="keyword">new</span> String(<span class="string">"1"</span>);</span><br><span class="line">  s.intern();</span><br><span class="line">  String s2 = <span class="string">"1"</span>; </span><br><span class="line">  System.out.print1n(s == s2);</span><br><span class="line"></span><br><span class="line">  String s3 = <span class="keyword">new</span> String(<span class="string">"1"</span>) + <span class="keyword">new</span> String(<span class="string">"1"</span>);</span><br><span class="line">  s3.intern();</span><br><span class="line">  String s4 = <span class="string">"11"</span>;</span><br><span class="line">  System.out.print1n(s3 == s4);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在 JDK7- 和 JDK7+ 结果是不一样的，之前是两个 false，之后变成了 false 、 true，原因就是在 J7 之后字符串常量池移到了堆中，当使用 intern 方法并且常量池没有，堆中有的情况下，会将堆中的这个引用放到常量池中（常量池已经在堆中了），这样 s3 和 s4 就相等了。<br>G1 还有个字符串去重的功能（需要手动开启），也就是我们程序中字符串常量是占了很大比重的，而堆中和常量池中都有的话是很浪费的，当堆中字符串生命周期很长（有个阀值）就会触发去重操作。</p>
+<hr>
+<p>常见的代码优化：</p>
+<ul>
+<li>尽量重用对象，不要循环创建对象，比如：for 循环字符串拼接</li>
+<li>容器类初始化的时候指定长度（List、Map）</li>
+<li>集合遍历尽量减少重复计算（例如条件是不确定的 size）</li>
+<li>尽量使用 Entry 来遍历 Map</li>
+<li>尽量使用基本类型而不是包装类型</li>
+<li>及时消除过期对象的引用，防止内存泄露</li>
+<li>尽量使用局部变量，减小变量的作用域</li>
+<li>ThreadLocal 缓存线程不安全的对象 SimpleDateFormat（J8 可以直接用新的 API DateTimeFormat 它是线程安全的）</li>
+<li>尽量使用延时加载，例如单例模式（内部静态类）</li>
+<li>尽量减少使用反射，用的话也尽量加缓存</li>
+<li>慎用异常，不要用抛异常来表示正常业务逻辑，因为抛异常是比较重的操作，但是也别为了这个而不用，有些地方该用就得用。</li>
+<li>String 操作尽量少用正则</li>
+</ul>
+<p>又一个有趣的例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span></span>&#123;</span><br><span class="line">  Integer a = <span class="number">100</span>;</span><br><span class="line">  Integer b = <span class="number">100</span>;</span><br><span class="line">  <span class="comment">// true</span></span><br><span class="line">  System.out.println(a == b);</span><br><span class="line">  </span><br><span class="line">  Integer c = <span class="number">1000</span>;</span><br><span class="line">  Integer d = <span class="number">1000</span>;</span><br><span class="line">  <span class="comment">// false</span></span><br><span class="line">  System.out.println(a == b);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这是因为 Integer 会自动缓存一个字节的数字，如果在缓存中直接返回，如果不在才 new，其他有的包装类型也有部分有缓存，比如 Long，不过 Double 这种肯定是没有的啦。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>喜欢就请我吃包辣条吧！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/image/pay/wx.jpg" alt="Kerronex WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/image/pay/zfb.jpg" alt="Kerronex Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Kerronex
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://sakanoy.com/2019/03/29/Java性能监控与调优/" title="Java性能监控与调优">https://sakanoy.com/2019/03/29/Java性能监控与调优/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"><i class="fa fa-tag"></i> Java</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/26/体验ZooKeeper/" rel="next" title="体验ZooKeeper">
+                <i class="fa fa-chevron-left"></i> 体验ZooKeeper
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/04/03/算法之美-排序/" rel="prev" title="算法之美-排序">
+                算法之美-排序 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        
+          <p class="warninginfo">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+              评论框加载失败，无法访问 Disqus<br><br>
+              你可能需要魔法上网~~
+          </p>
+
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/image/tx.png"
+               alt="Kerronex" />
+          <p class="site-author-name" itemprop="name">Kerronex</p>
+           
+              <p class="site-description motion-element" itemprop="description">程序猿/二刺螈<br/>夜猫族/爱折腾</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">130</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="Mailto:bfchengnuo@gmail.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-envelope-o"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://GitHub.com/bfchengnuo" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://sakanoy.com/MyRecord/#/" target="_blank" title="笔记本">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  笔记本
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.cnblogs.com/bfchengnuo" target="_blank" title="博客园">
+                  
+                    <i class="fa fa-fw fa-paw"></i>
+                  
+                  博客园
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              小伙伴们~
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://heartsky.info" title="HeartSky" target="_blank">HeartSky</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.kiuber.me" title="Kiuber" target="_blank">Kiuber</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/nightcharm" title="夜Charm" target="_blank">夜Charm</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#JVM参数"><span class="nav-number">1.</span> <span class="nav-text">JVM参数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#查看JVM运行时参数"><span class="nav-number">1.1.</span> <span class="nav-text">查看JVM运行时参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PrintFlagsFinal"><span class="nav-number">1.2.</span> <span class="nav-text">PrintFlagsFinal</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jps"><span class="nav-number">1.3.</span> <span class="nav-text">jps</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jinfo"><span class="nav-number">1.4.</span> <span class="nav-text">jinfo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jstat"><span class="nav-number">1.5.</span> <span class="nav-text">jstat</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内存结构"><span class="nav-number">1.6.</span> <span class="nav-text">内存结构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于内存溢出"><span class="nav-number">2.</span> <span class="nav-text">关于内存溢出</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用MAT分析"><span class="nav-number">2.1.</span> <span class="nav-text">使用MAT分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#死循环与死锁"><span class="nav-number">3.</span> <span class="nav-text">死循环与死锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#jvisualvm可视化"><span class="nav-number">4.</span> <span class="nav-text">jvisualvm可视化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Btrace调试"><span class="nav-number">5.</span> <span class="nav-text">Btrace调试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#拦截方法"><span class="nav-number">5.1.</span> <span class="nav-text">拦截方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tomcat调试"><span class="nav-number">6.</span> <span class="nav-text">tomcat调试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nginx优化"><span class="nav-number">7.</span> <span class="nav-text">nginx优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#垃圾回收"><span class="nav-number">8.</span> <span class="nav-text">垃圾回收</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#日志分析"><span class="nav-number">8.1.</span> <span class="nav-text">日志分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GC调优"><span class="nav-number">8.2.</span> <span class="nav-text">GC调优</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他"><span class="nav-number">9.</span> <span class="nav-text">其他</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+    <div style="height: 370px;background-image: url(/image/bj.png);background-repeat: no-repeat; margin-left: 31%;"></div>
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+<span id="sitetime"></span>
+<span class="my-face">(●'◡'●)ﾉ♥</span>
+<script language=javascript>
+function siteTime(){
+window.setTimeout("siteTime()", 1000);
+var seconds = 1000
+var minutes = seconds * 60
+var hours = minutes * 60
+var days = hours * 24
+var years = days * 365
+
+var today = new Date()
+var todayYear = today.getFullYear()
+var todayMonth = today.getMonth()
+var todayDate = today.getDate()
+var todayHour = today.getHours()
+var todayMinute = today.getMinutes()
+var todaySecond = today.getSeconds()
+
+/* Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳) 
+year - 作为date对象的年份，为4位年份值
+month - 0-11之间的整数，做为date对象的月份
+day - 1-31之间的整数，做为date对象的天数
+hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+minutes - 0-59之间的整数，做为date对象的分钟数
+seconds - 0-59之间的整数，做为date对象的秒数
+microseconds - 0-999之间的整数，做为date对象的毫秒数 */
+var t1 = Date.UTC(2016,3,30,8,0,0)
+var t2 = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond)
+var diff = t2-t1
+
+var diffYears = Math.floor(diff/years)
+var diffDays = Math.floor((diff/days)-diffYears*365)
+var diffDaysAll = Math.floor(diff/days)
+var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours)
+var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes)
+var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds)
+document.getElementById("sitetime").innerHTML=" 本站已萌萌哒运行 "+diffDaysAll+" 天 "+diffHours+" 小时 "+diffMinutes+" 分钟 "+diffSeconds+" 秒 "
+}
+siteTime()
+</script>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共521.4k字</span>
+
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'bfchengnuo';
+      var disqus_identifier = '2019/03/29/Java性能监控与调优/';
+
+      var disqus_title = "Java性能监控与调优";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":130,"height":170,"hOffset":30,"vOffset":-10},"mobile":{"show":false},"react":{"opacity":0.7},"log":false});</script></body>
+</html>

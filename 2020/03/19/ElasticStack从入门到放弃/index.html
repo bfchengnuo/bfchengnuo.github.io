@@ -1,0 +1,1249 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Microsoft Yahei:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="数据库,分布式," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakanoy" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/image/tb.png?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="关于 ES 的基本使用之前已经写过了，然后 ELK 也许听的比较多，后来又有了一个 ELK Stack，指的就是 Elastic Stack。这一套技术用在搜索需求、日志分析非常好用，也有很多用来处理 Excel 数据的，就现在都发展来看，ES 真是绕不开都技术，早晚都是要学，ELK 一套带走就好了。毕竟这一全家桶内容很多，不打算过多深挖，很多东西都不细说了，提供关键词提点自己，用到来查到搜索方向">
+<meta name="keywords" content="数据库,分布式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ElasticStack从入门到放弃">
+<meta property="og:url" content="https://sakanoy.com/2020/03/19/ElasticStack从入门到放弃/index.html">
+<meta property="og:site_name" content="Sakanoy">
+<meta property="og:description" content="关于 ES 的基本使用之前已经写过了，然后 ELK 也许听的比较多，后来又有了一个 ELK Stack，指的就是 Elastic Stack。这一套技术用在搜索需求、日志分析非常好用，也有很多用来处理 Excel 数据的，就现在都发展来看，ES 真是绕不开都技术，早晚都是要学，ELK 一套带走就好了。毕竟这一全家桶内容很多，不打算过多深挖，很多东西都不细说了，提供关键词提点自己，用到来查到搜索方向">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-03-19T11:32:08.310Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ElasticStack从入门到放弃">
+<meta name="twitter:description" content="关于 ES 的基本使用之前已经写过了，然后 ELK 也许听的比较多，后来又有了一个 ELK Stack，指的就是 Elastic Stack。这一套技术用在搜索需求、日志分析非常好用，也有很多用来处理 Excel 数据的，就现在都发展来看，ES 真是绕不开都技术，早晚都是要学，ELK 一套带走就好了。毕竟这一全家桶内容很多，不打算过多深挖，很多东西都不细说了，提供关键词提点自己，用到来查到搜索方向">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://sakanoy.com/2020/03/19/ElasticStack从入门到放弃/"/>
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-bounce.css">
+
+  <title> ElasticStack从入门到放弃 | Sakanoy </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-77463916-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakanoy</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">立于浮华之世,奏响天籁之音.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-mark">
+          <a href="/mark" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-retweet"></i> <br />
+            
+            笔记本
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-book"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-music">
+          <a href="/music" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-music"></i> <br />
+            
+            音乐台
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://sakanoy.com/2020/03/19/ElasticStack从入门到放弃/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Kerronex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/image/tx.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakanoy">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                ElasticStack从入门到放弃
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-19T11:27:44+00:00">
+                2020-03-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/自我提升/" itemprop="url" rel="index">
+                    <span itemprop="name">自我提升</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-eye"></i> 热度
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-wordcount">
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  4,369
+                </span>
+              
+
+              
+
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <div style="display: none;color: #999" class="note warning" id='timeliness'></div>
+        <script language=javascript>
+          var days = (new Date().getTime() - 1584617264000) / 86400000;
+          if(days > 180) {
+            var infoDom = document.getElementById("timeliness");
+            infoDom.innerHTML = "提醒：本文发布于 " + Math.round(days) + " 天前，文中所描述的信息可能已发生改变，请谨慎使用。";
+            infoDom.style.display = "block"
+          }
+        </script>
+        <p>关于 ES 的基本使用之前<a href="https://github.com/bfchengnuo/MyRecord/blob/master/%E7%AC%94%E8%AE%B0/%E6%95%B0%E6%8D%AE%E5%BA%93/Elasticsearch%E5%85%A5%E9%97%A8.md" target="_blank" rel="noopener">已经写过了</a>，然后 ELK 也许听的比较多，后来又有了一个 ELK Stack，指的就是 Elastic Stack。<br>这一套技术用在搜索需求、日志分析非常好用，也有很多用来处理 Excel 数据的，就现在都发展来看，ES 真是绕不开都技术，<del>早晚都是要学</del>，ELK 一套带走就好了。<br>毕竟这一全家桶内容很多，不打算过多深挖，很多东西都不细说了，提供关键词提点自己，用到来查到搜索方向后再 Google 具体使用就好了。<a id="more"></a><br>但是，它东西真的太多了，并且枯燥，对于不喜欢数据库的我来说，以至于最终还是不能坚持，草草了事吧。</p>
+<ul>
+<li>Elasticsearch<br>是一个搜索和分析引擎（数据的存储、查询、分析）</li>
+<li>Logstash<br>是服务器端数据处理管道，能够同时从多个来源采集数据，转换数据，然后将数据发送到诸如 Elasticsearch 等“存储库”中</li>
+<li>Kibana<br>可以让用户在 Elasticsearch 中使用图形和图表对数据进行可视化</li>
+<li>Beats<br>一系列轻量型的单一功能数据采集器</li>
+</ul>
+<p>Logstash 和 Beats 的作用就是数据的收集与整理，只不过 Beats 是为了解决用户的 “我只想对某个文件进行 tail 操作”的需求。<br>上面说过它们是采集数据的，范围很广，例如文件类的有日志、excel，数据库和 http 服务也可以，还支持自定义扩展。</p>
+<p>ES 的服务端口默认 9300，Web 管理端口默认 9200.<br>官网文档：<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html" target="_blank" rel="noopener">https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html</a></p>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>复习一下 ES 的基本概念，交互是靠 RESTful API，ES 中主要的就三类：</p>
+<ul>
+<li>文档-Document<br>最小的数据单元，内含多个字段 ，类似于数据库中的一行数据；<br>由 Json Object （字段）构成，多种数据类型（可存二进制）；<br>当然，还会存在一些元数据</li>
+<li><del>类型-Type</del><br>索引可以定义一个或多个类型，文档必须属于一个类型，相当于数据库中的 table；<br>未来版本中因为索引调整为唯一，下面不再有多个类型，所以类型将会逐步消除。</li>
+<li>索引-Index<br>相同属性的文档集合，<del>相当于数据库的 Database</del>；<br>再 6+ 的版本，官方已经禁止索引下创建多个类型，可以当作是 table 了。</li>
+<li>节点-Node<br>一个 ES 的运行实例，构成集群的基本单元。<br>每一个 ES 实例可以看作就是一个 JVM 线程。</li>
+<li>集群-Cluster<br>多个节点构成的统一体</li>
+</ul>
+<p>分布式中，必然还少不了分片和备份，类似 kafka 的概念了，一个索引可以分片成多个块，存放在不同的节点，这样既可以提高吞吐量，也可以方便的扩展，降低单节点的压力；备份就不多说了，分布在其他的节点上。</p>
+<p>另外 ES 的特性还有：近实时，也就是秒级；分布式架构，方便扩展，简单说就是对 Lucene 的一个封装。</p>
+<blockquote>
+<p>倒排索引与分词：</p>
+<p>在说倒排索引之前，先要知道什么是正排索引，做比喻的话，就像一本书的目录，这就是正排索引；<br>而倒排索引就是书的名词索引页。<br>具体到 ES 的话，正排索引就是根据 ID 获取文档信息；倒排索引就是根据文档的内容（关键词）定位到是那个文档 ID；</p>
+<p>而对于分词，这个也简单，毕竟对于搜索，分词后与之建立关系才能搜索。<br>正排与倒排的关系就是 ID 到单词（或者完整信息，不分词也可）与单词到 ID 的关系（一般需要分词）。</p>
+</blockquote>
+<p>倒排索引主要包含两部分：</p>
+<ol>
+<li>单词词典（Term Dictionary）<br>记录所有文档单词和列表关联关系，一般都比较大。<br>实现一般是类似 B+ 树的结构。</li>
+<li>倒排列表（Posting List）<br>主要有 ID （获取原始信息）、单词频率（相关性算分）、位置（搜索词的前后）、偏移构成（高亮显示）。</li>
+</ol>
+<p>我们从单词词典中拿到一个词，然后通过记录的偏移量快速定位到对应的倒排列表，然后就拿到了原始 ID（还会涉及相关性算分等等步骤），最后就可以返回了。<br>PS：倒排索引是按字段来进行构建的。</p>
+<h2 id="分词"><a href="#分词" class="headerlink" title="分词"></a>分词</h2><p>说道分词，就得说分词器，组成如下：</p>
+<ul>
+<li>Character Filters<br>针对原始文本进行处理，比如去除 html 特殊标记符；<br>自带的有：HTML Strip、Mapping（字符串替换）、Pattern Replace（正则匹配替换）</li>
+<li>Tokenizer<br>将原始文本按照一定规则切分为单词；<br>自带的有 Standard、letter（非字符分割）、Whitespace、path_hierarchy 等。</li>
+<li>Token filters<br>针对 tokenizer 处理的单词就行再加工，比如转小写、删除或新增等处理；<br>自带的有 lowercase（小写转换）、stop、Synonym 等。</li>
+</ul>
+<p>在调用过程中就是按照上面都顺序执行，可以使用 <strong>analyze_api</strong> 来进行测试分词是否符合预期。<br>ES 自带的分词器有：</p>
+<ul>
+<li>Standard（默认）<br>按词切分，支持多语言，小写处理</li>
+<li>Simple<br>按照非字母拆分，小写处理</li>
+<li>Whitespace<br>按照空格切分</li>
+<li>Stop<br>相比 Simple 多了 Stop Word 处理，也就是语气助词等修饰词</li>
+<li>Keyword<br>不分词，当作一个单词输出</li>
+<li>Pattern<br>通过正则表达式自定义分词，默认 <code>\w+</code> 即非字符符号</li>
+<li>language<br>提供常见的 30+ 语言分词器</li>
+</ul>
+<p>说到中文，中文的分词是比较难的，因为中文的词之间没有明显的分隔符，并且很依赖上下文。<br>常用的中文分词器有 IK、jieba （py 流行）等。<br>另外的一些就是基于自然语言的分词系统，也就是根据上下文来切，例如 Hanlp、THULAC；如果这些分词器满足不了你，那就只能进行自定义了，就是自己写分词器的那三部分。</p>
+<p>PS：只有查询与索引使用相同的分词器才能保证一致性，一般查询不需要指定分词器，默认就是一致的。</p>
+<h2 id="Mapping"><a href="#Mapping" class="headerlink" title="Mapping"></a>Mapping</h2><p>Mapping 相当于表结构定义，定义字段名、字段类型、倒排索引相关；获取可以使用 <code>/index/_mapping</code> API 查看。<br>更多操作看文档就行了，不多说。<br>Mapping 中的字段一旦确定，禁止直接修改，因为 Lucene 实现倒排索引后禁止修改，要改只能重新建立索引做 reindex 操作，所以要慎重。<br>虽然禁止修改，但是你新增是没有问题的，这个行为也是可以通过 dynamic 来进行控制。<br>Mapping 中还可以通过 <code>copy_to</code> 来将字段进行拼接处理；通过 index 来控制是否被索引，敏感信息可以加上这个，还省空间；对空值处理的 null_value，其他还有很多可配置的，参考官方文档。</p>
+<p>ES 支持多字段特性 multi-fields，就是对一个字段采取不同的配置，例如拼音化。<br>我们还可以通过使用 <strong>dynamic-template</strong> 动态模板来设置 ES 自动匹配的内容为什么类型，例如默认我们不希望让它识别为 text 分词，这样会占用空间，以及用 float 保存浮点数节约存储等；它是由上到下顺序匹配。<br>类似的，也会有索引模板，便于索引的创建，使用 <code>/_template</code> API。</p>
+<hr>
+<p>在数据建模过程中，要注意这些配置合理化，例如：</p>
+<ul>
+<li><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/enabled.html" target="_blank" rel="noopener"><code>enabled</code></a><br>是否仅存储，不做搜索和聚合分析，节省空间</li>
+<li><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-index.html" target="_blank" rel="noopener"><code>index</code></a><br>是否构建倒排索引</li>
+<li><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/index-options.html" target="_blank" rel="noopener"><code>index_options</code></a><br>存储倒排索引的那些信息</li>
+<li><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/norms.html" target="_blank" rel="noopener"><code>norms</code></a><br>如果不需要算分排序，仅用于过滤和聚合分析，可关闭</li>
+<li><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/doc-values.html" target="_blank" rel="noopener"><code>doc_values</code></a><br>同上，要排序要分析就开，搜索过滤就没必要</li>
+<li><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/fielddata.html" target="_blank" rel="noopener"><code>fielddata</code></a><br>是否为 text 类型启用排序和聚合分析等</li>
+<li><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-store.html" target="_blank" rel="noopener"><code>store</code></a><br>是否存储字段值，当内容很多时为了避免影响性能会设置为 false，独立出去；配合 <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-source-field.html" target="_blank" rel="noopener"><code>_source</code></a> 元信息。<br>即使你使用 API 只要求返回限定字段，由于 ES 的原理，还是会拿到所有字段，只是在返回的时候给你过滤掉，所以这种治标不治本。</li>
+<li><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/coerce.html" target="_blank" rel="noopener"><code>coerce</code></a><br>是否开启类型自动转换</li>
+<li><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/dynamic.html" target="_blank" rel="noopener"><code>dynamic</code></a><br>Mapping 自动更新</li>
+</ul>
+<p>其他的就是一些 date_detection 这种控制日期是否自动转换的配置，建模的过程也不简单，如果想设计的好。<br>枚举类型一般设置为 keyword 因为不需要分词，也不需要计算，例如 HTTP 的状态码之类</p>
+<hr>
+<p>类似传统数据库，在 ES 中也可以处理表关系，Nested Object 与 Parent/child ，不过对于我来说太复杂了，不多看了，我真的对数据库提不起兴趣。<br>子元素更新频繁用 Parent，查询频繁用 Nested，因为 Parent 是分开存的，但是尽量用 Nested。</p>
+<p>最后，保存好你的 Mapping 设计文档，做好版本管理。</p>
+<h2 id="查询"><a href="#查询" class="headerlink" title="查询"></a>查询</h2><p>ES 毕竟是一个数据库，并且是为搜索而生，主力还是在搜索 API 上，这一块太多了，之前的笔记也有常用的部分，还是以官网 API 文档为准，搜索的时候只要善用关键词，例如 AND、NOT、分组、+/- （记得 URL 编码）、区间之类会大大简化查询语句。<br>尽量不要使用通配符、正则，尤其放在最前面，文档很大的时候会拖慢速度。<br>相比传统数据库，它还多了近似度匹配的模糊查询，并且它有一个相关性算分的功能（结果排序），搜索引擎必备了；相关性算分需要算法引擎支持，目前默认的是 BM25（相比 TF/IDF 优化了词频 tf 过大的无限增长问题），可以通过 explain 来查看算分过程，算分过程是 shard 独立的，集群的需要注意。<br>另外，在涉及日期搜索中，可以直接通过字符串计算，例如 <code>now +1h</code> ，总之就是很灵活的，不要受限于 SQL。<br>text 类型的字段在搜索排序的时候不能直接用（可通过 <code>`name.keyword</code> 转换为整体进行检索），ES 中提供了 3 种分页方式，最常用的还是 from/size（快照方式 Scroll 非实时性，利用排序方式优化的 Search After 不能实现自由翻页），因为分片的原因，分页的时候并不能确定需要的记录在那个分片，只能每个分片都查一下，最后汇总后确定真正的条数。<br>所以这种分页在遇到深度分页的时候会很耗资源，也就是越往后每个分片需要处理的数据就更大，就如同 Google 也不会把结果无限分页，如果前面都不是你想要的，后面更不会了。</p>
+<p>由于倒排索引不可修改（确实有很多好处例如速度快可压缩等），新增数据的时候重新生成与修改，这样实时性肯定就无法保证，性能开销也很大，为了解决这个问题，可以单独为新文档构建倒排索引，查询的时候同时去两份倒排索引里翻， 当然需要有个文件来存储分块信息。<br>为了达到实时性搜索，ES 做了很多优化，例如文件系统的缓存（refresh），在还未完全写入的时候就可以提供查询，当然有相应的保护机制（translog），毕竟 ES 被称为近实时的搜素。</p>
+<p>想要存储大量数据，分片是必须的，但是分片就会遇到相关性算分不准的问题，这时候就需要用 DFS Query-then-Fetch（通过 RESTful API 指定 search-type）。</p>
+<h2 id="集群"><a href="#集群" class="headerlink" title="集群"></a>集群</h2><p>搭建过程就免了，在集群状态可视化上，可以常识下 <strong>cerebro</strong> 这个插件。<br>集群中，分片与副本是关键，分片还有主副之分。<br>新增节点后，原有对 index 不会增加数据容量，因为分片已经固定了；同样，只有新增节点才能增加吞吐量，增加副本是没用的。<br>ES 提供了 API 来查看集群的状态，用颜色表示的话，绿色健康，黄色表示主分片分配正常，副本未正确分配，至于红色就是主分片未正确分配，会影响搜索，但是不会影响服务。<br>既然是集群，肯定是要支持故障转移来实现高可用，这就牵扯到了 Master 选举。</p>
+<p>文档的分片有几种方法，传统的随机在多节点下查找起来非常费劲，如果采用映射表的方式维护就是个难题（海量数据下），所以根据文档具有信息实时计算是不错的选择，就是利用哈希了，也正是因此，分片确定后就不可修改。<br>这里请求数据的时候，『寻址』或者重定向是服务端做的，客户端只与服务端建立一次连接即可，即使目标数据不在这个节点，具体的方案可参考之前写的分布式集群相关，例如 Redis、ZK 都在用，至于脑裂问题也就是选举的问题，在 ZK 哪里也着重说过。</p>
+<p>ES 的性能基本是按照性能扩展的，所以，你只要计算出了单个 shard 的指标，就能推断出所需要多少 shard。压测工具可以试试 esrally，官方还提供了一个 <strong>x-pack</strong> 插件来监控，Kibana 也有对应的可视化插件。<br>就算日志场景一个 shard 也不要超过 50G，搜索场景不要超过 15G。</p>
+<h2 id="聚合分析"><a href="#聚合分析" class="headerlink" title="聚合分析"></a>聚合分析</h2><p>为了便于统计，ES 提供了很多聚合查询功能（aggs），相比 hadoop 这类 T+1 的，它是实时返回的。<br>聚合查询主要分为下面四类：</p>
+<ul>
+<li>Bucket<br>分桶类型，类似 SQL 中的 GROUP BY 语法</li>
+<li>Metric<br>指标分析类型，如计算最大值、最小值、平均值等等；分为单值与多值类型（stats）</li>
+<li>Pipeline<br>管道分析类型，基于上一级的聚合分析结果进行再分析</li>
+<li>Matrⅸ<br>矩阵分析类型，例如热力图</li>
+</ul>
+<p>相比搜索，聚合还多了计算的能力，因为分片的存在，你不能要求它的计算结果是多么的精确，可以通过一些参数来调整精准度（show_term_doc_count_error 对应 <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html#search-aggregations-bucket-terms-aggregation-approximate-counts" target="_blank" rel="noopener">doc_count_error_upper_bound</a>），但是相应的也要付出性能。<br>海量数据、精准度、实时性，这三个不能兼得，只能选其二，显然 ES 聚合分析（Cardinality 和 Percentile）放弃了精准度，例如 Hadoop 就放弃了实时性。</p>
+<p>文档地址：<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations.html" target="_blank" rel="noopener">https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations.html</a></p>
+<h2 id="Logstash"><a href="#Logstash" class="headerlink" title="Logstash"></a>Logstash</h2><p>按照之前的介绍，它就是个过滤器，或者说适配器。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// codec.conf</span></span><br><span class="line">input &#123;</span><br><span class="line">  <span class="comment">// 标准输入</span></span><br><span class="line">  stdin &#123;</span><br><span class="line">    codec =&gt; line</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">output &#123;</span><br><span class="line">  stdout &#123;</span><br><span class="line">    codec =&gt; json</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>配置文件就是这样了（支持表达式），内部原理也是使用队列，一定程度可以代替 Kafka，默认使用的是内存队列，建议使用持久队列就行，性能损耗不是太大。<br>主要涉及三类线程，读取、队列、消费，配置文件中可以对部分进行微调，这就是调优了，不多说。<br>常用的 input 插件有：stdin、file、kafka，不需要担心继续读取、更新检查、重复读取的问题，都考虑到了。<br>要想写的好，可能还需要学习 Grok 脚本。</p>
+<h2 id="Beats"><a href="#Beats" class="headerlink" title="Beats"></a>Beats</h2><p>简单说可以理解为 Logstash 的轻量级版，了解过 Logstash 的应该知道配置非常复杂，也正是因为 Beats 是轻量级的，主要在数据的收集上，如果需要对数据进行复杂的处理，还是要接入 Logstash。</p>
+<hr>
+<p>用于日志分析的话，基本都是用 <strong>Filebeat</strong> 这个插件，配置也蛮复杂的，还好有 Modules 可以有，达到开箱即用。</p>
+<p>如果用于指标分析，就是 <strong>Metricbeat</strong> 这个轻量级采集器配合使用了，细分可分为系统指标类（CPU 使用等）与日志类（Redis、MySQL 提供的性能指标），不管怎么说，它都是在收集处理指标数据，供分析系统的状态。<br>它相应的也有大量 Modules，系统的、Docker、Redis、MySQL 等等，用什么就装什么，相当于自动给你写好对应的配置文件了，你只需要改一下连接地址就能用。</p>
+<p>网络数据包的分析使用 <strong>Packetbeat</strong> 插件，使用方式与上面一样，可以用来分析 DNS、HTTP、TLS、MySQL 连接等这些信息。<br>对于 Linux 系统可使用 af_packet 模式获取更好的性能。</p>
+<p>心跳检测，确认对方是否存活，使用 <strong>Heartbeat</strong> 插件，社区也有很多质量很高的插件。</p>
+<h2 id="Kibana"><a href="#Kibana" class="headerlink" title="Kibana"></a>Kibana</h2><p>为了让请求均匀分布，线上部署一般是采用一个 Coordinating Only ES Node 负责分发，这样 Kibana 只需要连接这个节点即可。<br>因为是 Web UI 终于不跟之前的那些似得那么枯燥了，也仅仅是视觉上，操作还是离不开 ES 的那些语句，要配置好界面也不是一个容易的活。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>喜欢就请我吃包辣条吧！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/image/pay/wx.jpg" alt="Kerronex WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/image/pay/zfb.jpg" alt="Kerronex Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Kerronex
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://sakanoy.com/2020/03/19/ElasticStack从入门到放弃/" title="ElasticStack从入门到放弃">https://sakanoy.com/2020/03/19/ElasticStack从入门到放弃/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/数据库/" rel="tag"><i class="fa fa-tag"></i> 数据库</a>
+          
+            <a href="/tags/分布式/" rel="tag"><i class="fa fa-tag"></i> 分布式</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/03/01/React核心使用总结/" rel="next" title="React核心使用总结">
+                <i class="fa fa-chevron-left"></i> React核心使用总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/04/11/Java中的日志框架/" rel="prev" title="Java中的日志框架">
+                Java中的日志框架 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        
+          <p class="warninginfo">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+              评论框加载失败，无法访问 Disqus<br><br>
+              你可能需要魔法上网~~
+          </p>
+
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/image/tx.png"
+               alt="Kerronex" />
+          <p class="site-author-name" itemprop="name">Kerronex</p>
+           
+              <p class="site-description motion-element" itemprop="description">程序猿/二刺螈<br/>夜猫族/爱折腾</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">130</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="Mailto:bfchengnuo@gmail.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-envelope-o"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://GitHub.com/bfchengnuo" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://sakanoy.com/MyRecord/#/" target="_blank" title="笔记本">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  笔记本
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.cnblogs.com/bfchengnuo" target="_blank" title="博客园">
+                  
+                    <i class="fa fa-fw fa-paw"></i>
+                  
+                  博客园
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              小伙伴们~
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://heartsky.info" title="HeartSky" target="_blank">HeartSky</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.kiuber.me" title="Kiuber" target="_blank">Kiuber</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/nightcharm" title="夜Charm" target="_blank">夜Charm</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本概念"><span class="nav-number">1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分词"><span class="nav-number">2.</span> <span class="nav-text">分词</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mapping"><span class="nav-number">3.</span> <span class="nav-text">Mapping</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查询"><span class="nav-number">4.</span> <span class="nav-text">查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集群"><span class="nav-number">5.</span> <span class="nav-text">集群</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#聚合分析"><span class="nav-number">6.</span> <span class="nav-text">聚合分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Logstash"><span class="nav-number">7.</span> <span class="nav-text">Logstash</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Beats"><span class="nav-number">8.</span> <span class="nav-text">Beats</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Kibana"><span class="nav-number">9.</span> <span class="nav-text">Kibana</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+    <div style="height: 370px;background-image: url(/image/bj.png);background-repeat: no-repeat; margin-left: 31%;"></div>
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+<span id="sitetime"></span>
+<span class="my-face">(●'◡'●)ﾉ♥</span>
+<script language=javascript>
+function siteTime(){
+window.setTimeout("siteTime()", 1000);
+var seconds = 1000
+var minutes = seconds * 60
+var hours = minutes * 60
+var days = hours * 24
+var years = days * 365
+
+var today = new Date()
+var todayYear = today.getFullYear()
+var todayMonth = today.getMonth()
+var todayDate = today.getDate()
+var todayHour = today.getHours()
+var todayMinute = today.getMinutes()
+var todaySecond = today.getSeconds()
+
+/* Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳) 
+year - 作为date对象的年份，为4位年份值
+month - 0-11之间的整数，做为date对象的月份
+day - 1-31之间的整数，做为date对象的天数
+hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+minutes - 0-59之间的整数，做为date对象的分钟数
+seconds - 0-59之间的整数，做为date对象的秒数
+microseconds - 0-999之间的整数，做为date对象的毫秒数 */
+var t1 = Date.UTC(2016,3,30,8,0,0)
+var t2 = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond)
+var diff = t2-t1
+
+var diffYears = Math.floor(diff/years)
+var diffDays = Math.floor((diff/days)-diffYears*365)
+var diffDaysAll = Math.floor(diff/days)
+var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours)
+var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes)
+var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds)
+document.getElementById("sitetime").innerHTML=" 本站已萌萌哒运行 "+diffDaysAll+" 天 "+diffHours+" 小时 "+diffMinutes+" 分钟 "+diffSeconds+" 秒 "
+}
+siteTime()
+</script>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共521.4k字</span>
+
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'bfchengnuo';
+      var disqus_identifier = '2020/03/19/ElasticStack从入门到放弃/';
+
+      var disqus_title = "ElasticStack从入门到放弃";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":130,"height":170,"hOffset":30,"vOffset":-10},"mobile":{"show":false},"react":{"opacity":0.7},"log":false});</script></body>
+</html>

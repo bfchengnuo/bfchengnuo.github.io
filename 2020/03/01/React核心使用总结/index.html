@@ -1,0 +1,1247 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Microsoft Yahei:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="前端," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakanoy" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/image/tb.png?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="既然 Vue 都学了，难道不顺便把 React 收了么？它的大名就不需要说了，全球最火的前端框架，也是个啥都能写的货。相比 Vue 它会更灵活，这就意味着它更复杂，对于主力后端的我来说，也就点到为止，那些深层次的东西就不挖的太深了，App （React Native）相关的构建也以后再说，这里主要是 Web 应用的开发。">
+<meta name="keywords" content="前端">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React核心使用总结">
+<meta property="og:url" content="https://sakanoy.com/2020/03/01/React核心使用总结/index.html">
+<meta property="og:site_name" content="Sakanoy">
+<meta property="og:description" content="既然 Vue 都学了，难道不顺便把 React 收了么？它的大名就不需要说了，全球最火的前端框架，也是个啥都能写的货。相比 Vue 它会更灵活，这就意味着它更复杂，对于主力后端的我来说，也就点到为止，那些深层次的东西就不挖的太深了，App （React Native）相关的构建也以后再说，这里主要是 Web 应用的开发。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://sakanoy.com/image/dev/redux.png">
+<meta property="og:image" content="https://sakanoy.com/image/dev/lifecycle1.png">
+<meta property="og:image" content="https://sakanoy.com/image/dev/lifecycle2.png">
+<meta property="og:updated_time" content="2020-03-01T11:28:24.098Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="React核心使用总结">
+<meta name="twitter:description" content="既然 Vue 都学了，难道不顺便把 React 收了么？它的大名就不需要说了，全球最火的前端框架，也是个啥都能写的货。相比 Vue 它会更灵活，这就意味着它更复杂，对于主力后端的我来说，也就点到为止，那些深层次的东西就不挖的太深了，App （React Native）相关的构建也以后再说，这里主要是 Web 应用的开发。">
+<meta name="twitter:image" content="https://sakanoy.com/image/dev/redux.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://sakanoy.com/2020/03/01/React核心使用总结/"/>
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-bounce.css">
+
+  <title> React核心使用总结 | Sakanoy </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-77463916-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakanoy</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">立于浮华之世,奏响天籁之音.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-mark">
+          <a href="/mark" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-retweet"></i> <br />
+            
+            笔记本
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-book"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-music">
+          <a href="/music" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-music"></i> <br />
+            
+            音乐台
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://sakanoy.com/2020/03/01/React核心使用总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Kerronex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/image/tx.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakanoy">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                React核心使用总结
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-01T11:20:11+00:00">
+                2020-03-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Web/" itemprop="url" rel="index">
+                    <span itemprop="name">Web</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-eye"></i> 热度
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-wordcount">
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  5,874
+                </span>
+              
+
+              
+
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <div style="display: none;color: #999" class="note warning" id='timeliness'></div>
+        <script language=javascript>
+          var days = (new Date().getTime() - 1583061611000) / 86400000;
+          if(days > 180) {
+            var infoDom = document.getElementById("timeliness");
+            infoDom.innerHTML = "提醒：本文发布于 " + Math.round(days) + " 天前，文中所描述的信息可能已发生改变，请谨慎使用。";
+            infoDom.style.display = "block"
+          }
+        </script>
+        <p>既然 Vue 都学了，难道不顺便把 React 收了么？它的大名就不需要说了，全球最火的前端框架，也是个啥都能写的货。<br>相比 Vue 它会更灵活，这就意味着它更复杂，对于主力后端的我来说，也就点到为止，那些深层次的东西就不挖的太深了，App （React Native）相关的构建也以后再说，这里主要是 Web 应用的开发。<a id="more"></a></p>
+<h2 id="准备环境"><a href="#准备环境" class="headerlink" title="准备环境"></a>准备环境</h2><p>创建一个 React App 就使用专业一点的 <code>Create React App</code> 脚手架吧，安装方式官网都有写，不多说。<br>之前官方文档会让安装这个库，现在直接可以使用 npm 自带的 npx 指令（它是 npm 5.2+ 附带的 package 运行工具）来创建了。</p>
+<p>下面来看一下创建出来的目录机构，相比 Vue，看着好像精简一点，默认使用 yarn 构建；webpack 相关的文件就不多说了，其中有用的就是 public 和 src 文件夹。<br>public 文件夹很简单，放了一些 logo，还有一个网站入口文件 index.html，这个文件也非常简单，就是一个基本骨架。<br>看文件夹名字，src 是主要战场，里面有个 index.js 是入口 js 文件，可以说是按照这个文件来一句一句执行代码。<br>可以看到里面导入了一个 serviceWorker 的模块，这个是 PWA（Progressive Web App）是做 App 适配相关的，有个有意思的特点是加载后，断网情况下可查看已经加载过的内容。</p>
+<blockquote>
+<p><code>PWA</code> 的核心目标就是提升 Web App 的性能，改善 Web App 的用户体验。媲美 native 的流畅体验，将网络之长与应用之长相结合。</p>
+<p>这 public 中的 manifest.json 文件就是来定义将此 Web App 添加快捷方式放到桌面上的图标等配置，用来尽量模拟原生 App 的体验。</p>
+</blockquote>
+<p>不过 PWA 毕竟不是现在的重点，这个先放一放，到 React Native 再说。</p>
+<p>另外，public 文件夹还有另一个作用，就是项目启动后，会自动把这个文件夹作为资源服务，所以这里的 html 也就是主入口了，所以你在这里面放 json 文件，可以作为接口的模拟。</p>
+<h2 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h2><p>React 中也是有组件的概念，就是一个个的模块，例如 App.js 就是一个模块，通过 index.js 来引入，我学习的时候使用的是最新的版本，但是资料是老的，为了兼顾老版本，尽量都写一下。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// index.js</span></span><br><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> ReactDOM <span class="keyword">from</span> <span class="string">'react-dom'</span>;</span><br><span class="line"><span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">'./App'</span>;</span><br><span class="line"><span class="comment">// js 中的这种标签写法是 JSX 语法</span></span><br><span class="line">ReactDOM.render(<span class="xml"><span class="tag">&lt;<span class="name">App</span> /&gt;</span>, document.getElementById('root'));</span></span><br><span class="line"><span class="xml"></span></span><br><span class="line"><span class="xml"></span></span><br><span class="line"><span class="xml">// App.js</span></span><br><span class="line"><span class="xml">import React from 'react';</span></span><br><span class="line"><span class="xml">import './App.css';</span></span><br><span class="line"><span class="xml"></span></span><br><span class="line"><span class="xml">function App() &#123;</span></span><br><span class="line"><span class="xml">  return (</span></span><br><span class="line">    &lt;div className="App"&gt;</span><br><span class="line">     Mps~</span><br><span class="line">      &#123;</span><br><span class="line">        this.state.list.map((item, index) =&gt; &#123;</span><br><span class="line">          return &lt;div key=&#123;index&#125;&gt;&#123;item&#125;&lt;/div&gt;</span><br><span class="line">        &#125;)</span><br><span class="line">      &#125;</span><br><span class="line"><span class="xml">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml">  );</span></span><br><span class="line"><span class="xml">&#125;</span></span><br><span class="line"><span class="xml"></span></span><br><span class="line"><span class="xml">export default App;</span></span><br><span class="line"><span class="xml"></span></span><br><span class="line"><span class="xml"></span></span><br><span class="line"><span class="xml">// 较老版本默认的 App.js</span></span><br><span class="line"><span class="xml">import React, &#123; Component &#125; from 'react'; // Component 是 React 的子模块</span></span><br><span class="line"><span class="xml"></span></span><br><span class="line"><span class="xml">class App extends Component &#123;</span></span><br><span class="line"><span class="xml">  constructor(props) &#123;</span></span><br><span class="line"><span class="xml">    // 固定调用</span></span><br><span class="line"><span class="xml">    super(props);</span></span><br><span class="line"><span class="xml">    this.state = &#123;</span></span><br><span class="line"><span class="xml">      val: ''</span></span><br><span class="line"><span class="xml">    &#125;;</span></span><br><span class="line"><span class="xml">    </span></span><br><span class="line"><span class="xml">    // 推荐在构造中改变 this 指向，如果用得到</span></span><br><span class="line"><span class="xml">    this.method = this.method.bind(this)</span></span><br><span class="line"><span class="xml">  &#125;</span></span><br><span class="line"><span class="xml">  </span></span><br><span class="line"><span class="xml">  // render 函数返回的即最终组件内容，使用了 JSX</span></span><br><span class="line"><span class="xml">  render() &#123;</span></span><br><span class="line"><span class="xml">    return &#123;</span></span><br><span class="line"><span class="xml">      <span class="tag">&lt;<span class="name">div</span>&gt;</span> MPS~ <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml">    &#125;</span></span><br><span class="line"><span class="xml">  &#125;</span></span><br><span class="line"><span class="xml">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>ReactDOM 这个模块是用来将我们写的组件挂载到 index.html 中的，至于为什么需要引入 React，因为使用到了 JSX。</p>
+<p>无论你使用函数还是 class 定义，在 React 中是等效的，不过看起来函数更加的简洁，并且它还可以接受一个 props 对象来传递数据；不过嘛，虽然简洁了，但也牺牲了一些特性。<br>如果是用的类定义方式，那么 props 的接收就要放到构造函数（constructor）里，效果是一样的。<br><strong>另外 props 是只读的，不可修改；另外，也不要直接修改 state 的内容，要改也是拷贝一份，然后使用 set 方法修改。</strong></p>
+<h3 id="无状态组件"><a href="#无状态组件" class="headerlink" title="无状态组件"></a>无状态组件</h3><p>为了更加方便管理，一般会将 UI 部分单独拆离出来，也就是把 render 函数单独搞出来，这样在上层的组件中 render 之间返回 <code>&lt;xxxUI /&gt;</code> 就可以了，但是 UI 中用到的变量怎么办，就是父子组件的传值了。<br>在需要传递方法给子组件执行的时候，如果方法需要传递参数，应该怎么写呢，之间加括号显然不妥，只能使用箭头函数：<br><code>onClick={() =&gt; {this.props.method(p)}}</code></p>
+<p>像这种抽取出来的 UI 组件只有视图，那么就可以称为无状态组件，还记得脚手架给我们生成的默认文件的那个函数，那就是一个无状态组件了，它的性能更高。</p>
+<h2 id="JSX"><a href="#JSX" class="headerlink" title="JSX"></a>JSX</h2><p>虽然 React 并不强制使用 JSX，但是基本所有的 React 都这用吧，毕竟是真的好用，目前只能说说用到的一些功能。</p>
+<blockquote>
+<p>JSX 语法不仅仅是可以便捷的使用 HTML 标签，自定义的标签也是可以的，例如 <code>&lt;App /&gt;</code><br>不过需要注意，自定义的标签开头必须大写，也就是你 import 导入的时候命名就得符合这个规则。</p>
+</blockquote>
+<p>JSX 规定返回的内容必须包裹这一个标签内，但是这样就会多了一层结构，对样式可能不友好，类似的，它也有相应的特殊标签来规避：Fragment</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">render() &#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;React.Fragment&gt;</span><br><span class="line">      &lt;ChildA /&gt;</span><br><span class="line">      &lt;ChildB /&gt;</span><br><span class="line">      &lt;input value=&#123;<span class="keyword">this</span>.state.val&#125; </span><br><span class="line">        ref=&#123;(input) =&gt; &#123;<span class="keyword">this</span>.input = input&#125;&#125;</span><br><span class="line">        onChange=&#123;<span class="keyword">this</span>.handleChange.bind(<span class="keyword">this</span>)&#125;/&gt;</span><br><span class="line">    &lt;<span class="regexp">/React.Fragment&gt;</span></span><br><span class="line"><span class="regexp">  );</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">handleChange(e) &#123;</span></span><br><span class="line"><span class="regexp">  /</span><span class="regexp">/ 必须通过 set 函数 dom 才会刷新</span></span><br><span class="line"><span class="regexp">  this.setState(&#123;</span></span><br><span class="line"><span class="regexp">    /</span><span class="regexp">/ e.target = this.input</span></span><br><span class="line"><span class="regexp">    val: e.target.value,</span></span><br><span class="line"><span class="regexp">    /</span><span class="regexp">/ 展开运算符，添加新元素</span></span><br><span class="line"><span class="regexp">    list: [...this.state.list, newVal]</span></span><br><span class="line"><span class="regexp">  &#125;)</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>可以看出，它其实也是一个组件，只不过是 React 自带的，如果嫌麻烦，可以在 import 的时候就把它导进来。<br>上面的例子中，使用到了 ref 语法，虽然它能简化 e.target 这种写法，但是不推荐使用。<br>JSX 的差值表达式是使用一个大括号来定义的，包括触发事件（驼峰格式）的函数引用，注意 this 的作用域，然后下面是一些 JSX 的语法补充。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 注释，利用 &#123;&#125; 里面是 JS 表达式的原理，仅开发可见</span></span><br><span class="line">&#123;<span class="comment">/* xxxx */</span>&#125;</span><br><span class="line">&#123;</span><br><span class="line">  <span class="comment">// xxxxx</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 样式，避免与类定义混淆，使用 className</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">'./demo.css'</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">App</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;h1 className=<span class="string">'xxx'</span>&gt;<span class="xml"><span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span></span><br><span class="line">  )</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 禁用转义</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createMarkup</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;<span class="attr">__html</span>: <span class="string">'First &amp;middot; Second'</span>&#125;;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">MyComponent</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">div</span> <span class="attr">dangerouslySetInnerHTML</span>=<span class="string">&#123;createMarkup()&#125;</span> /&gt;</span>;</span></span><br><span class="line">  // return &lt;div dangerouslySetInnerHTML=&#123;&#123;__html: 'First &amp;middot; Second'&#125;&#125; /&gt;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在禁用转义中使用了双花括号，这里第二个花括号已经是 JS 的对象了，所以，并没有太大含义。<br>由于语言的歧义，除了 class 用 className 代替，在 label 中的 for 要用 htmlFor 来替代。</p>
+<hr>
+<p>即使你不使用 JSX 语法，React 提供来一个函数：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">React.createElement(</span><br><span class="line">  type,</span><br><span class="line">  [props],</span><br><span class="line">  [...children]</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// e.g. </span></span><br><span class="line">React.createElement(<span class="string">'div'</span>, &#123;&#125;, <span class="string">'show'</span>);</span><br></pre></td></tr></table></figure>
+<p>它与 JSX 的效果是一样的，也可以说 JSX 就是它的简写版本。</p>
+<h2 id="组件之间传值"><a href="#组件之间传值" class="headerlink" title="组件之间传值"></a>组件之间传值</h2><p>页面都是有一个个的组件组成的，那就肯定避免不了传值问题，父组件向子组件传值相对很简单，直接通过标签的自定义属性即可，子组件只需要使用 <code>this.props.attrName</code> 就可以获取到，但是是<strong>只读</strong>的。<br>很多时候，我们需要在子组件中修改父组件的一些数据，当然这肯定是不能允许直接改的，一般是通过调用父组件的一个方法来实现数值的修改。<br>虽然子组件调用父组件的函数直接想不好搞，但是可以曲线救国，把父组件的方法直接传给子组件不就得了，子组件拿到了就可以在子组件的函数里直接调用；在传递的时候记得父组件里使用 bind 改变一下 this 指向。</p>
+<p>单向数据流保证了数据的安全稳定，否则都不好定位是谁改了然后又导致了什么。</p>
+<h3 id="类型校验"><a href="#类型校验" class="headerlink" title="类型校验"></a>类型校验</h3><p>因为不管是什么类型都可以往子组件传递，甚至方法，为了避免出错，还是校验一下比较好，方法就是：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> PropTypes <span class="keyword">from</span> <span class="string">'prop-types'</span>;</span><br><span class="line"><span class="comment">// 前面省略了</span></span><br><span class="line"></span><br><span class="line">App.propTypes = &#123;</span><br><span class="line">  n1: propTypes.string.isRequired,</span><br><span class="line">  n2: propTypes.func,</span><br><span class="line">  n3: propTypes.number,</span><br><span class="line">  n4: propTypes.array,</span><br><span class="line">  n5: propTypes.bool</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">App.defaultProps = &#123;</span><br><span class="line">  n1: <span class="string">'null'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> App;</span><br></pre></td></tr></table></figure>
+<p>如果类型不对会给你一个警告，虽然并不影响程序的运行。<br>更多高级的用法例如或者并且等判断参考官方文档：<a href="https://zh-hans.reactjs.org/docs/typechecking-with-proptypes.html" target="_blank" rel="noopener">https://zh-hans.reactjs.org/docs/typechecking-with-proptypes.html</a></p>
+<h3 id="Redux"><a href="#Redux" class="headerlink" title="Redux"></a>Redux</h3><p>父子组件传值还算是简单，当项目复杂起来，不可能只是父子之间的传值，如果还用现在的方法就会很复杂，所以需要引入 Redux 来完成不同组件之间的传值。<br>原理也很简单，把数据统一放到一个 Store 对象中统一存储，然后需要的组件去监控这里面某个变量的值，当发生变化时，做出相应的改变。</p>
+<p><img src="/image/dev/redux.png" alt="img"></p>
+<p>上图就是 Redux 的数据流，也是按照单向数据流设计，组件必须通过 Action 才可以操作 Store 的数据。<br>第一步，创建一个 Store，例如 <code>./store/index.js &amp; reducer.js</code> ：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// index.js</span></span><br><span class="line"><span class="keyword">import</span> &#123; createStore &#125; <span class="keyword">from</span> <span class="string">'redux'</span></span><br><span class="line"><span class="keyword">import</span> reducer <span class="keyword">from</span> <span class="string">'./reducer'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 有 Redux Dev 插件可用，需要在这配置</span></span><br><span class="line"><span class="keyword">const</span> store = createStore(reducer)</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> store</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// reducer.js</span></span><br><span class="line"><span class="keyword">const</span> defaultState = &#123;&#125;  <span class="comment">// 具体存储</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> (state = defaultState, action) =&gt; &#123;</span><br><span class="line">  <span class="comment">// state = 上一次的 state 数据</span></span><br><span class="line">  <span class="comment">// 要根据 action 的内容来更新 state，switch....case</span></span><br><span class="line">  <span class="keyword">return</span> state</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 用于将所有可枚举属性的值从一个或多个源对象复制到目标对象。它将返回目标对象。</span></span><br><span class="line"><span class="built_in">Object</span>.assign(&#123;&#125;, state, &#123;</span><br><span class="line">  todos: [</span><br><span class="line">    ...state.todos,</span><br><span class="line">    &#123;</span><br><span class="line">      text: action.text,</span><br><span class="line">      completed: <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>仓库创建好了，下面就可以使用了：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React, &#123; Component &#125; <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> store <span class="keyword">from</span> <span class="string">'./store'</span>;  <span class="comment">// ./store/index.js</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">App</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(props) &#123;</span><br><span class="line">    <span class="keyword">super</span>(props);</span><br><span class="line">    store.getState();</span><br><span class="line">    <span class="comment">// store 数据发生改变后执行</span></span><br><span class="line">    store.subscribe(<span class="function"><span class="params">()</span> =&gt;</span> <span class="built_in">console</span>.log(store.getState()))</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  change(newVal) &#123;</span><br><span class="line">    <span class="keyword">const</span> action = &#123;</span><br><span class="line">      type: <span class="string">'change_value'</span>,</span><br><span class="line">	    value: <span class="string">'newVal'</span></span><br><span class="line">    &#125;;</span><br><span class="line">    store.dispatch(action);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>为了避免 Action#type 手误写错，可以专门起一个 js 文件来定义，类似枚举。同理，Action 方法也是类似。<br>由于 reducer 中的 state 不能直接修改，每次根据 action 更新时需要拷贝一个，一不小心就容易漏掉，这个时候就可以使用 <strong>immutable-js</strong> 这个库来做，生成不可变对象，经过它的转换，就可以通过使用 get 方法获取或者 set 方法重新生成一个不可变对象。<br>为了统一样式，可以使用 <strong>redux-immutable</strong> 库来进行处理。</p>
+<p>PS：Redux = Reducer + Flux</p>
+<h3 id="React-redux"><a href="#React-redux" class="headerlink" title="React-redux"></a>React-redux</h3><p>通过 <strong>React-redux</strong> 可以让我们更方便的使用 Redux，官方主页是这样写的：Official React bindings for Redux</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span></span><br><span class="line"><span class="keyword">import</span> ReactDOM <span class="keyword">from</span> <span class="string">'react-dom'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123; Provider &#125; <span class="keyword">from</span> <span class="string">'react-redux'</span></span><br><span class="line"><span class="keyword">import</span> store <span class="keyword">from</span> <span class="string">'./store'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">'./App'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> rootElement = <span class="built_in">document</span>.getElementById(<span class="string">'root'</span>)</span><br><span class="line">ReactDOM.render(</span><br><span class="line">  &lt;Provider store=&#123;store&#125;&gt;</span><br><span class="line">    &lt;App /&gt;</span><br><span class="line">  &lt;<span class="regexp">/Provider&gt;,</span></span><br><span class="line"><span class="regexp">  rootElement</span></span><br><span class="line"><span class="regexp">)</span></span><br></pre></td></tr></table></figure>
+<p>这里使用 Provider 组件将 store 进行了传递，这样 Provider 下的所有子组件都能共享了。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; connect &#125; <span class="keyword">from</span> <span class="string">'react-redux'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// class App ...</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 将 store（state）的数据映射到 props</span></span><br><span class="line"><span class="keyword">const</span> mapStateToProps = <span class="function">(<span class="params">state <span class="regexp">/*, ownProps*/</span></span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    counter: state.counter</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 将要调用 dispatch 的方法映射</span></span><br><span class="line"><span class="keyword">const</span> mapDispatchToProps = <span class="function">(<span class="params">dispatch</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    change(e) &#123;</span><br><span class="line">      <span class="keyword">const</span> action = &#123;&#125;;</span><br><span class="line">      dispatch(action);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> connect(</span><br><span class="line">  mapStateToProps,</span><br><span class="line">  mapDispatchToProps</span><br><span class="line">)(App)</span><br></pre></td></tr></table></figure>
+<p>子组件获取 store 使用的是 connect 这个函数，在 export 的时候使用。<br>connect 函数需要传入两个参数，也就是如何做连接，就是做了两个映射，这样都省的订阅了，store 变化数据就实时刷新了。<br>并且，这样组件基本不包含任何的逻辑代码了，可以做成无状态组件了；也可以这么理解，connect 函数将 UI 组件和逻辑部分进行了拼装，返回了容器组件。</p>
+<h2 id="State与Props"><a href="#State与Props" class="headerlink" title="State与Props"></a>State与Props</h2><p>当 State 或者 Props 发生改变时，render 函数就会执行，这样 Dom 就会被重新渲染。</p>
+<p>在前面组件里我们说的是改变数据必须用 set 函数，使用的是传统的传入一个对象（）利用 K-V 的形式来进行更新；不过还有性能更好的方法就是异步函数：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">handleChange</span>(<span class="params">e</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> val = e.target.value;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">this</span>.setState(<span class="function"><span class="params">()</span>=&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;<span class="attr">value</span>: val&#125;;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 如果只有一个 return，箭头函数还可以简写</span></span><br><span class="line"><span class="keyword">this</span>.setState(<span class="function"><span class="params">()</span>=&gt;</span>(&#123;<span class="attr">value</span>: val&#125;))</span><br></pre></td></tr></table></figure>
+<p>不过因为异步，在使用的时候，数值尽量固定化，也是因为异步，所以它还会有第二个参数，是回调，根据需要使用。<br>在 setState 使用异步函数的时候，函数其实会传给你一个 prevState 参数，它就是原来的值。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>.setState(<span class="function">(<span class="params">prevState</span>)=&gt;</span>(&#123;<span class="attr">value</span>: prevState.value + newVal&#125;))</span><br><span class="line"><span class="comment">// ES6 语法简写</span></span><br><span class="line">&#123;<span class="attr">val</span>: val&#125; == &#123;val&#125;</span><br></pre></td></tr></table></figure>
+<p>至于 setState 为什么建议使用异步，因为这样如果有多个修改并且间隔很短，React 就可以合并成一个操作，避免连续多次的虚拟 DOM 比对与渲染。</p>
+<h2 id="虚拟DOM"><a href="#虚拟DOM" class="headerlink" title="虚拟DOM"></a>虚拟DOM</h2><p>不管是 React 还是 Vue，都是使用虚拟 DOM 来控制页面的渲染（刷新），原因就是 JS 渲染一次真实的 DOM 需要调用浏览器 API，性能损耗过高，如果频繁渲染，体验肯定不好。<br>对于这一问题，有几个方案，现在采用的基本都是虚拟 DOM</p>
+<ul>
+<li>数据改变，重新生成新的 DOM，替换老的 DOM</li>
+<li>数据改变，重新生成新的 DOM，与老的 DOM 比对，只替换差异部分</li>
+<li>加载时构建虚拟 DOM，数据改变，虚拟 DOM 随之改变，对比之前老的虚拟 DOM，确定差异部分，操作 DOM 更新差异。</li>
+</ul>
+<p>这里的这个虚拟 DOM 可以理解为就是个 JS 对象，用这个 JS 对象来描述真实的 DOM，正是因为是 JS 对象，所以速度很快，性能就大幅提高了。<br>在 React 中，真实的 DOM 是按照虚拟 DOM 来渲染的，也正是因为虚拟 DOM 的存在，所以 React Native 得以存在，虚拟 DOM 渲染为真实 DOM 就是浏览器，渲染为原生 App 组件，这就成移动端的应用了。</p>
+<p>虚拟 DOM 的比对 Diff 使用的是同层比对，从上往下，只要发现一层中的某个节点不一样，此节点下面所有的结构都会被重新渲染，虽然下面可能都没有变，但是这样的比对速度会更快。<br>之所以要设置 Key 值也是为了提高比对速度，当 key 是唯一的时候，那么就是 key 与 DOM 一对一的对应关系，当发现某个节点的 key 没有变时，可以直接复用了（<del>先根据 key 拿到对应的节点的信息，然后校验是否一致，如果不一致说明 key 是不稳定的，这种缓存就没法用了</del>），所以，用 index 当作 key 很不妥。</p>
+<h2 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h2><p>对于这类描述生命周期的内容，没有什么比图更直观了：</p>
+<p><img src="/image/dev/lifecycle1.png" alt="img"></p>
+<p><img src="/image/dev/lifecycle2.png" alt="img"></p>
+<p>这两幅图基本已经描述的够清楚了（虽然版本有点老），还有一个是官方的图：<a href="http://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/" target="_blank" rel="noopener">http://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/</a><br>根据官方图，getDerivedStateFromProps 这个方法中 16.4 发生了变化，需要特别注意。<br>以及 componentWillReceiveProps 与 componentWillUpdate、componentWillMount 已经被标注为过时。</p>
+<p>在 React  中所有的组件都要继承 Component，大部分的生命周期函数中 Component 中都有默认实现，唯独 render 没有，所以这就是为什么你必须写 render 函数的原因（函数式写法有点特别）。<br>因为当父组件的 render 被执行时，子组件的 render 也会被执行，即使这时候 props 并没有变化，这样就会带来不必要的性能开销，所以可以使用 <code>shouldComponentUpdate</code> 这个生命周期函数来优化（或者继承 PureComponent，它默认实现了这个方法，不过为了避免 bug，需要配合 immutable-js 使用）。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> axios <span class="keyword">from</span> <span class="string">'axios'</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">App</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">  shouldComponentUpdate(nextProps, nextState) &#123;</span><br><span class="line">    <span class="keyword">return</span> nextProps.xxx !== <span class="keyword">this</span>.props.xxx;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  componentDidMount() &#123;</span><br><span class="line">    axios.get(<span class="string">'/index'</span>)</span><br><span class="line">    .then(<span class="function">(<span class="params">res</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (res.data.ret &amp;&amp; res.data.data) &#123;</span><br><span class="line">        <span class="comment">// something</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">    .catch()</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>一般情况，我们发送 Ajax 请求的过程要放到 componentDidMount 中。<br>建议使用 axios 当然需要安装（<code>yarn add axios</code>）</p>
+<h2 id="路由"><a href="#路由" class="headerlink" title="路由"></a>路由</h2><p>关于页面的路由，这里就使用 react-router-dom 这个模块来完成，文档参考<a href="https://reacttraining.com/react-router/web/guides/quick-start" target="_blank" rel="noopener">这里</a></p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;BrowserRouter, Route&#125; <span class="keyword">from</span> <span class="string">'react-router-dom'</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">App</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">this</span>.props.loginStatus) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">Redirect</span> <span class="attr">to</span>=<span class="string">'/'</span> /&gt;</span></span></span><br><span class="line"><span class="xml">  &#125;</span></span><br><span class="line"><span class="xml"></span></span><br><span class="line"><span class="xml">  return (</span></span><br><span class="line">    &lt;Provider store=&#123;store&#125;&gt;</span><br><span class="line">      &lt;ResetStyle/&gt;</span><br><span class="line">      &lt;GlobalStyle/&gt;</span><br><span class="line"></span><br><span class="line">      &lt;Header /&gt;</span><br><span class="line">      &lt;BrowserRouter&gt;</span><br><span class="line">        &lt;Route path='/' exact component=&#123;Home&#125;&gt;&lt;/Route&gt;</span><br><span class="line">        &lt;Route path='/detail/:id' exact render=&#123;() =&gt; &lt;div&gt;detail&lt;/div&gt;&#125;&gt;&lt;/Route&gt;</span><br><span class="line">      &lt;/BrowserRouter&gt;</span><br><span class="line"><span class="xml">    <span class="tag">&lt;/<span class="name">Provider</span>&gt;</span></span></span><br><span class="line"><span class="xml">  );</span></span><br><span class="line"><span class="xml">&#125;</span></span><br><span class="line"><span class="xml"></span></span><br><span class="line"><span class="xml">export default App;</span></span><br></pre></td></tr></table></figure>
+<p>简单说就是根据请求路径的不同来决定显示的内容，使用 exact 来进行完全匹配。<br>老的版本可能不允许你 Provider 或者 BrowserRouter 有多个元素，那时候用 div 裹一下就好。</p>
+<p>另外，它还提供了一个 Link 模块，可以用来替代 a 标签，做单页面应用，避免加载过多的 HTML。<br>在进行匹配的时候，可以使用类似 <code>/:id</code> 来匹配变量，然后在组件里通过 <code>this.props.match.params.id</code> 获取，这就是动态路由了。<br>另外一种是匹配 ？传值，一样的，只不过不需要写 <code>/:id</code> 了，如果有 <code>?id=xx</code> 会自动进行填充，获取方法不太一样，要自己手动处理字符串 <code>this.props.location.search</code> 并不是很推荐。</p>
+<h2 id="Redux-thunk"><a href="#Redux-thunk" class="headerlink" title="Redux-thunk"></a>Redux-thunk</h2><p><strong>Redux-thunk</strong> 是 Redux 的一个中间件，用来『整理』Action 中的 Ajax 请求等处理，说明文档可以参考 <a href="https://github.com/reduxjs/redux-thunk" target="_blank" rel="noopener">Github 的主页</a></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createStore, applyMiddleware &#125; <span class="keyword">from</span> <span class="string">'redux'</span>;</span><br><span class="line"><span class="keyword">import</span> thunk <span class="keyword">from</span> <span class="string">'redux-thunk'</span>;</span><br><span class="line"><span class="keyword">import</span> rootReducer <span class="keyword">from</span> <span class="string">'./reducers/index'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Note: this API requires redux@&gt;=3.1.0</span></span><br><span class="line"><span class="keyword">const</span> store = createStore(rootReducer, applyMiddleware(thunk));</span><br></pre></td></tr></table></figure>
+<p>使用多个中间件，例如 Redux Dev Tools 具体方法参考 <a href="https://github.com/zalmoxisus/redux-devtools-extension#12-advanced-store-setup" target="_blank" rel="noopener">Github 的文档</a>。<br>使用 Redux-thunk 后在 action 中就不一定非要是 js 的对象了，可以返回一个函数：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// before</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> initAction = <span class="function">(<span class="params">newVal</span>) =&gt;</span> (&#123;</span><br><span class="line">  type: <span class="string">'change_value'</span>,</span><br><span class="line">  value: newVal</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// after</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> getAction = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function">(<span class="params">dispatch</span>) =&gt;</span> &#123;</span><br><span class="line">    axios.get(<span class="string">'/do'</span>)</span><br><span class="line">    .then(<span class="function">(<span class="params">res</span>) =&gt;</span> &#123;</span><br><span class="line">      dispatch(initAction(res.data));</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用</span></span><br><span class="line">componentDidMount() &#123;</span><br><span class="line">  <span class="keyword">const</span> action = getAction();</span><br><span class="line">  <span class="comment">// 可以接受一个函数了</span></span><br><span class="line">  store.dispatch(action);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上方展示的也是封装后的 Action 写法，还是建议把 Action 封装到一个 js 文件，统一管理。<br>看起来好像比之前麻烦了，不过以经验来看，当项目越来越大后，这种方式更加容易管理和测试。</p>
+<h2 id="Redux-saga"><a href="#Redux-saga" class="headerlink" title="Redux-saga"></a>Redux-saga</h2><p>与 Redux-thunk 类似，Redux-saga 也是一个类似的 Redux 中间件，做异步代码拆分的，他们两个可以互相替代，使用方法也可以参考一下 <a href="https://github.com/redux-saga/redux-saga#mainjs" target="_blank" rel="noopener">Github 的文档</a>。<br>它使用单独的 JS 文件来管理 Ajax 请求，然后 run 一下。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// sagas.js example</span></span><br><span class="line"><span class="keyword">import</span> &#123; put, takeEvery &#125; <span class="keyword">from</span> <span class="string">'redux-saga/effects'</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">fetchUser</span>(<span class="params">action</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 以下内容怕出错可以放到 try...catch 里</span></span><br><span class="line">  <span class="keyword">const</span> res = <span class="keyword">yield</span> axios.get(<span class="string">'/do'</span>);</span><br><span class="line">  <span class="keyword">const</span> action = initAction(res.data);</span><br><span class="line">  <span class="comment">// 执行完成后传给 reducer</span></span><br><span class="line">  <span class="keyword">yield</span> put(action);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">mySaga</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">// ES6 Generator 函数</span></span><br><span class="line">  <span class="keyword">yield</span> takeEvery(<span class="string">"ACTION_TYPE_NAME"</span>, fetchUser);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> mySaga;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用</span></span><br><span class="line">componentDidMount() &#123;</span><br><span class="line">  <span class="comment">// action 只是包含一个 type 类型的对象即可</span></span><br><span class="line">  <span class="keyword">const</span> action = getAction();</span><br><span class="line">  store.dispatch(action);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>也就是说当你 dispatch 时，mySaga 也会收到你的 action，然后如果类型匹配，就会执行对应的函数，例如  fetchUser。<br>可以看出 Redux-saga 是更加复杂的，相应的功能也更强大，上面也是最基本的使用。</p>
+<h2 id="异步加载"><a href="#异步加载" class="headerlink" title="异步加载"></a>异步加载</h2><p>默认情况下，会把项目的所有 JS 打包成一个 JS，这样页面只需要加载一次 JS，但是，如果逻辑很多，第一次加载肯定很慢，对于大项目，更期望只加载用到的 JS，使用的是 <strong>react-loadable</strong> 这个组件。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// loadable.js</span></span><br><span class="line"><span class="keyword">import</span> Loadable <span class="keyword">from</span> <span class="string">'react-loadable'</span>;</span><br><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> LoadableComponent = Loadable(&#123;</span><br><span class="line">  <span class="comment">// 当前的 index.js 做异步</span></span><br><span class="line">  loader: <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">import</span>(<span class="string">'./'</span>),</span><br><span class="line">  loading () &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span>正在加载...<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> () =&gt; <span class="xml"><span class="tag">&lt;<span class="name">LoadableComponent</span>/&gt;</span></span></span><br></pre></td></tr></table></figure>
+<p>以上是基于官方示例做的简单修改，下面是使用：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// import Detail from './pages/detail' 之前</span></span><br><span class="line"><span class="keyword">import</span> Detail <span class="keyword">from</span> <span class="string">'./pages/detail/loadable'</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">App</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;Provider store=&#123;store&#125;&gt;</span><br><span class="line">      &lt;ResetStyle/&gt;</span><br><span class="line">      &lt;GlobalStyle/&gt;</span><br><span class="line"></span><br><span class="line">      &lt;BrowserRouter&gt;</span><br><span class="line">        &lt;Route path=<span class="string">'/detail/:id'</span> exact component=&#123;Detail&#125;/&gt;</span><br><span class="line">      &lt;<span class="regexp">/BrowserRouter&gt;</span></span><br><span class="line"><span class="regexp">    &lt;/</span>Provider&gt;</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> App;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用路由的情况下，需要对组件特殊处理</span></span><br><span class="line"><span class="keyword">import</span> &#123; withRouter &#125; <span class="keyword">from</span> <span class="string">'react-router-dom'</span>;</span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> connect(mapState, mapDispatch)(withRouter(Detail));</span><br></pre></td></tr></table></figure>
+<p>可以看出，只需要把 import 语句改成引入编写的 loadable 文件即可，但是，如何使用了 BrowserRouter 路由，这样就会有问题，所以在 export 的时候需要使用 withRouter 包裹一下。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>总结一下一般的模块开发套路，首先创建组件，如果需要较多的数据就要创建独立的 Store，然后使用 <strong>Redux + React-redux</strong> 来进行管理，子组件在 export 的时候使用 connect 函数连接 store。<br>样式的编写可以采用 <strong>styled-components</strong>，这样数据全部来自相关的 store，使用 mapStateToProps 来映射到 props 中，相关的事件通过 mapDispatchToProps 映射到 props 中，这样改变数据就使用相应的 action 即可。<br>为了将逻辑写在 action 中，例如异步请求，使用了 <strong>Redux-thunk 或者 Redux-saga</strong> 来将 action 变为一个函数，将数据处理好后直接调用 dispatch 即可，为了方便 action 管理，将所有 action 的创建抽取到 <em>actionCreators.js</em> 文件中，相应的，常量也应该抽取到一个单独的文件，便于 <em>actionCreators.js 和 reducer.js</em> 的使用。<br>存储为了不必要的麻烦，使用 <strong>immutable-js</strong> 将其变为不可变对象，为了风格的统一使用 <strong>redux-immutable</strong> 将 store 的 state 也变为不可变对象。<br>这样下来，store 文件夹里就有了不少文件，为了方便导入，可以建一个 <em>index.js</em> 做聚合。<br>每一个模块都应该有自己的 store 数据仓储，所以把相关联的 store 文件夹放真自己的模块下，在主仓储使用 combineReducers 函数来组合。</p>
+<p>因为数据变化 <code>render()</code> 就会执行，子组件也会重新渲染，即使子组件需要的数据没有变化，为了优化这个问题导致的页面重新渲染，除了在 shouldComponentUpdate 中判断外，React 自然也想到了这一点，所以它还有一个 <strong>PureComponent</strong>，只要继承它，就自动帮你实现了 shouldComponentUpdate 的内容，不过需要也使用 immutable-js，否则可能会有 bug。</p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>关于动画，这个我是真的不想看，CSS 看着就头疼，想做的看下 <strong>react-transition-group</strong> 这个库吧。<br>关于 UI 设计，可以看看 Ant Design 这个库。</p>
+<p>正常情况下，如果你在 JS 中导入了 CSS，那么这个 CSS 是全局生效的，所以并不推荐这样使用，例如可以使用 <code>styled-components</code> 来管理，它使用 JS 来编写样式，这样在 WebStorm 不识别，可以安装他们的一个插件。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>喜欢就请我吃包辣条吧！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/image/pay/wx.jpg" alt="Kerronex WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/image/pay/zfb.jpg" alt="Kerronex Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Kerronex
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://sakanoy.com/2020/03/01/React核心使用总结/" title="React核心使用总结">https://sakanoy.com/2020/03/01/React核心使用总结/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/前端/" rel="tag"><i class="fa fa-tag"></i> 前端</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/11/26/CSS布局之Flex布局/" rel="next" title="CSS布局之Flex布局">
+                <i class="fa fa-chevron-left"></i> CSS布局之Flex布局
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/03/19/ElasticStack从入门到放弃/" rel="prev" title="ElasticStack从入门到放弃">
+                ElasticStack从入门到放弃 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        
+          <p class="warninginfo">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+              评论框加载失败，无法访问 Disqus<br><br>
+              你可能需要魔法上网~~
+          </p>
+
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/image/tx.png"
+               alt="Kerronex" />
+          <p class="site-author-name" itemprop="name">Kerronex</p>
+           
+              <p class="site-description motion-element" itemprop="description">程序猿/二刺螈<br/>夜猫族/爱折腾</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">130</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="Mailto:bfchengnuo@gmail.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-envelope-o"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://GitHub.com/bfchengnuo" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://sakanoy.com/MyRecord/#/" target="_blank" title="笔记本">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  笔记本
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.cnblogs.com/bfchengnuo" target="_blank" title="博客园">
+                  
+                    <i class="fa fa-fw fa-paw"></i>
+                  
+                  博客园
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              小伙伴们~
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://heartsky.info" title="HeartSky" target="_blank">HeartSky</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.kiuber.me" title="Kiuber" target="_blank">Kiuber</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/nightcharm" title="夜Charm" target="_blank">夜Charm</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#准备环境"><span class="nav-number">1.</span> <span class="nav-text">准备环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#组件"><span class="nav-number">2.</span> <span class="nav-text">组件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#无状态组件"><span class="nav-number">2.1.</span> <span class="nav-text">无状态组件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JSX"><span class="nav-number">3.</span> <span class="nav-text">JSX</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#组件之间传值"><span class="nav-number">4.</span> <span class="nav-text">组件之间传值</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#类型校验"><span class="nav-number">4.1.</span> <span class="nav-text">类型校验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redux"><span class="nav-number">4.2.</span> <span class="nav-text">Redux</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#React-redux"><span class="nav-number">4.3.</span> <span class="nav-text">React-redux</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#State与Props"><span class="nav-number">5.</span> <span class="nav-text">State与Props</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#虚拟DOM"><span class="nav-number">6.</span> <span class="nav-text">虚拟DOM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生命周期"><span class="nav-number">7.</span> <span class="nav-text">生命周期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#路由"><span class="nav-number">8.</span> <span class="nav-text">路由</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redux-thunk"><span class="nav-number">9.</span> <span class="nav-text">Redux-thunk</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redux-saga"><span class="nav-number">10.</span> <span class="nav-text">Redux-saga</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#异步加载"><span class="nav-number">11.</span> <span class="nav-text">异步加载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">12.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他"><span class="nav-number">13.</span> <span class="nav-text">其他</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+    <div style="height: 370px;background-image: url(/image/bj.png);background-repeat: no-repeat; margin-left: 31%;"></div>
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+<span id="sitetime"></span>
+<span class="my-face">(●'◡'●)ﾉ♥</span>
+<script language=javascript>
+function siteTime(){
+window.setTimeout("siteTime()", 1000);
+var seconds = 1000
+var minutes = seconds * 60
+var hours = minutes * 60
+var days = hours * 24
+var years = days * 365
+
+var today = new Date()
+var todayYear = today.getFullYear()
+var todayMonth = today.getMonth()
+var todayDate = today.getDate()
+var todayHour = today.getHours()
+var todayMinute = today.getMinutes()
+var todaySecond = today.getSeconds()
+
+/* Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳) 
+year - 作为date对象的年份，为4位年份值
+month - 0-11之间的整数，做为date对象的月份
+day - 1-31之间的整数，做为date对象的天数
+hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+minutes - 0-59之间的整数，做为date对象的分钟数
+seconds - 0-59之间的整数，做为date对象的秒数
+microseconds - 0-999之间的整数，做为date对象的毫秒数 */
+var t1 = Date.UTC(2016,3,30,8,0,0)
+var t2 = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond)
+var diff = t2-t1
+
+var diffYears = Math.floor(diff/years)
+var diffDays = Math.floor((diff/days)-diffYears*365)
+var diffDaysAll = Math.floor(diff/days)
+var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours)
+var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes)
+var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds)
+document.getElementById("sitetime").innerHTML=" 本站已萌萌哒运行 "+diffDaysAll+" 天 "+diffHours+" 小时 "+diffMinutes+" 分钟 "+diffSeconds+" 秒 "
+}
+siteTime()
+</script>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共521.4k字</span>
+
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'bfchengnuo';
+      var disqus_identifier = '2020/03/01/React核心使用总结/';
+
+      var disqus_title = "React核心使用总结";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":130,"height":170,"hOffset":30,"vOffset":-10},"mobile":{"show":false},"react":{"opacity":0.7},"log":false});</script></body>
+</html>

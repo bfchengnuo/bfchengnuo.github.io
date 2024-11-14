@@ -1,0 +1,1260 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Microsoft Yahei:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Java,Struts," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakanoy" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/image/tb.png?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="主要说了些拦截器相关的内容，还有大量的 OGNL 相关的东西，最后补充了个注解，不过看到有人说 sturt2 几乎现在很少用了，大多数公司都用 springMVC ，还得抓紧时间继续学呐">
+<meta name="keywords" content="Java,Struts">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Struts2学习笔记(二)">
+<meta property="og:url" content="https://sakanoy.com/2017/06/16/Struts2学习笔记-二/index.html">
+<meta property="og:site_name" content="Sakanoy">
+<meta property="og:description" content="主要说了些拦截器相关的内容，还有大量的 OGNL 相关的东西，最后补充了个注解，不过看到有人说 sturt2 几乎现在很少用了，大多数公司都用 springMVC ，还得抓紧时间继续学呐">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-10-16T06:53:46.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Struts2学习笔记(二)">
+<meta name="twitter:description" content="主要说了些拦截器相关的内容，还有大量的 OGNL 相关的东西，最后补充了个注解，不过看到有人说 sturt2 几乎现在很少用了，大多数公司都用 springMVC ，还得抓紧时间继续学呐">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://sakanoy.com/2017/06/16/Struts2学习笔记-二/"/>
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-bounce.css">
+
+  <title> Struts2学习笔记(二) | Sakanoy </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-77463916-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakanoy</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">立于浮华之世,奏响天籁之音.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-mark">
+          <a href="/mark" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-retweet"></i> <br />
+            
+            笔记本
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-book"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-music">
+          <a href="/music" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-music"></i> <br />
+            
+            音乐台
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://sakanoy.com/2017/06/16/Struts2学习笔记-二/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Kerronex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/image/tx.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakanoy">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Struts2学习笔记(二)
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-16T12:59:47+00:00">
+                2017-06-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-eye"></i> 热度
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-wordcount">
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  6,134
+                </span>
+              
+
+              
+
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <div style="display: none;color: #999" class="note warning" id='timeliness'></div>
+        <script language=javascript>
+          var days = (new Date().getTime() - 1497617987000) / 86400000;
+          if(days > 180) {
+            var infoDom = document.getElementById("timeliness");
+            infoDom.innerHTML = "提醒：本文发布于 " + Math.round(days) + " 天前，文中所描述的信息可能已发生改变，请谨慎使用。";
+            infoDom.style.display = "block"
+          }
+        </script>
+        <p>主要说了些拦截器相关的内容，还有大量的 OGNL 相关的东西，最后补充了个注解，不过看到有人说 sturt2 几乎现在很少用了，大多数公司都用 springMVC ，还得抓紧时间继续学呐<a id="more"></a><br>还有一个模型驱动拦截器放在了<a href="https://bfchengnuo.com/2017/06/07/Struts2%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">笔记一</a>中，因为这篇已经太长了….</p>
+<h2 id="注入对象"><a href="#注入对象" class="headerlink" title="注入对象"></a>注入对象</h2><p>Action 既然只是普通的一个 java 类，如果想要获得 request 等内的数据应该怎么做的，这时候就用到反射技术来注入对象了；具体的注入实现是 <strong>ServletConfigInterceptor</strong> 这个拦截器，支持注入那些对象可以进这个的源码看看，就是一连串的 if<br>Action 中注入对象只需要实现特定的接口即可：<br>实现 RequestAware 接口注入 request 中的 map 集合，大多数都是用的这个吧<br>实现 ServletRequestAware 注入 request 对象<br>实现 ApplicationAware 注入 Application 对象<br>实现 ServletContextAware 注入 ServletContext 对象<br>另外还有 session 的，等等….</p>
+<p>那么什么时候用注入对象的方式呢，ActionContext 和 ServletActionContext 都不能在构造器中初始化，因为拦截器是在实例化 Action 之后执行的，如果用的很频繁每个方法都来一遍太 low 了，于是可以使用这种注入的方式保存成全局变量<br>在后期优化的时候对 BestAction 进行注入也是不错的选择</p>
+<h2 id="Token拦截器"><a href="#Token拦截器" class="headerlink" title="Token拦截器"></a>Token拦截器</h2><p>在表单防止重复提交中，这个是必用的吧；一般会用到两个域：一个是 page ，一个是 session，对应客户端和服务端吧<br>相比 Struts1 在 Struts2 中使用更加的简单：<br>首先在 JSP 页面添加 Token 标签，它会在被访问的时候创建令牌，是在 form 里面哦，另外最后也加个显示错误的标签，因为抛的错误是 Action 错误，所以…</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">s:debug</span> /&gt;</span></span><br><span class="line">    这是一个测试页面 <span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">%--显示</span> <span class="attr">Token</span> 认证错误信息<span class="attr">--</span>%&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">s:actionerror</span>/&gt;</span> <span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">s:form</span> <span class="attr">namespace</span>=<span class="string">"/reg"</span> <span class="attr">action</span>=<span class="string">"TokenAction_reg"</span> <span class="attr">method</span>=<span class="string">"POST"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">s:token</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">s:textfield</span> <span class="attr">name</span>=<span class="string">"name"</span> <span class="attr">label</span>=<span class="string">"用户名"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">s:submit</span> <span class="attr">value</span>=<span class="string">"提交"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">s:form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>其次配置 Action 的时候需要指定下栈排除一些不需要校验的方法，然后添加个校验失败跳转的页面</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">action</span> <span class="attr">name</span>=<span class="string">"TokenAction_*"</span> <span class="attr">class</span>=<span class="string">"com.bfchengnuo.web.action.TokenAction"</span> <span class="attr">method</span>=<span class="string">"&#123;1&#125;"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">name</span>=<span class="string">"success"</span>&gt;</span>/reg/success.jsp<span class="tag">&lt;/<span class="name">result</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">name</span>=<span class="string">"regView"</span>&gt;</span>/reg/tokenReg.jsp<span class="tag">&lt;/<span class="name">result</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--指定 Token 验证失败后怎么办--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">name</span>=<span class="string">"invalid.token"</span>&gt;</span>/reg/tokenReg.jsp<span class="tag">&lt;/<span class="name">result</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--指定拦截器栈，这样会覆盖默认栈，所以需要手动再添加一次--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">interceptor-ref</span> <span class="attr">name</span>=<span class="string">"token"</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--排除方法--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">param</span> <span class="attr">name</span>=<span class="string">"excludeMethods"</span>&gt;</span>toReg<span class="tag">&lt;/<span class="name">param</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">interceptor-ref</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">interceptor-ref</span> <span class="attr">name</span>=<span class="string">"defaultStack"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">action</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>嗯….基本就是这样了，另外；如果想要替换错误信息为中文，可以在当前目录建立 Action 相关文件，修改 <code>struts.messages.invalid.token</code> 为你想要的值即可</p>
+<blockquote>
+<p>  看网上的帖子说还需要在 struts.xml 中修改 struts.custom.i18n.resources 常量；但是我测试不用修改也完全有效，版本好像是 2.3</p>
+</blockquote>
+<h2 id="execAndWait拦截器"><a href="#execAndWait拦截器" class="headerlink" title="execAndWait拦截器"></a>execAndWait拦截器</h2><p>常叫做为<strong>执行等待拦截器</strong>，从名字也可以看出了，就是在执行耗时操作的时候跳转到一个预设的界面，等耗时操作结束后再跳回；这个过程是个伪异步，因为在等待页面是通过定义 meta 的方式进行定时刷新检测的，下面来简单的模拟下，首先是 Action ，非常简单就是让线程休眠下…</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WaitAction</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 模拟耗时操作</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">execute</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Thread.sleep(<span class="number">8000</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"success"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后就是配套的配置文件了，execAndWait 是不在默认栈里的，以及需要配一个等待页面 wait：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">action</span> <span class="attr">name</span>=<span class="string">"WaitAction"</span> <span class="attr">class</span>=<span class="string">"com.bfchengnuo.web.action.WaitAction"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span>&gt;</span>/reg/success.jsp<span class="tag">&lt;/<span class="name">result</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">name</span>=<span class="string">"wait"</span>&gt;</span>/wait.jsp<span class="tag">&lt;/<span class="name">result</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--执行等待拦截器不在默认栈中，一般添加到最后就行--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">interceptor-ref</span> <span class="attr">name</span>=<span class="string">"defaultStack"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">interceptor-ref</span> <span class="attr">name</span>=<span class="string">"execAndWait"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">action</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>那个等待页面和成功页面就不写了，就是很简单的一句话而已，这样就能看出效果了</p>
+<h2 id="自定义拦截器"><a href="#自定义拦截器" class="headerlink" title="自定义拦截器"></a>自定义拦截器</h2><p>搞一个简单的拦截器测试看看，自定义的拦截器要实现 Interceptor 接口，注意导包：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoginInterceptor</span> <span class="keyword">implements</span> <span class="title">Interceptor</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 用来反序列化的，写不写无所谓</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">5175604343895716587L</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">destroy</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">intercept</span><span class="params">(ActionInvocation actionInvocation)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        Object action = actionInvocation.getAction();</span><br><span class="line">        <span class="keyword">if</span> (action <span class="keyword">instanceof</span> LoginAction) &#123;</span><br><span class="line">            <span class="comment">// 直接放行</span></span><br><span class="line">            <span class="keyword">return</span> actionInvocation.invoke();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Map&lt;String, Object&gt; sessionMap = actionInvocation.getInvocationContext().getSession();</span><br><span class="line">        <span class="keyword">if</span> (sessionMap.get(<span class="string">"username"</span>) == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="comment">// 没有登陆，跳转到登陆</span></span><br><span class="line">            <span class="keyword">return</span> <span class="string">"login"</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> actionInvocation.invoke();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>看以看出，逻辑非常简单，判断是否是 LoginAction 如果是就直接放行了，如果不是就判断 session 是否存有用户信息，没有就跳转到登陆界面上去，但是总感觉这样写不是很优雅呢……嘛~先这样吧<br>优雅一点的可以通过 ActionInvocation 对象获取 Action 的代理对象（<code>ac.getProxy()</code>），然后通过代理对象可以拿到当前执行 Action 的方法名等信息，然后进行相应的拦截<br>拦截器的 init 方法是在服务器启动的时候就会执行的（过滤器也是如此），并且一般只执行一次，而 intercept 方法会执行多次；<strong>如果你不需要初始化或清理代码，可以继承自扩展的 AbstractInterceptor 类，它提供了一个对 init() 和 destroy() 方法的默认的无操作实现。</strong><br>接下来是测试 Action 了</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoginAction</span> <span class="keyword">extends</span> <span class="title">ActionSupport</span> <span class="keyword">implements</span> <span class="title">SessionAware</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = -<span class="number">9178854276859257157L</span>;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="comment">// 实现了 SessionAware 接口，以此来获得 session 中的 map</span></span><br><span class="line">    <span class="keyword">private</span> Map&lt;String,Object&gt; sessionMap;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setSession</span><span class="params">(Map&lt;String, Object&gt; map)</span> </span>&#123;</span><br><span class="line">        sessionMap = map;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 简单模拟，只要用户名对就通过</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">reg</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="string">"admin"</span>.equalsIgnoreCase(name)) &#123;</span><br><span class="line">            sessionMap.put(<span class="string">"username"</span>, name);</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> LOGIN;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> SUCCESS;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toView</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"toLoginView"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>与之相关的配置文件：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">package</span> <span class="attr">name</span>=<span class="string">"Login"</span> <span class="attr">extends</span>=<span class="string">"struts-default"</span> <span class="attr">namespace</span>=<span class="string">"/login"</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--配置自定义拦截器--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">interceptors</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--注册拦截器--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">interceptor</span> <span class="attr">name</span>=<span class="string">"loginInterceptor"</span> <span class="attr">class</span>=<span class="string">"com.bfchengnuo.interceptor.LoginInterceptor"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!--配置自定义拦截器栈--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">interceptor-stack</span> <span class="attr">name</span>=<span class="string">"loginStack"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">interceptor-ref</span> <span class="attr">name</span>=<span class="string">"loginInterceptor"</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">interceptor-ref</span> <span class="attr">name</span>=<span class="string">"defaultStack"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">interceptor-stack</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">interceptors</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--可以定义默认的栈（所有的 Action 都执行这个默认的栈）--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">default-interceptor-ref</span> <span class="attr">name</span>=<span class="string">"loginStack"</span>/&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">&lt;!--定义全局的返回结果--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--&lt;global-results&gt;--&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--&lt;result name="login"&gt;/login.jsp&lt;/result&gt;--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--&lt;/global-results&gt;--&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">action</span> <span class="attr">name</span>=<span class="string">"Login_*"</span> <span class="attr">class</span>=<span class="string">"com.bfchengnuo.interceptor.LoginAction"</span> <span class="attr">method</span>=<span class="string">"&#123;1&#125;"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span>&gt;</span>/reg/success.jsp<span class="tag">&lt;/<span class="name">result</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">name</span>=<span class="string">"login"</span>&gt;</span>/login.jsp<span class="tag">&lt;/<span class="name">result</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">name</span>=<span class="string">"toLoginView"</span>&gt;</span>/login.jsp<span class="tag">&lt;/<span class="name">result</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">action</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">package</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>嗯….这样应该就差不多了吧….<br>需要注意的是：配置自定义拦截器（interceptors）要放在 package 中的最前面，如果使用 <strong>default-interceptor-ref</strong> 那么所有的 Action 都会执行其中定义的栈，如果只需要特定的 Action 执行自定义的栈，可以在相应的 Action 中进行配置，这样其他的 Action 就还是执行默认的栈。<!-- 自定义的拦截器栈中默认的（defaultStack）要放在最下面，因为默认的拦截器执行后并不会再放行的 --></p>
+<h2 id="OGNL表达式"><a href="#OGNL表达式" class="headerlink" title="OGNL表达式"></a>OGNL表达式</h2><p>OGNL 也是一个开源的项目，Struts2 融合了 OGNL 并且将它作为默认的表达式语言，它必须依赖于 Struts 的标签才能使用<br>OGNL 由表达式语言和类型转换器组成，就是为了方便数据的访问；总体来说和 EL 表达式是很像的，并且兼容 EL 表达式，大多数表达式不需要进行转义，如果用到了使用 <code>%{xxx}</code> 进行转义，也叫做强制表达式解析（在不自动进行 OGNL 解析的地方强制解析），多用于非 String 对象<br>举个简单使用的栗子，首先是主要的 JSP 页面部分：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">s:form</span> <span class="attr">namespace</span>=<span class="string">"/ognl"</span> <span class="attr">action</span>=<span class="string">"OgnlAction"</span> <span class="attr">method</span>=<span class="string">"POST"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">s:textfield</span> <span class="attr">name</span>=<span class="string">"names[0]"</span> <span class="attr">label</span>=<span class="string">"names[0]"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">s:textfield</span> <span class="attr">name</span>=<span class="string">"names[1]"</span> <span class="attr">label</span>=<span class="string">"names[1]"</span>/&gt;</span></span><br><span class="line">        &lt;%--&lt;s:textfield name="names" label="names"/&gt;--%&gt;</span><br><span class="line">        <span class="tag">&lt;<span class="name">s:textfield</span> <span class="attr">name</span>=<span class="string">"nameList[0].name"</span> <span class="attr">label</span>=<span class="string">"nameList-name"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">s:textfield</span> <span class="attr">name</span>=<span class="string">"nameList[0].age"</span> <span class="attr">label</span>=<span class="string">"nameList-age"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">s:textfield</span> <span class="attr">name</span>=<span class="string">"user"</span> <span class="attr">label</span>=<span class="string">"user-conver"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;<span class="name">s:textfield</span> <span class="attr">name</span>=<span class="string">"nameMap.key.name"</span> <span class="attr">label</span>=<span class="string">"Map-name"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">s:submit</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">s:form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>在测试的时候还掉进了一个坑，就上面所示： 如果直接写 names 默认会存一个值（数组大小也被置为1），<strong>但是不要 names 和 names[0] 同时出现</strong>，这样会被覆盖，当时就被坑了好久…..竟然犯这样的低级错误<br>数组、集合都可以和 EL 一样使用，属性链也 OK；当然 map 也是可以的：<br>map 的 key 如果是字符串可以直接用 <code>.</code> 连接：<code>map.key.name</code> ；否则就使用 <code>map[&#39;key&#39;].name</code> 这样的形式<br><strong>我是把把表单提交后的页面再指向回此 JSP ，这样数据会回显，以此来观察效果</strong></p>
+<p>相关的 Action 没啥好说的，就是定义上面所述的属性，List、Map 可以不指定泛型，在 <code>OgnlAction-conversion.properties</code> Action 相关文件中指定，如果指定了泛型，那么就会自动进行转换的，转换并不只是八种基本类型，还要强大些，关于 conversion 文件，这是指定前台提交的数据如何进行转换的，毕竟前台提交的都是 String：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 指定 List 内装的是什么类型</span><br><span class="line">Element_nameList=com.bfchengnuo.domain.User</span><br><span class="line">Element_nameMap=com.bfchengnuo.domain.User</span><br><span class="line"></span><br><span class="line"># 还可以定义 Map 指定类型的 key</span><br><span class="line">#Key_nameMap=java.lang.Integer</span><br><span class="line"></span><br><span class="line"># 指定转换器</span><br><span class="line">user=com.bfchengnuo.ognl.UserConverter</span><br></pre></td></tr></table></figure>
+<p>通过这个文件就可以确定前面表单中的 <code>nameList[0].name</code> 指的就是 List 中第一个 user 对象中的 name 属性；<br>表单中还有一个 name 叫 user 的，这个是我编写的一个简单的 javabean，正常来说需要这样写：<code>user.name</code> 才能正确的赋值，总不能把一个字符串赋值给一个 user 对象吧，如果硬要这样那就必须定义一个转换器了，就是上面 properties 文件指定的那个类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserConverter</span> <span class="keyword">extends</span> <span class="title">StrutsTypeConverter</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 字符串转成对象，客户端提交时</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">convertFromString</span><span class="params">(Map map, String[] strings, Class aClass)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (strings != <span class="keyword">null</span> &amp;&amp; strings.length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            String[] ss = strings[<span class="number">0</span>].split(<span class="string">"-"</span>);</span><br><span class="line">            <span class="keyword">if</span> (ss.length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                User user = <span class="keyword">new</span> User();</span><br><span class="line">                user.setName(ss[<span class="number">0</span>]);</span><br><span class="line">                user.setAge(ss[<span class="number">1</span>]);</span><br><span class="line">                <span class="keyword">return</span> user;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 对象转成对象，服务器返回时</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">convertToString</span><span class="params">(Map map, Object o)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 直接调用自定义的 tostring 方法</span></span><br><span class="line">        <span class="keyword">return</span> o.toString();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>定义转换器需要继承 StrutsTypeConverter ，复写两个方法，一个是用于客户端提交数据时转换，一个是服务器返回数据回显时转换；它和值栈挨着，提交数据时经过转换后存到值栈，回显数据时经过转换输出到客户端</p>
+<blockquote>
+<p>  对于转换器来说，每个 Action 都搞一个太累，可以在 src 根目录下定义 <code>xwork-conversion.property</code> 全局的类型转换器</p>
+</blockquote>
+<h3 id="OGNL中重要的3个符号"><a href="#OGNL中重要的3个符号" class="headerlink" title="OGNL中重要的3个符号"></a>OGNL中重要的3个符号</h3><p><code>#</code>、<code>%</code> 和 <code>$</code> 符号在 OGNL 表达式中经常出现，他们的意义嘛</p>
+<ul>
+<li><code>#</code><br>它的用途一般有三种，最常用的就是用来<strong>访问非根对象属性</strong> ，比如：<code>#session/#request/#application</code> 等；<code>#</code> 相当于 <code>ActionContext.getContext()</code> 默认会自动搜索各个域<br>第二种是用于过滤和投影（projecting）集合<br>第三种是用来构造集合，Map 和 List ：<code>#{key1:val1,key2:val2}/{1,2,3}</code></li>
+<li><code>%</code><br>% 符号的用途是在标志的属性为字符串类型时（或者说值类型的标签中），计算 OGNL 表达式的值，相当于提供了一个 OGNL 的解析环境，就是所谓的强制（暴力）解析了；<br>如果本来默认解析 OGNL 的标签（对象类型标签）想让其单纯的输出值，就需要在双引号里加一层单引号</li>
+<li><code>$</code><br>主要用途有两个：在国际化资源文件中，引用 OGNL 表达式；在 Struts2 配置文件中，引用 OGNL 表达式<br>比如在使用重定向时，传参只能通过 url；通过这个就可以获得 Action 中的数据</li>
+</ul>
+<h3 id="关于值栈"><a href="#关于值栈" class="headerlink" title="关于值栈"></a>关于值栈</h3><p>OGNL 和值栈有密切的关系，既然用户要获取一些必要的数据（JSP 中）那么怎么才能把 Action 中的数据传给用户呢，就是用的值栈<br>Action 创建的同时也会创建值栈以及 ActionContext，然后会把 Action 对象封装进值栈中（在根元素），通过 Request 传给用户（key 为 <strong>struts.ValueStak</strong>）；获取值栈可以通过 ActionContext，也可以通过 Request<br>值栈当中维护了一个 OgnlContext 对象（request、session 等对象的数据就存在这里，Action 对象在根元素），就是 OGNL 表达式所用的，其实是一个 Map<br>从上面可以看出，Action 是放进了值栈的根节点，那么 Action 中的属性也毫无疑问的放在了根节点，而 OGNL 表达式取根节点的值是不需要加 <code>#</code> 符号的，所以可以使用 <code># + 属性名</code> 直接取</p>
+<h2 id="OGNL标签"><a href="#OGNL标签" class="headerlink" title="OGNL标签"></a>OGNL标签</h2><p>如同 JSTL ，OGNL 也自带了一些标签供使用；首先还要明确一点：<br>struts2 接收到请求后马上创建一个 ActionContext，一个 ValueStak 和一个 Action 对象；Action 对象立即放到值栈上便于 OGNL 的访问<br>顶层对象会覆盖底层对象，也就说从上往下找，<strong>找到了就不会继续往下了</strong><br>默认是从栈顶的对象里寻找，是栈顶对象！所以，一般是 Action 在栈顶；但是如果 user 对象在栈顶（前面所说的模型驱动），可以直接用其属性<br>OGNL 不仅可以访问 bean 的属性，还可以访问方法，但是不建议用</p>
+<p>Struts2 的标签库都是使用 OGNL 表达式来访问 ActionContext 中的对象数据的；并且将 ActionContext 设置为 OGNL 上下文，默认的根对象为值栈</p>
+<h3 id="s-property"><a href="#s-property" class="headerlink" title="s:property"></a>s:property</h3><p>首先是有关获取数据的几个标签，也就 ActionContext 中的六个“域”，我事先在 Action 初始化了一波数据，后面会用到</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">execute</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    initData();</span><br><span class="line">    <span class="keyword">return</span> SUCCESS;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initData</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 往各个域中存储数据</span></span><br><span class="line">    ServletActionContext.getRequest().setAttribute(<span class="string">"name"</span>,<span class="string">"request-name"</span>);</span><br><span class="line">    <span class="keyword">if</span> (ServletActionContext.getRequest().getSession() == <span class="keyword">null</span>) &#123;</span><br><span class="line">        System.out.println(<span class="string">"session--Null"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    ServletActionContext.getRequest().getSession().setAttribute(<span class="string">"name"</span>,<span class="string">"session-name"</span>);</span><br><span class="line">    ServletActionContext.getServletContext().setAttribute(<span class="string">"name"</span>,<span class="string">"application-name"</span>);</span><br><span class="line">    ServletActionContext.getContext().getValueStack().set(<span class="string">"name"</span>,<span class="string">"vs-name"</span>);</span><br><span class="line"></span><br><span class="line">    popList();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 填充 List</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">popList</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    nameList = <span class="keyword">new</span> ArrayList();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">        User user = <span class="keyword">new</span> User();</span><br><span class="line">        user.setName(<span class="string">"Loli-No"</span> + i);</span><br><span class="line">        user.setAge((i+<span class="number">8</span>) + <span class="string">""</span>);</span><br><span class="line">        nameList.add(user);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后在 JSP 页面中直接获取就可以了</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">s:debug</span>/&gt;</span> <span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line">    request.name:<span class="tag">&lt;<span class="name">s:property</span> <span class="attr">value</span>=<span class="string">"#request.name"</span>/&gt;</span> <span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line">    session.name:<span class="tag">&lt;<span class="name">s:property</span> <span class="attr">value</span>=<span class="string">"#session.name"</span>/&gt;</span> <span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line">    application.name:<span class="tag">&lt;<span class="name">s:property</span> <span class="attr">value</span>=<span class="string">"#application.name"</span>/&gt;</span> <span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">%--</span> 从小到大依次搜索 <span class="attr">--</span>%&gt;</span></span><br><span class="line">    attr.name:<span class="tag">&lt;<span class="name">s:property</span> <span class="attr">value</span>=<span class="string">"#attr.name"</span>/&gt;</span> <span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line">    parameters.name:<span class="tag">&lt;<span class="name">s:property</span> <span class="attr">value</span>=<span class="string">"#parameters.name"</span>/&gt;</span> <span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">%--</span> 值栈 <span class="attr">--</span>%&gt;</span></span><br><span class="line">    vs.name:<span class="tag">&lt;<span class="name">s:property</span> <span class="attr">value</span>=<span class="string">"name"</span>/&gt;</span> <span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line">    强制表达式解析： <span class="tag">&lt;<span class="name">s:textfield</span> <span class="attr">label</span>=<span class="string">"%&#123;#request.name&#125;"</span>/&gt;</span> <span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">%--</span> 使用单引号输出常量 <span class="attr">--</span>%&gt;</span></span><br><span class="line">    输出常量：<span class="tag">&lt;<span class="name">s:property</span> <span class="attr">value</span>=<span class="string">"'is constant'"</span>/&gt;</span> <span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">%--</span> 关闭自动转义 <span class="attr">--</span>%&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">s:property</span> <span class="attr">value</span>=<span class="string">"'&lt;h1&gt;取消了转义&lt;/h1&gt;'"</span> <span class="attr">escape</span>=<span class="string">"false"</span>/&gt;</span> <span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>强制表达式解析前面已经提过了，就是用在默认不会进行 OGNL 解析的地方，让其强制进行解析；<br>还有那个输出常量，加单引号，就是不让其进行 OGNL 解析，但是内容会被 Html 编码，这里我就被坑了…..<strong>请记得：在默认进行解析的属性中，如果不使用 OGNL 的时候记得加单引号！</strong></p>
+<h3 id="s-set"><a href="#s-set" class="headerlink" title="s:set"></a>s:set</h3><p>它是用来存储数据的，并且可以存储到指定的域中；如果没有指定范围则默认保存在 ActionContext 的大 Map 中，可以使用 <code>#name</code> 来获取，也可以不加 # ，那样就会先从值栈中搜寻，找不到了再去大 Map 中去找</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">s:set</span> <span class="attr">var</span>=<span class="string">"s_setName"</span> <span class="attr">value</span>=<span class="string">"'loli'"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">s:property</span> <span class="attr">value</span>=<span class="string">"#s_setName"</span>/&gt;</span> <span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>无论是从那个域取数据，<strong>如果找不到最终都会到这个大 Map 自身中去找</strong>,<br>当然还可以存取 List：<code>&lt;s:set name=&quot;miloList&quot; value=&quot;{‘java’,’php’,’C#’}&quot;/&gt;</code><br><code>#</code> 可以理解为是 <code>ActionContext.getContext()</code></p>
+<h3 id="s-push"><a href="#s-push" class="headerlink" title="s:push"></a>s:push</h3><p>同样是用来存储数据的，将对象放到值栈的栈顶，标签结束后会自动删除，不过不能指定存储位置，必须是值栈</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">s:push</span> <span class="attr">value</span>=<span class="string">"'Lolicon'"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">s:property</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">s:push</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>property 不指定 value 的话会自动获取栈顶的对象（值栈），并且会调用其的 toString 方法；另外，不使用 OGNL 的话千万记得加单引号！</p>
+<h3 id="s-bean"><a href="#s-bean" class="headerlink" title="s:bean"></a>s:bean</h3><p>创建新的 javabean 到栈顶(说的当然是值栈)；如果指定了 var 属性，同时还会保存<strong>引用</strong>到 ActionContext 中，如果不指定，在标签结束后从值栈移除<strong>引用</strong>后就无法取得数据了</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">s:bean</span> <span class="attr">name</span>=<span class="string">"com.bfchengnuo.domain.User"</span> <span class="attr">var</span>=<span class="string">"mybean"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">%--</span> 属性赋值 <span class="attr">--</span>%&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">s:param</span> <span class="attr">name</span>=<span class="string">"name"</span> <span class="attr">value</span>=<span class="string">"'小奏'"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">s:property</span> <span class="attr">value</span>=<span class="string">"name"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">s:bean</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line">存储的 name 为（ActionContext 中）：<span class="tag">&lt;<span class="name">s:property</span> <span class="attr">value</span>=<span class="string">"#mybean.name"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<p>在 s:bean 标签中的 property 可以直接写 属性名 获取数据….</p>
+<h3 id="s-action"><a href="#s-action" class="headerlink" title="s:action"></a>s:action</h3><p>作用就是在 JSP 中直接调用某个 Action，executeResult 属性可以指定是否把页面包含进来</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">s:action</span> <span class="attr">name</span>=<span class="string">"HelloWorldAction"</span> <span class="attr">namespace</span>=<span class="string">"/one"</span> <span class="attr">executeResult</span>=<span class="string">"true"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">s:param</span> <span class="attr">name</span>=<span class="string">"user.name"</span> <span class="attr">value</span>=<span class="string">"'Lolicon'"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">s:param</span> <span class="attr">name</span>=<span class="string">"name"</span> <span class="attr">value</span>=<span class="string">"'Loli'"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">s:param</span> <span class="attr">name</span>=<span class="string">"age"</span> <span class="attr">value</span>=<span class="string">"'14'"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">s:action</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>在调用的时候我还传了几个参数过去…..<br>在调用 Action 的时候是在一个线程中，也是一个栈中，后来的 Action 在栈顶 （HelloWorldAction）</p>
+<h3 id="s-iterator"><a href="#s-iterator" class="headerlink" title="s:iterator"></a>s:iterator</h3><p>迭代器….已经很熟了吧，在 JSTL、Struts1 中都见过，就是用来迭代集合的，包括 Map；Struts2 中的迭代器也很好用，非常强大<br>每次迭代都会把数据放在栈顶</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">table</span> <span class="attr">border</span>=<span class="string">"0"</span> <span class="attr">cellspacing</span>=<span class="string">"1"</span> <span class="attr">bgcolor</span>=<span class="string">"#db7093"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">tr</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">td</span>&gt;</span>姓名<span class="tag">&lt;/<span class="name">td</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">td</span>&gt;</span>年龄<span class="tag">&lt;/<span class="name">td</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">td</span>&gt;</span>编号<span class="tag">&lt;/<span class="name">td</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">td</span>&gt;</span>索引<span class="tag">&lt;/<span class="name">td</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">td</span>&gt;</span>是否偶数<span class="tag">&lt;/<span class="name">td</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">tr</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">s:iterator</span> <span class="attr">value</span>=<span class="string">"nameList"</span> <span class="attr">status</span>=<span class="string">"st"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">tr</span> <span class="attr">class</span>=<span class="string">"&lt;s:property value="</span>#<span class="attr">st.even</span>?'<span class="attr">even</span>'<span class="attr">:</span>'<span class="attr">odd</span>'"/&gt;</span>"&gt;</span><br><span class="line">            <span class="tag">&lt;<span class="name">td</span>&gt;</span><span class="tag">&lt;<span class="name">s:property</span> <span class="attr">value</span>=<span class="string">"name"</span>/&gt;</span><span class="tag">&lt;/<span class="name">td</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">td</span>&gt;</span><span class="tag">&lt;<span class="name">s:property</span> <span class="attr">value</span>=<span class="string">"age"</span>/&gt;</span><span class="tag">&lt;/<span class="name">td</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">td</span>&gt;</span><span class="tag">&lt;<span class="name">s:property</span> <span class="attr">value</span>=<span class="string">"#st.count"</span>/&gt;</span><span class="tag">&lt;/<span class="name">td</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">td</span>&gt;</span><span class="tag">&lt;<span class="name">s:property</span> <span class="attr">value</span>=<span class="string">"#st.index"</span>/&gt;</span><span class="tag">&lt;/<span class="name">td</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">td</span>&gt;</span><span class="tag">&lt;<span class="name">s:property</span> <span class="attr">value</span>=<span class="string">"#st.even"</span>/&gt;</span><span class="tag">&lt;/<span class="name">td</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">%--</span> 状态还可以是 <span class="attr">isFirst</span> <span class="attr">isLast</span> 等 <span class="attr">--</span>%&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">tr</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">s:iterator</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">table</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>status 这个对象确实能省不少事呢</p>
+<h3 id="s-if-s-elseif-s-else"><a href="#s-if-s-elseif-s-else" class="headerlink" title="s:if/s:elseif/s:else"></a>s:if/s:elseif/s:else</h3><p>这个标签就爽了，相比 JSTL 里的简直太爽，可想像在写 java 一样</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">s:set</span> <span class="attr">var</span>=<span class="string">"age"</span> <span class="attr">value</span>=<span class="string">"14"</span>/&gt;</span></span><br><span class="line">age:<span class="tag">&lt;<span class="name">s:property</span> <span class="attr">value</span>=<span class="string">"#age"</span>/&gt;</span> <span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">s:if</span> <span class="attr">test</span>=<span class="string">"#age &lt; 10"</span>&gt;</span>小于10<span class="tag">&lt;/<span class="name">s:if</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">s:elseif</span> <span class="attr">test</span>=<span class="string">"#age &gt; 20"</span>&gt;</span>大于20<span class="tag">&lt;/<span class="name">s:elseif</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">s:else</span>&gt;</span>10-20<span class="tag">&lt;/<span class="name">s:else</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>以后做逻辑判断就简单多了<br>需要注意的是，第一行代码的 set 没有用把数字放单引号里，这说明它是一个整型，<strong>在使用的时候记得加 <code>#</code> </strong></p>
+<h3 id="s-url"><a href="#s-url" class="headerlink" title="s:url"></a>s:url</h3><p>在前面的标签库里也见过，就是用来构件 url  的，避免重复写那繁琐的代码，同样；如果加 var 属性就会存到大 Map 中去；最简单的：<code>&lt;s:url /&gt;</code> 表示当前的地址</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"> 当前地址（带参数）：<span class="tag">&lt;<span class="name">s:url</span> <span class="attr">includeParams</span>=<span class="string">"all"</span>/&gt;</span> <span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">s:url</span> <span class="attr">action</span>=<span class="string">"WaitAction"</span> <span class="attr">namespace</span>=<span class="string">"/reg"</span> <span class="attr">var</span>=<span class="string">"waitUrl"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">%--</span> 如果有参数的话可以这样赋值 <span class="attr">--</span>%&gt;</span></span><br><span class="line">    &lt;%--&lt;s:param name="key" value="lalala"/&gt;--%&gt;</span><br><span class="line"><span class="tag">&lt;/<span class="name">s:url</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"&lt;s:property value="</span>#<span class="attr">waitUrl</span>"/&gt;</span>"&gt;跳转等待页<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>除了访问 Action 可以直接在 value 属性里写 http 地址</p>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><p>在迭代的时候，可以快速的定义集合，使用 {}</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">s:iterator</span> <span class="attr">value</span>=<span class="string">"&#123;'loli','2','ll','gt'&#125;"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">s:property</span> /&gt;</span> <span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">s:iterator</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>对于 Map，也差不多，不过需要加 <code>#</code> ，也就是这样：<code>#{&#39;key&#39;:&#39;val&#39;,&#39;key2&#39;:&#39;val&#39;}</code><br>使用 property 标签取的时候直接 value=key 、 value=value 这样就行了，因为放在栈顶的就是 Entry 啊，其中就有 getKey、getValue 这样的方法啊</p>
+<hr>
+<p>为了证明可以调用方法，可以这样调用看看：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nameList.size: <span class="tag">&lt;<span class="name">s:property</span> <span class="attr">value</span>=<span class="string">"nameList.size"</span>/&gt;</span> <span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line">nameList.isEmpty: <span class="tag">&lt;<span class="name">s:property</span> <span class="attr">value</span>=<span class="string">"nameList.isEmpty"</span>/&gt;</span> <span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line">nameList.isEmpty: <span class="tag">&lt;<span class="name">s:property</span> <span class="attr">value</span>=<span class="string">"methodName('para')"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<p>如果需要调用静态内容，需要指定包名，类似：<code>@java.util.Locale@CHINA</code><br>调用静态对象的有参方法：<code>@java.util.Locale@CHINA.getDisplayName(@java.util.locale@CHINA)</code><br>注意：静态方法使用 <code>@</code> 连接，如果非静态用 <code>.</code> 就可以了，上面栗子是调用的静态对象 CHINA 中的非静态方法 getDisplayName<br><strong>由于 Math 比较常用，默认是可以省略的</strong>，比如：<code>@@floor(10.09)</code></p>
+<hr>
+<p>除此之外，还有一些 UI 标签，比如上面用到的 <code>&lt;s:form action=&#39;&#39;&gt;</code> ，总的来说其实和 html 标签并没有什么区别，并且应该是更方便的，上面的这个 form 标签直接在 action 中填 <code>/actionName</code> 就好了，不需要那一串了<br>但是在使用 <code>s:a</code> 标签的时候地址写上 <code>/</code> 反而不正确了，而上面的 form 标签就不会；至于到底加不加 <code>/</code> 最好的方法就是试一下了…..emmmm<br>使用这些标签的时候总是会带一些比较迷的样式（虽然可以设置 theme 属性为 simple），所以一般情况下这类标签是不用的，除非用到了其特别的功能</p>
+<p><code>&lt;s:textfield name=&#39;&#39; /&gt;</code> 标签会自动回显数据，也就是会自动根据 name 属性来从值栈（只有根元素中才是栈，其他的域都是在 Map 中）获取相应的值，某些时候，只需要在值栈中 push 相应的数据就可以了</p>
+<hr>
+<p>有一点还是在这里写下吧，大概：<br>OGNL 中还可以使用类似 <code>[1].user.name</code> 来获取数据，意思就是栈中第二个对象的 user 对象的 name 属性</p>
+<h2 id="OGNL过滤和投影"><a href="#OGNL过滤和投影" class="headerlink" title="OGNL过滤和投影"></a>OGNL过滤和投影</h2><p>不想说太多，因为我还没看到….</p>
+<ul>
+<li><code>?</code>：选择满足条件的所有元素</li>
+<li><code>^</code>：选择满足条件的第一个元素</li>
+<li><code>$</code>：选择满足条件的最后一个元素</li>
+</ul>
+<p>语法为：<code>collection.{?expression}</code> 或 <code>collection.{^expression}</code> 或 <code>collection.{$expression}</code>；栗子大概是这样的：</p>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;s:property value=<span class="string">"array.&#123;?#this &gt; 5&#125;"</span>/&gt;</span><br><span class="line">&lt;s:property value=<span class="string">"array.&#123;^#this &gt; 5&#125;"</span>/&gt;</span><br><span class="line">&lt;s:property value=<span class="string">"array.&#123;$#this &gt; 5&#125;"</span>/&gt;</span><br></pre></td></tr></table></figure>
+<hr>
+<p>如果把集合中的数据想象成是数据库表中的数据，投影简单说就是从这表中<strong>选取某一列所构成的一个新的集合</strong>，感觉和 VO 差不多；投影的语法：<code>collection.{expression}</code> ；比如： <code>&lt;s:property value=&quot;personList.{name}&quot;/&gt;</code></p>
+<p>多数情况下，过滤和投影是联合起来用的，使用起来还算简单：</p>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;s:property value=<span class="string">"personList.&#123;?#this.sex.equals('female')&#125;.&#123;name&#125;"</span>/&gt;</span><br><span class="line">&lt;s:property value=<span class="string">"personList.&#123;^#this.sex.equals('female')&#125;.&#123;name&#125;"</span>/&gt;</span><br><span class="line">&lt;s:property value=<span class="string">"personList.&#123;$#this.sex.equals('female')&#125;.&#123;name&#125;"</span>/&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="使用注解"><a href="#使用注解" class="headerlink" title="使用注解"></a>使用注解</h2><p>如果厌倦了在配置文件中写一大堆的配置，可以选择使用注解，当然有利有弊，在前面的文章已经说过，下面来看看常用的注解：<br>另：使用注解需要 <code>struts2-convention-plugin</code> 的 jar 包</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ParentPackage</span>(<span class="string">"struts-default"</span>)</span><br><span class="line"><span class="meta">@Namespace</span>(<span class="string">"/test"</span>)</span><br><span class="line"><span class="meta">@Results</span>( &#123; <span class="meta">@Result</span>(name = <span class="string">"success"</span>, location = <span class="string">"/main.jsp"</span>),</span><br><span class="line">        <span class="meta">@Result</span>(name = <span class="string">"error"</span>, location = <span class="string">"/error.jsp"</span>) &#125;)</span><br><span class="line"><span class="meta">@ExceptionMappings</span>( &#123; <span class="meta">@ExceptionMapping</span>(exception = <span class="string">"java.lange.RuntimeException"</span>, result = <span class="string">"error"</span>) &#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoginAction</span> <span class="keyword">extends</span> <span class="title">ActionSupport</span></span>&#123;</span><br><span class="line">  ...</span><br><span class="line">  <span class="meta">@Action</span>(<span class="string">"login1"</span>)</span><br><span class="line">  <span class="function"><span class="keyword">public</span> String <span class="title">test1</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>&#123;...&#125;</span><br><span class="line">  </span><br><span class="line">  <span class="meta">@Action</span>( <span class="comment">//表示请求的Action及处理方法  </span></span><br><span class="line">      value=<span class="string">"login2"</span>,  <span class="comment">//表示action的请求名称  </span></span><br><span class="line">      results=&#123;  <span class="comment">//表示结果跳转  </span></span><br><span class="line">              <span class="meta">@Result</span>(name=<span class="string">"success"</span>,location=<span class="string">"/success.jsp"</span>,type=<span class="string">"redirect"</span>),  </span><br><span class="line">              <span class="meta">@Result</span>(name=<span class="string">"login"</span>,location=<span class="string">"/login.jsp"</span>,type=<span class="string">"redirect"</span>),  </span><br><span class="line">              <span class="meta">@Result</span>(name=<span class="string">"error"</span>,location=<span class="string">"/error.jsp"</span>,type=<span class="string">"redirect"</span>)  </span><br><span class="line">      &#125;,  </span><br><span class="line">      interceptorRefs=&#123; <span class="comment">//表示拦截器引用  </span></span><br><span class="line">              <span class="meta">@InterceptorRef</span>(<span class="string">"defaultStack"</span>),  </span><br><span class="line">              <span class="meta">@InterceptorRef</span>(<span class="string">"timer"</span>)  </span><br><span class="line">      &#125;,  </span><br><span class="line">      exceptionMappings=&#123;  <span class="comment">//映射映射声明  </span></span><br><span class="line">              <span class="meta">@ExceptionMapping</span>(exception=<span class="string">"java.lang.Exception"</span>,result=<span class="string">"error"</span>)  </span><br><span class="line">      &#125;  </span><br><span class="line">  )</span><br><span class="line">  <span class="function"><span class="keyword">public</span> String <span class="title">test1</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>&#123;...&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>大体就是这样使用了….. <del>@Action(url) 中的url，如果以 <code>/</code> 开头那是绝对路径，访问的时候不需要加命名空间，否则就要加命名空间，应该是吧，未测试</del></p>
+<p>常用的注解：</p>
+<blockquote>
+<p>  Namespace：指定命名空间。<br>  ParentPackage：指定父包。<br>  Result：提供了Action结果的映射。（一个结果的映射）<br>  Results：“Result”注解列表<br>  ResultPath：指定结果页面的基路径。<br>  Action：指定Action的访问URL。<br>  Actions：“Action”注解列表。<br>  ExceptionMapping：指定异常映射。（映射一个声明异常）<br>  ExceptionMappings：一级声明异常的数组。<br>  InterceptorRef：拦截器引用。<br>  InterceptorRefs：拦截器引用组。</p>
+</blockquote>
+<p>其他的一些用到再补充吧，比如那些拦截注解 Before 、After 之类的，类型转换注解啊。。。总之；注解能做很多事</p>
+<h2 id="其他补充"><a href="#其他补充" class="headerlink" title="其他补充"></a>其他补充</h2><p>当我们需要把返回的内容转成 JSON 时，可以使用 Struts 提供的插件完成，导包就不说了（struts2-json-plugin）<br>配置文件中的 package 继承 json-default，返回值的 type 填 json ；<br>在 Action 中对应的方法中，把相应的数据保存到集合里，通常使用 List，这个集合要是全局的才行，因为要提供 getter/setter 方法，这样 Struts 就会自动进行处理了</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://wiki.jikexueyuan.com/project/struts-2/annotations-types.html" target="_blank" rel="noopener">http://wiki.jikexueyuan.com/project/struts-2/annotations-types.html</a><br><a href="http://www.blogjava.net/fancydeepin/archive/2014/03/17/struts-ognl.html" target="_blank" rel="noopener">http://www.blogjava.net/fancydeepin/archive/2014/03/17/struts-ognl.html</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>喜欢就请我吃包辣条吧！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/image/pay/wx.jpg" alt="Kerronex WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/image/pay/zfb.jpg" alt="Kerronex Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Kerronex
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://sakanoy.com/2017/06/16/Struts2学习笔记-二/" title="Struts2学习笔记(二)">https://sakanoy.com/2017/06/16/Struts2学习笔记-二/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"><i class="fa fa-tag"></i> Java</a>
+          
+            <a href="/tags/Struts/" rel="tag"><i class="fa fa-tag"></i> Struts</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/07/Struts2学习笔记/" rel="next" title="Struts2学习笔记">
+                <i class="fa fa-chevron-left"></i> Struts2学习笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/26/MySQL报Invalid-default-value错误/" rel="prev" title="MySQL报Invalid default value错误">
+                MySQL报Invalid default value错误 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        
+          <p class="warninginfo">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+              评论框加载失败，无法访问 Disqus<br><br>
+              你可能需要魔法上网~~
+          </p>
+
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/image/tx.png"
+               alt="Kerronex" />
+          <p class="site-author-name" itemprop="name">Kerronex</p>
+           
+              <p class="site-description motion-element" itemprop="description">程序猿/二刺螈<br/>夜猫族/爱折腾</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">130</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="Mailto:bfchengnuo@gmail.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-envelope-o"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://GitHub.com/bfchengnuo" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://sakanoy.com/MyRecord/#/" target="_blank" title="笔记本">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  笔记本
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.cnblogs.com/bfchengnuo" target="_blank" title="博客园">
+                  
+                    <i class="fa fa-fw fa-paw"></i>
+                  
+                  博客园
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              小伙伴们~
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://heartsky.info" title="HeartSky" target="_blank">HeartSky</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.kiuber.me" title="Kiuber" target="_blank">Kiuber</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/nightcharm" title="夜Charm" target="_blank">夜Charm</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#注入对象"><span class="nav-number">1.</span> <span class="nav-text">注入对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Token拦截器"><span class="nav-number">2.</span> <span class="nav-text">Token拦截器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#execAndWait拦截器"><span class="nav-number">3.</span> <span class="nav-text">execAndWait拦截器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义拦截器"><span class="nav-number">4.</span> <span class="nav-text">自定义拦截器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OGNL表达式"><span class="nav-number">5.</span> <span class="nav-text">OGNL表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#OGNL中重要的3个符号"><span class="nav-number">5.1.</span> <span class="nav-text">OGNL中重要的3个符号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于值栈"><span class="nav-number">5.2.</span> <span class="nav-text">关于值栈</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OGNL标签"><span class="nav-number">6.</span> <span class="nav-text">OGNL标签</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#s-property"><span class="nav-number">6.1.</span> <span class="nav-text">s:property</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#s-set"><span class="nav-number">6.2.</span> <span class="nav-text">s:set</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#s-push"><span class="nav-number">6.3.</span> <span class="nav-text">s:push</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#s-bean"><span class="nav-number">6.4.</span> <span class="nav-text">s:bean</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#s-action"><span class="nav-number">6.5.</span> <span class="nav-text">s:action</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#s-iterator"><span class="nav-number">6.6.</span> <span class="nav-text">s:iterator</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#s-if-s-elseif-s-else"><span class="nav-number">6.7.</span> <span class="nav-text">s:if/s:elseif/s:else</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#s-url"><span class="nav-number">6.8.</span> <span class="nav-text">s:url</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他"><span class="nav-number">6.9.</span> <span class="nav-text">其他</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OGNL过滤和投影"><span class="nav-number">7.</span> <span class="nav-text">OGNL过滤和投影</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用注解"><span class="nav-number">8.</span> <span class="nav-text">使用注解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他补充"><span class="nav-number">9.</span> <span class="nav-text">其他补充</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">10.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+    <div style="height: 370px;background-image: url(/image/bj.png);background-repeat: no-repeat; margin-left: 31%;"></div>
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+<span id="sitetime"></span>
+<span class="my-face">(●'◡'●)ﾉ♥</span>
+<script language=javascript>
+function siteTime(){
+window.setTimeout("siteTime()", 1000);
+var seconds = 1000
+var minutes = seconds * 60
+var hours = minutes * 60
+var days = hours * 24
+var years = days * 365
+
+var today = new Date()
+var todayYear = today.getFullYear()
+var todayMonth = today.getMonth()
+var todayDate = today.getDate()
+var todayHour = today.getHours()
+var todayMinute = today.getMinutes()
+var todaySecond = today.getSeconds()
+
+/* Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳) 
+year - 作为date对象的年份，为4位年份值
+month - 0-11之间的整数，做为date对象的月份
+day - 1-31之间的整数，做为date对象的天数
+hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+minutes - 0-59之间的整数，做为date对象的分钟数
+seconds - 0-59之间的整数，做为date对象的秒数
+microseconds - 0-999之间的整数，做为date对象的毫秒数 */
+var t1 = Date.UTC(2016,3,30,8,0,0)
+var t2 = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond)
+var diff = t2-t1
+
+var diffYears = Math.floor(diff/years)
+var diffDays = Math.floor((diff/days)-diffYears*365)
+var diffDaysAll = Math.floor(diff/days)
+var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours)
+var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes)
+var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds)
+document.getElementById("sitetime").innerHTML=" 本站已萌萌哒运行 "+diffDaysAll+" 天 "+diffHours+" 小时 "+diffMinutes+" 分钟 "+diffSeconds+" 秒 "
+}
+siteTime()
+</script>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共521.4k字</span>
+
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'bfchengnuo';
+      var disqus_identifier = '2017/06/16/Struts2学习笔记-二/';
+
+      var disqus_title = "Struts2学习笔记(二)";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":130,"height":170,"hOffset":30,"vOffset":-10},"mobile":{"show":false},"react":{"opacity":0.7},"log":false});</script></body>
+</html>

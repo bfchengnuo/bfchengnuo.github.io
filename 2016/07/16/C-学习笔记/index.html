@@ -1,0 +1,1191 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Microsoft Yahei:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="C#," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakanoy" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/image/tb.png?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="这一学期结束了，虽然一直在搞Android开发，但是C#上课我也是认真听的，是没怎么深学，课下不练习也就很快忘了，为了应付考试(￣^￣)，我整理了下以前的代码，主要的内容提取下做个笔记，反正内容也不是很多，万一以后用到了呢？o(￣▽￣)ゞ))￣▽￣)o">
+<meta name="keywords" content="C#">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C#学习笔记">
+<meta property="og:url" content="https://sakanoy.com/2016/07/16/C-学习笔记/index.html">
+<meta property="og:site_name" content="Sakanoy">
+<meta property="og:description" content="这一学期结束了，虽然一直在搞Android开发，但是C#上课我也是认真听的，是没怎么深学，课下不练习也就很快忘了，为了应付考试(￣^￣)，我整理了下以前的代码，主要的内容提取下做个笔记，反正内容也不是很多，万一以后用到了呢？o(￣▽￣)ゞ))￣▽￣)o">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-02-26T13:13:40.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="C#学习笔记">
+<meta name="twitter:description" content="这一学期结束了，虽然一直在搞Android开发，但是C#上课我也是认真听的，是没怎么深学，课下不练习也就很快忘了，为了应付考试(￣^￣)，我整理了下以前的代码，主要的内容提取下做个笔记，反正内容也不是很多，万一以后用到了呢？o(￣▽￣)ゞ))￣▽￣)o">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://sakanoy.com/2016/07/16/C-学习笔记/"/>
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-bounce.css">
+
+  <title> C#学习笔记 | Sakanoy </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-77463916-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakanoy</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">立于浮华之世,奏响天籁之音.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-mark">
+          <a href="/mark" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-retweet"></i> <br />
+            
+            笔记本
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-book"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-music">
+          <a href="/music" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-music"></i> <br />
+            
+            音乐台
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://sakanoy.com/2016/07/16/C-学习笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Kerronex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/image/tx.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakanoy">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                C#学习笔记
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-07-16T11:28:26+00:00">
+                2016-07-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/自我提升/" itemprop="url" rel="index">
+                    <span itemprop="name">自我提升</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-eye"></i> 热度
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-wordcount">
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  2,656
+                </span>
+              
+
+              
+
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <div style="display: none;color: #999" class="note warning" id='timeliness'></div>
+        <script language=javascript>
+          var days = (new Date().getTime() - 1468668506000) / 86400000;
+          if(days > 180) {
+            var infoDom = document.getElementById("timeliness");
+            infoDom.innerHTML = "提醒：本文发布于 " + Math.round(days) + " 天前，文中所描述的信息可能已发生改变，请谨慎使用。";
+            infoDom.style.display = "block"
+          }
+        </script>
+        <p>这一学期结束了，虽然一直在搞Android开发，但是C#上课我也是认真听的，是没怎么深学，课下不练习也就很快忘了，<del>为了应付考试(￣^￣)</del>，我整理了下以前的代码，主要的内容提取下做个笔记，反正内容也不是很多，万一以后用到了呢？<br>o(￣▽￣<em>)ゞ))￣▽￣</em>)o<br><a id="more"></a></p>
+<h2 id="文件操作"><a href="#文件操作" class="headerlink" title="文件操作"></a>文件操作</h2><p>在这之前记得添加引用:using System.IO;</p>
+<h3 id="利用打开对话框本地硬盘获取文件"><a href="#利用打开对话框本地硬盘获取文件" class="headerlink" title="利用打开对话框本地硬盘获取文件"></a>利用打开对话框本地硬盘获取文件</h3><p>先写一个最简单的设置背景图片的功能:<br><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">button1_Click</span>(<span class="params"><span class="keyword">object</span> sender, EventArgs e</span>)</span></span><br><span class="line"><span class="function">      </span>&#123;</span><br><span class="line">          OpenFileDialog openFileDialog = <span class="keyword">new</span> OpenFileDialog();</span><br><span class="line">          <span class="comment">//打开的文件选择对话框上的标题</span></span><br><span class="line">          openFileDialog.Title = <span class="string">"请选择文件"</span>;</span><br><span class="line">          <span class="comment">//设置文件类型</span></span><br><span class="line">          openFileDialog.Filter = <span class="string">"文本文件(*.txt)|*.txt|所有文件(*.*)|*.*"</span>;</span><br><span class="line">          <span class="comment">//设置默认文件类型显示顺序</span></span><br><span class="line">          openFileDialog.FilterIndex = <span class="number">1</span>;</span><br><span class="line">          <span class="comment">//保存对话框是否记忆上次打开的目录</span></span><br><span class="line">          openFileDialog.RestoreDirectory = <span class="literal">true</span>;</span><br><span class="line">          <span class="comment">//设置是否允许多选</span></span><br><span class="line">          openFileDialog.Multiselect = <span class="literal">false</span>;</span><br><span class="line">          <span class="comment">//设置默认路径</span></span><br><span class="line">          openFileDialog.InitialDirectory = <span class="string">"d:\\"</span>; </span><br><span class="line">          <span class="comment">//按下确定选择的按钮</span></span><br><span class="line">          <span class="keyword">if</span> (openFileDialog.ShowDialog() == DialogResult.OK)</span><br><span class="line">          &#123;</span><br><span class="line">              <span class="comment">//如果为多选的时候</span></span><br><span class="line">              <span class="comment">//MessageBox.Show(openFileDialog.FileName);    //完整路径</span></span><br><span class="line">              <span class="comment">//MessageBox.Show(openFileDialog.FileNames[0]);     //完整路径 - 多选文件</span></span><br><span class="line">              <span class="comment">//MessageBox.Show(openFileDialog.SafeFileName);  //文件名</span></span><br><span class="line">              <span class="comment">//MessageBox.Show(openFileDialog.SafeFileNames[0]);</span></span><br><span class="line">             </span><br><span class="line">              <span class="comment">//获得文件路径</span></span><br><span class="line">              <span class="keyword">string</span> localFilePath = openFileDialog.FileName.ToString();</span><br><span class="line">              <span class="comment">//获取文件路径，不带文件名</span></span><br><span class="line">              <span class="comment">//FilePath = localFilePath.Substring(0, localFilePath.LastIndexOf("\\"));</span></span><br><span class="line">              <span class="comment">//获取文件名，带后缀名，不带路径</span></span><br><span class="line">              <span class="keyword">string</span> fileNameWithSuffix = localFilePath.Substring(localFilePath.LastIndexOf(<span class="string">"\\"</span>) + <span class="number">1</span>);</span><br><span class="line">              <span class="comment">//去除文件后缀名</span></span><br><span class="line">              <span class="keyword">string</span> fileNameWithoutSuffix = fileNameWithSuffix.Substring(<span class="number">0</span>, fileNameWithSuffix.LastIndexOf(<span class="string">"."</span>));</span><br><span class="line">              <span class="comment">//在文件名前加上时间</span></span><br><span class="line">              <span class="comment">//string fileNameWithTime = DateTime.Now.ToString("yyyy-MM-dd ") + fileNameExt;</span></span><br><span class="line">              <span class="comment">//在文件名里加字符</span></span><br><span class="line">              <span class="keyword">string</span> newFileName = localFilePath.Insert(<span class="number">1</span>, <span class="string">"dameng"</span>);</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="按照指定规则遍历文件"><a href="#按照指定规则遍历文件" class="headerlink" title="按照指定规则遍历文件"></a>按照指定规则遍历文件</h3><p>这里演示下从指定目录过滤出jpg图片文件。<del>规则可以是正则表达式(未证实)</del><br><code>.</code>可以表示可执行程序所在的目录。<br><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">string</span> filepath = <span class="string">"./src/"</span>;</span><br><span class="line"> List&lt;<span class="keyword">string</span>&gt; namelist = <span class="keyword">new</span> List&lt;<span class="keyword">string</span>&gt;();</span><br><span class="line"></span><br><span class="line"><span class="comment">//获取文件夹中的信息</span></span><br><span class="line">   DirectoryInfo folder = <span class="keyword">new</span> DirectoryInfo(filepath);</span><br><span class="line">   </span><br><span class="line">   <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">GetAllFiles</span>(<span class="params">DirectoryInfo folder</span>)</span></span><br><span class="line"><span class="function">       </span>&#123;</span><br><span class="line">           <span class="comment">//遍历文件夹的内容，筛选出符合规则的文件</span></span><br><span class="line">	    <span class="keyword">foreach</span> (FileInfo file <span class="keyword">in</span> folder.GetFiles(<span class="string">"*.jpg"</span>))</span><br><span class="line">	    &#123;</span><br><span class="line">	        <span class="comment">//将文件名添加到集合/容器</span></span><br><span class="line">	        namelist.Add(file.Name);</span><br><span class="line">	    &#125;</span><br><span class="line">	    <span class="comment">//遍历文件夹--然后进行递归遍历文件</span></span><br><span class="line">           <span class="keyword">foreach</span> (DirectoryInfo dd <span class="keyword">in</span> d.GetDirectories())</span><br><span class="line">           &#123;</span><br><span class="line">               GetAllFiles(dd);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br></pre></td></tr></table></figure></p>
+<p>补充一个关于读取文件流编码相关的<br><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">StreamReader sr = <span class="keyword">new</span> StreamReader(filepath + <span class="string">"文本文档.txt"</span>,Encoding.Default);</span><br><span class="line">String line;</span><br><span class="line">   <span class="keyword">while</span> ((line = sr.ReadLine()) != <span class="literal">null</span>)</span><br><span class="line">   &#123;</span><br><span class="line">   	<span class="comment">//每次读取一行</span></span><br><span class="line">       <span class="comment">//...</span></span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="数据库ADO操作"><a href="#数据库ADO操作" class="headerlink" title="数据库ADO操作"></a>数据库ADO操作</h2><p>还是首先要先添加引用:<br>using System.Data;<br>using System.Data.SqlClient;<br>这里其实没什么特别的，就固定的那么几句，其他的就是执行sql语句了，这里写一下标准的几句固定的语句：<br><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">DBHelper</span></span><br><span class="line">   &#123;</span><br><span class="line">       <span class="comment">//获得一个链接</span></span><br><span class="line">       <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> SqlConnection <span class="title">getConn</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">       </span>&#123;</span><br><span class="line">           <span class="keyword">string</span> strConn = <span class="string">"data source=.;initial catalog=test;uid=sa;password=.."</span>;</span><br><span class="line">           SqlConnection conn = <span class="keyword">new</span> SqlConnection(strConn);</span><br><span class="line">           conn.Open();</span><br><span class="line">           <span class="keyword">return</span> conn;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="comment">//主要是传入一个查询语句，获得一个数据表格</span></span><br><span class="line">       <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> DataTable <span class="title">getDT</span>(<span class="params"><span class="keyword">string</span> strSQL</span>)</span></span><br><span class="line"><span class="function">       </span>&#123;</span><br><span class="line">           SqlConnection conn = getConn();</span><br><span class="line"></span><br><span class="line">           DataTable dt = <span class="keyword">new</span> DataTable();</span><br><span class="line">           SqlDataAdapter da = <span class="keyword">new</span> SqlDataAdapter(strSQL, conn);</span><br><span class="line">           da.Fill(dt);</span><br><span class="line">           conn.Close();</span><br><span class="line">           <span class="keyword">return</span> dt;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="comment">//主要执行非查询语句(增删改) 返回所影响的行数</span></span><br><span class="line">       <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">cmdSQL</span>(<span class="params"><span class="keyword">string</span> strSQL</span>)</span></span><br><span class="line"><span class="function">       </span>&#123;</span><br><span class="line">           SqlConnection conn = getConn();</span><br><span class="line"></span><br><span class="line">           SqlCommand cmd = <span class="keyword">new</span> SqlCommand(strSQL, conn);</span><br><span class="line">           <span class="keyword">int</span> i = cmd.ExecuteNonQuery();</span><br><span class="line">           conn.Close();</span><br><span class="line">           <span class="keyword">return</span> i;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>dt.Rows[0][0];</code>           dataTable的行集合<br><code>dt.Columns[0][0];</code>      dataTable的列集合</p>
+<p>再补充一个随机从数据库取得数据的sql语句：<br><code>select top 20 * from  Exam order by newid()</code><br><del>原理大概猜测是是根据ID经过N次排序后抽取前20条记录(未证实)</del></p>
+<h2 id="字符串相关"><a href="#字符串相关" class="headerlink" title="字符串相关"></a>字符串相关</h2><h3 id="字符串的分割"><a href="#字符串的分割" class="headerlink" title="字符串的分割"></a>字符串的分割</h3><ul>
+<li>按照指定字符分割,返回一个string数组</li>
+<li>按照字符数组进行分割，返回一个string数组</li>
+<li>按照指定的位置分割，返回一个string<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//按照字符分割</span></span><br><span class="line"><span class="keyword">string</span>[] ss = str.Split(<span class="string">'-'</span>);</span><br><span class="line"><span class="comment">//按照字符数组进行分割</span></span><br><span class="line"><span class="comment">//第二个参数，指定字符串的切割规则，这里是删除空字符</span></span><br><span class="line"><span class="comment">//从字符串头部开始遍历，遇到含有的字符就进行分割 (大概 = = </span></span><br><span class="line"><span class="keyword">string</span>[] ss = richTextBox1.Text.Split(<span class="keyword">new</span> <span class="keyword">char</span>[] &#123; <span class="string">' '</span>, <span class="string">'-'</span>,<span class="string">'\n'</span>,<span class="string">','</span> &#125;,StringSplitOptions.RemoveEmptyEntries);</span><br><span class="line"><span class="comment">//按照指定长度/位置分割</span></span><br><span class="line"><span class="comment">//第二个数字是长度，不是下标！ 这里从输入(textBox)获取</span></span><br><span class="line"><span class="keyword">string</span> s1 = str.Substring(<span class="number">0</span>, Convert.ToInt32(textBox2.Text));</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>关于Split的重载还有很多，这里不多介绍，就学了这些 = =</p>
+<h3 id="从字符串再选择一段字符串"><a href="#从字符串再选择一段字符串" class="headerlink" title="从字符串再选择一段字符串"></a>从字符串再选择一段字符串</h3><p>这是一个让选中的改变颜色的例子：<br><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//选中要改变颜色的字符，第一个是开始位置，第二个是长度</span></span><br><span class="line">   richTextBox1.Select(i, <span class="number">1</span>);</span><br><span class="line">   <span class="comment">//改变选中的字符的颜色</span></span><br><span class="line">   richTextBox1.SelectionColor = Color.Red;</span><br></pre></td></tr></table></figure></p>
+<h3 id="正则"><a href="#正则" class="headerlink" title="正则"></a>正则</h3><p>还是首先添加引用:<br>using System.Text.RegularExpressions;<br>match会捕获第一个匹配。而matches会捕获所有的匹配。<br>match类型就是一个单独的捕获，matchcollection就是一组捕获。<br><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">string</span> strRegex = <span class="string">"正则内容"</span>;</span><br><span class="line"><span class="comment">//IgnoreCase是忽略大小写，这样会降低匹配</span></span><br><span class="line">Regex r = <span class="keyword">new</span> Regex(strRegex, RegexOptions.IgnoreCase);</span><br><span class="line">MatchCollection mc = r.Matches(richTextBox1.Text);</span><br><span class="line"><span class="keyword">foreach</span> (Match m <span class="keyword">in</span> mc)</span><br><span class="line">&#123;</span><br><span class="line">    listBox1.Items.Add(m.Value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="多线程"><a href="#多线程" class="headerlink" title="多线程"></a>多线程</h2><p>多线程和委托有着很紧密的联系，使用多线程一般都会使用到委托，和Android一样，多线程不能操作UI，想要更新UI就必须使用委托。<br>为了防止一些其他问题，最佳的做法是一个线程最好只操作UI的一个控件。<br>线程不能被强制终止，只能自己停下来，也就是说不同线程直接是没法进行操作的，<del>我们所做的终止线程只是做了一个终止的标记而已(未测试)。</del><br><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> Thread t1;</span><br><span class="line"><span class="comment">//带参数的开启方式 注意只写方法名即可不需要加()</span></span><br><span class="line">t1 = <span class="keyword">new</span> Thread(<span class="keyword">new</span> ParameterizedThreadStart(执行的方法));</span><br><span class="line">t1.Start(参数);</span><br><span class="line"><span class="comment">//不带参数的开启方式</span></span><br><span class="line"><span class="comment">//t1 = new Thread(new ThreadStart(执行的方法));</span></span><br><span class="line">   <span class="comment">//t1.Start();</span></span><br><span class="line">   </span><br><span class="line">    t1.Abort();</span><br></pre></td></tr></table></figure></p>
+<p>因为不知道传入的参数是什么类型的，所以是个obj类型的，用的时候需要强转，定义的时候也要定义成obj类型的。</p>
+<p>下面再来看委托，用在需要更新UI的地方<br><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//定义委托</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">delegate</span> <span class="keyword">void</span> <span class="title">updateListDele</span>(<span class="params"><span class="keyword">string</span> str</span>)</span>;</span><br><span class="line"><span class="comment">//定义符合委托入口参数和返回值的方法</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">updateList</span>(<span class="params"><span class="keyword">string</span> str</span>)</span></span><br><span class="line"><span class="function">      </span>&#123;</span><br><span class="line">          <span class="keyword">lock</span> (<span class="keyword">this</span>)</span><br><span class="line">          &#123;</span><br><span class="line">              <span class="comment">//加了个同步锁，具体的更新UI的逻辑</span></span><br><span class="line">          &#125;</span><br><span class="line">      &#125;</span><br><span class="line"><span class="comment">//然后就是使用了 可以看出第二个是需要的参数</span></span><br><span class="line"><span class="keyword">this</span>.listBox1.Invoke(<span class="keyword">new</span> updateListDele(updateList), <span class="keyword">new</span> <span class="keyword">object</span>[] &#123; f.FullName &#125;);</span><br></pre></td></tr></table></figure></p>
+<p>类似的还有BeginInvoke方法，至于区别：</p>
+<ul>
+<li>Control.Invoke 方法 (Delegate) :在拥有此控件的基础窗口句柄的线程上执行指定的委托。</li>
+<li>Control.BeginInvoke 方法 (Delegate) :在创建控件的基础句柄所在线程上异步执行指定委托。</li>
+</ul>
+<h2 id="网络操作"><a href="#网络操作" class="headerlink" title="网络操作"></a>网络操作</h2><p>老规矩，先添加引用：<br>using System.Net;</p>
+<p>先来看看最基本的发送网络请求的写法:<br><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//AS相当于就是强制类型转换</span></span><br><span class="line">HttpWebRequest request = WebRequest.Create(<span class="string">"http"</span>) <span class="keyword">as</span> HttpWebRequest;</span><br><span class="line"><span class="comment">//模拟一个浏览器</span></span><br><span class="line">   request.UserAgent = <span class="string">"Mozilla/5.0 (Windows NT 5.2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.104 Safari/537.36"</span>;</span><br><span class="line">   HttpWebResponse response = request.GetResponse() <span class="keyword">as</span> HttpWebResponse;</span><br><span class="line"></span><br><span class="line">   Stream stream = response.GetResponseStream();</span><br><span class="line">   StreamReader sr = <span class="keyword">new</span> StreamReader(stream, Encoding.Default);</span><br><span class="line">   <span class="keyword">string</span> str = sr.ReadToEnd();</span><br></pre></td></tr></table></figure></p>
+<p>然后是socket编程之类<br>下面主要是发送消息的，也就是客户端<br><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//得到本机IP，设置UDP端口号</span></span><br><span class="line">   IPAddress localip = getValidIP(<span class="string">"127.0.0.1"</span>);</span><br><span class="line">   <span class="keyword">int</span> localport = getValidPort(<span class="string">"1234"</span>);</span><br><span class="line">   ipLocalPoint = <span class="keyword">new</span> IPEndPoint(localip, localport);</span><br><span class="line"></span><br><span class="line">   <span class="comment">//定义网络类型，数据连接类型和网络协议UDP  </span></span><br><span class="line">   mySocket = <span class="keyword">new</span> Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);</span><br><span class="line"></span><br><span class="line">   <span class="comment">//绑定网络地址  </span></span><br><span class="line">   mySocket.Bind(ipLocalPoint);</span><br><span class="line">   <span class="comment">//发送UDP数据包</span></span><br><span class="line">   RemotePoint = (EndPoint)(ipLocalPoint); <span class="comment">//用本地作为接收地址了</span></span><br><span class="line">   <span class="keyword">string</span> msg = <span class="string">"发送的消息"</span></span><br><span class="line">   <span class="keyword">byte</span>[] data = Encoding.Default.GetBytes(msg);</span><br><span class="line">   mySocket.SendTo(data, data.Length, SocketFlags.None, RemotePoint);</span><br></pre></td></tr></table></figure></p>
+<p>然后是接收消息的，也就是服务端<br><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//最开始的定义与上面相同，直接引用上面的了</span></span><br><span class="line"><span class="comment">//接收数据处理线程</span></span><br><span class="line">   <span class="keyword">string</span> msg;</span><br><span class="line">   <span class="keyword">byte</span>[] data = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</span><br><span class="line">   <span class="keyword">int</span> rlen = mySocket.ReceiveFrom(data, <span class="keyword">ref</span> RemotePoint);</span><br><span class="line">   msg = Encoding.Default.GetString(data, <span class="number">0</span>, rlen);</span><br></pre></td></tr></table></figure></p>
+<h2 id="其他补充"><a href="#其他补充" class="headerlink" title="其他补充"></a>其他补充</h2><h3 id="修改字体样式"><a href="#修改字体样式" class="headerlink" title="修改字体样式"></a>修改字体样式</h3><p>举个修改label字体的例子：<br><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//font是一个类  要先声明</span></span><br><span class="line">   Font ff = <span class="keyword">new</span> Font(<span class="string">"微软雅黑"</span>, <span class="number">28</span>);</span><br><span class="line">   label2.Font = ff;</span><br><span class="line">   label2.ForeColor = Color.Red;<span class="comment">//设置前背景，文字颜色</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="强制类型转换"><a href="#强制类型转换" class="headerlink" title="强制类型转换"></a>强制类型转换</h3><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = Convert.ToInt32(转换的内容);</span><br><span class="line"><span class="comment">//强制类型转换   效率高  上面其实就是调用 int.Parse</span></span><br><span class="line"><span class="keyword">int</span> a = <span class="keyword">int</span>.Parse(<span class="keyword">string</span>)；  <span class="comment">//类似的有 double.Parse ....</span></span><br><span class="line"><span class="comment">//强制类型转换函数，如果成功返回true，存在number中，如果失败，返回 false,number为0</span></span><br><span class="line"><span class="keyword">int</span>.TryParse(<span class="string">"string"</span>,<span class="keyword">out</span> number);</span><br></pre></td></tr></table></figure>
+<h3 id="timer的使用"><a href="#timer的使用" class="headerlink" title="timer的使用"></a>timer的使用</h3><p>具体执行的代码双击控件，然后再写就可以了。<br><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//设置timer的开关和刷新时间</span></span><br><span class="line">timer1.Enabled = <span class="literal">true</span>;</span><br><span class="line">   timer1.Interval = <span class="number">888</span>;</span><br></pre></td></tr></table></figure></p>
+<h3 id="随机数的产生"><a href="#随机数的产生" class="headerlink" title="随机数的产生"></a>随机数的产生</h3><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Random r = <span class="keyword">new</span> Random()  <span class="comment">//创建能够产生随机数的对象</span></span><br><span class="line"><span class="keyword">int</span> sjs = r.Next(<span class="number">1</span>,<span class="number">10</span>)  <span class="comment">//随机数的范围 [ )区间 //让这个对象用函数来产生随机数</span></span><br></pre></td></tr></table></figure>
+<h3 id="关于get和set"><a href="#关于get和set" class="headerlink" title="关于get和set"></a>关于get和set</h3><p>get，set方法在Java中已经非常熟悉了，c#中不太一样<br><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//获取部分</span></span><br><span class="line">Demo de = <span class="keyword">new</span> Demo();</span><br><span class="line">   <span class="comment">//设置属性值</span></span><br><span class="line">   de.show = <span class="number">2</span>;</span><br><span class="line">   <span class="comment">//de.show 这样就是获取属性值</span></span><br><span class="line">   MessageBox.Show(de.show+<span class="string">""</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//定义部分</span></span><br><span class="line"><span class="keyword">class</span> <span class="title">Demo</span></span><br><span class="line">   &#123;</span><br><span class="line">       <span class="keyword">int</span> a;</span><br><span class="line">       <span class="comment">//定义属性，注意没有（），不需要传入参数</span></span><br><span class="line">       <span class="keyword">public</span> <span class="keyword">int</span> show</span><br><span class="line">       &#123;</span><br><span class="line">           <span class="comment">//这get 和 set 可以认为是个关键字了吧</span></span><br><span class="line">           <span class="keyword">get</span></span><br><span class="line">           &#123;</span><br><span class="line">               <span class="keyword">return</span> a;</span><br><span class="line">           &#125;</span><br><span class="line">           <span class="keyword">set</span></span><br><span class="line">           &#123;</span><br><span class="line">               <span class="comment">//value 就是指传进来的值，固定名称</span></span><br><span class="line">               a = <span class="keyword">value</span>;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="手动添加点击事件"><a href="#手动添加点击事件" class="headerlink" title="手动添加点击事件"></a>手动添加点击事件</h3><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//绑定点击事件</span></span><br><span class="line">bt[b].Click += Form1_Click;</span><br><span class="line"></span><br><span class="line"><span class="comment">//事件的定义  通过tag属性来辨别是拿一个按钮对象</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">Form1_Click</span>(<span class="params"><span class="keyword">object</span> sender, EventArgs e</span>)</span></span><br><span class="line"><span class="function">       </span>&#123;</span><br><span class="line">           Button but = <span class="keyword">new</span> Button();</span><br><span class="line">           but = (Button)sender;</span><br><span class="line">           <span class="keyword">switch</span> (but.Tag.ToString())</span><br><span class="line">           &#123;</span><br><span class="line">               <span class="keyword">case</span> <span class="string">"0"</span>:</span><br><span class="line">                   BackColor = Color.Red;</span><br><span class="line">                   <span class="keyword">break</span>;</span><br><span class="line">               <span class="keyword">case</span> <span class="string">"1"</span>:</span><br><span class="line">                   BackColor = Color.Pink;</span><br><span class="line">                   <span class="keyword">break</span>;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>就内容来说确实不多，并且和Java也有很多类似的地方，但是很多地方只知道怎么用，具体什么个原理没深究，有些参数都不造啥意思….⊙﹏⊙b汗，<del>这些坑以后有时间慢慢填吧。</del><br>C#写form程序还是很顺手的，以后说不定什么时候就能用的上，做下记录总是不会错的！<br>假期来啦，最佳的学习时段来啦！</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>喜欢就请我吃包辣条吧！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/image/pay/wx.jpg" alt="Kerronex WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/image/pay/zfb.jpg" alt="Kerronex Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Kerronex
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://sakanoy.com/2016/07/16/C-学习笔记/" title="C#学习笔记">https://sakanoy.com/2016/07/16/C-学习笔记/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/C/" rel="tag"><i class="fa fa-tag"></i> C#</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/30/OKhttp初步学习/" rel="next" title="OKhttp初步学习">
+                <i class="fa fa-chevron-left"></i> OKhttp初步学习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/07/25/ubuntu折腾记录/" rel="prev" title="Ubuntu折腾记录">
+                Ubuntu折腾记录 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        
+          <p class="warninginfo">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+              评论框加载失败，无法访问 Disqus<br><br>
+              你可能需要魔法上网~~
+          </p>
+
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/image/tx.png"
+               alt="Kerronex" />
+          <p class="site-author-name" itemprop="name">Kerronex</p>
+           
+              <p class="site-description motion-element" itemprop="description">程序猿/二刺螈<br/>夜猫族/爱折腾</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">130</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="Mailto:bfchengnuo@gmail.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-envelope-o"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://GitHub.com/bfchengnuo" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://sakanoy.com/MyRecord/#/" target="_blank" title="笔记本">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  笔记本
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.cnblogs.com/bfchengnuo" target="_blank" title="博客园">
+                  
+                    <i class="fa fa-fw fa-paw"></i>
+                  
+                  博客园
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              小伙伴们~
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://heartsky.info" title="HeartSky" target="_blank">HeartSky</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.kiuber.me" title="Kiuber" target="_blank">Kiuber</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/nightcharm" title="夜Charm" target="_blank">夜Charm</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#文件操作"><span class="nav-number">1.</span> <span class="nav-text">文件操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#利用打开对话框本地硬盘获取文件"><span class="nav-number">1.1.</span> <span class="nav-text">利用打开对话框本地硬盘获取文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#按照指定规则遍历文件"><span class="nav-number">1.2.</span> <span class="nav-text">按照指定规则遍历文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据库ADO操作"><span class="nav-number">2.</span> <span class="nav-text">数据库ADO操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字符串相关"><span class="nav-number">3.</span> <span class="nav-text">字符串相关</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#字符串的分割"><span class="nav-number">3.1.</span> <span class="nav-text">字符串的分割</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从字符串再选择一段字符串"><span class="nav-number">3.2.</span> <span class="nav-text">从字符串再选择一段字符串</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#正则"><span class="nav-number">3.3.</span> <span class="nav-text">正则</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多线程"><span class="nav-number">4.</span> <span class="nav-text">多线程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络操作"><span class="nav-number">5.</span> <span class="nav-text">网络操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他补充"><span class="nav-number">6.</span> <span class="nav-text">其他补充</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#修改字体样式"><span class="nav-number">6.1.</span> <span class="nav-text">修改字体样式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#强制类型转换"><span class="nav-number">6.2.</span> <span class="nav-text">强制类型转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#timer的使用"><span class="nav-number">6.3.</span> <span class="nav-text">timer的使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#随机数的产生"><span class="nav-number">6.4.</span> <span class="nav-text">随机数的产生</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于get和set"><span class="nav-number">6.5.</span> <span class="nav-text">关于get和set</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#手动添加点击事件"><span class="nav-number">6.6.</span> <span class="nav-text">手动添加点击事件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+    <div style="height: 370px;background-image: url(/image/bj.png);background-repeat: no-repeat; margin-left: 31%;"></div>
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+<span id="sitetime"></span>
+<span class="my-face">(●'◡'●)ﾉ♥</span>
+<script language=javascript>
+function siteTime(){
+window.setTimeout("siteTime()", 1000);
+var seconds = 1000
+var minutes = seconds * 60
+var hours = minutes * 60
+var days = hours * 24
+var years = days * 365
+
+var today = new Date()
+var todayYear = today.getFullYear()
+var todayMonth = today.getMonth()
+var todayDate = today.getDate()
+var todayHour = today.getHours()
+var todayMinute = today.getMinutes()
+var todaySecond = today.getSeconds()
+
+/* Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳) 
+year - 作为date对象的年份，为4位年份值
+month - 0-11之间的整数，做为date对象的月份
+day - 1-31之间的整数，做为date对象的天数
+hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+minutes - 0-59之间的整数，做为date对象的分钟数
+seconds - 0-59之间的整数，做为date对象的秒数
+microseconds - 0-999之间的整数，做为date对象的毫秒数 */
+var t1 = Date.UTC(2016,3,30,8,0,0)
+var t2 = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond)
+var diff = t2-t1
+
+var diffYears = Math.floor(diff/years)
+var diffDays = Math.floor((diff/days)-diffYears*365)
+var diffDaysAll = Math.floor(diff/days)
+var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours)
+var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes)
+var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds)
+document.getElementById("sitetime").innerHTML=" 本站已萌萌哒运行 "+diffDaysAll+" 天 "+diffHours+" 小时 "+diffMinutes+" 分钟 "+diffSeconds+" 秒 "
+}
+siteTime()
+</script>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共521.4k字</span>
+
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'bfchengnuo';
+      var disqus_identifier = '2016/07/16/C-学习笔记/';
+
+      var disqus_title = "C#学习笔记";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":130,"height":170,"hOffset":30,"vOffset":-10},"mobile":{"show":false},"react":{"opacity":0.7},"log":false});</script></body>
+</html>

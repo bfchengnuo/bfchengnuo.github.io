@@ -1,0 +1,1251 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Microsoft Yahei:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Docker," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakanoy" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/image/tb.png?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="Docker 是一个使用 Go 语言开发的开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的容器中，然后发布到任何流行的机器上。Docker 的发展速度和火爆程度着实令人惊叹，一发不可收拾，形成了席卷整个IT界的新浪潮。记得在公众号科普过 Docker 的一些基本概念，简单可以理解为集装箱，可以把你的程序、环境、配置等等全部装进去，这样在其他机器上达到开箱即用，也就是解决了环境">
+<meta name="keywords" content="Docker">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker化你的应用">
+<meta property="og:url" content="https://sakanoy.com/2018/01/06/Docker化你的应用/index.html">
+<meta property="og:site_name" content="Sakanoy">
+<meta property="og:description" content="Docker 是一个使用 Go 语言开发的开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的容器中，然后发布到任何流行的机器上。Docker 的发展速度和火爆程度着实令人惊叹，一发不可收拾，形成了席卷整个IT界的新浪潮。记得在公众号科普过 Docker 的一些基本概念，简单可以理解为集装箱，可以把你的程序、环境、配置等等全部装进去，这样在其他机器上达到开箱即用，也就是解决了环境">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://images2017.cnblogs.com/blog/1307022/201801/1307022-20180106211556893-1773468628.png">
+<meta property="og:updated_time" content="2024-11-14T17:46:09.401Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Docker化你的应用">
+<meta name="twitter:description" content="Docker 是一个使用 Go 语言开发的开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的容器中，然后发布到任何流行的机器上。Docker 的发展速度和火爆程度着实令人惊叹，一发不可收拾，形成了席卷整个IT界的新浪潮。记得在公众号科普过 Docker 的一些基本概念，简单可以理解为集装箱，可以把你的程序、环境、配置等等全部装进去，这样在其他机器上达到开箱即用，也就是解决了环境">
+<meta name="twitter:image" content="http://images2017.cnblogs.com/blog/1307022/201801/1307022-20180106211556893-1773468628.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://sakanoy.com/2018/01/06/Docker化你的应用/"/>
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-bounce.css">
+
+  <title> Docker化你的应用 | Sakanoy </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-77463916-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakanoy</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">立于浮华之世,奏响天籁之音.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-mark">
+          <a href="/mark" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-retweet"></i> <br />
+            
+            笔记本
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-book"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-music">
+          <a href="/music" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-music"></i> <br />
+            
+            音乐台
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://sakanoy.com/2018/01/06/Docker化你的应用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Kerronex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/image/tx.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakanoy">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Docker化你的应用
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-06T21:21:28+00:00">
+                2018-01-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/自我提升/" itemprop="url" rel="index">
+                    <span itemprop="name">自我提升</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-eye"></i> 热度
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-wordcount">
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  3,763
+                </span>
+              
+
+              
+
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <div style="display: none;color: #999" class="note warning" id='timeliness'></div>
+        <script language=javascript>
+          var days = (new Date().getTime() - 1515273688000) / 86400000;
+          if(days > 180) {
+            var infoDom = document.getElementById("timeliness");
+            infoDom.innerHTML = "提醒：本文发布于 " + Math.round(days) + " 天前，文中所描述的信息可能已发生改变，请谨慎使用。";
+            infoDom.style.display = "block"
+          }
+        </script>
+        <p>Docker 是一个<strong>使用 Go 语言开发的开源的应用容器引擎</strong>，让开发者可以打包他们的应用以及依赖包到一个可移植的容器中，然后发布到任何流行的机器上。Docker 的发展速度和火爆程度着实令人惊叹，一发不可收拾，形成了席卷整个IT界的新浪潮。<br>记得在公众号科普过 Docker 的一些基本概念，简单可以理解为集装箱，可以把你的程序、环境、配置等等全部装进去，这样在其他机器上达到开箱即用，也就是解决了环境不一致的问题。<br>还有就是每一个 Docker 都是相对隔离的，避免了资源使用上的一些问题。<br><strong>Docker 的思想：标准化、集装箱、隔离，核心有镜像、仓库、容器等概念</strong><a id="more"></a><br>Docker 是容器化技术的一个代表，这项技术并不是很新，在内核中很早之前就已经存在了，不过确实是因为 Docker 才火起来的，在云计算的领域，Docker 可谓是更加的火热，<del>让程序猿和运维的关系更好了</del><br>Docker 你可以粗糙的理解为轻量级的<strong>虚拟机</strong></p>
+<h2 id="走进Docker"><a href="#走进Docker" class="headerlink" title="走进Docker"></a>走进Docker</h2><p>下面来说说核心的三个词：镜像、仓库、容器；仓库就相当于码头，镜像就是集装箱，容器就是运行程序的地方，所以一般的使用步骤就是从仓库（码头）拉取镜像到本地，然后用命令把镜像运行起来。<br>相关的命令：Build（构建镜像）、ship（运输镜像）、run。<br>Docker 仓库的地址：<a href="https://hub.docker.com/" target="_blank" rel="noopener">hub.docker.com</a>，如果速度慢，可以尝试国内的 <a href="https://c.163yun.com/hub#/m/home/" target="_blank" rel="noopener">c.163yun.com</a> ，或者 <a href="https://www.daocloud.io/" target="_blank" rel="noopener">daocloud</a> 也不错。<br>如果我们的镜像比较私密，不想让别人知道，那么可以自己搭一个镜像仓库，就像 Maven 仓库哪样<br>PS：安装 Docker 推荐是在 ubuntu 上，因为本身就是在 ubuntu 上进行开发的，所以支持应该是最好的。<br><img src="http://images2017.cnblogs.com/blog/1307022/201801/1307022-20180106211556893-1773468628.png" alt=""></p>
+<h2 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h2><p>下面介绍几个常用的命令：</p>
+<ul>
+<li>从仓库拉取镜像：<code>docker pull name</code></li>
+<li>查看本机的镜像：<code>docker images</code></li>
+<li>运行镜像：<code>docker run name</code><br>如果需要在后台运行可以使用 <code>-d</code> 参数<br>还可以加 <code>-e</code> 指定用到的环境变量（用 MySQL 的时候可能会用到），指定多个环境变量可使用多次 -e；<br>一般情况，都是加个自定义的名字，这样：<code>docker run --name myName -d mysql:latest</code><br>或者运行基础镜像：<code>docker run --name mps -dit ubuntu</code></li>
+<li>查看本机正在运行的容器：<code>docker ps</code><br>另外，它可以加个 <code>-a</code> 参数来查看所有</li>
+<li>进入容器：<code>docker exec -it [id] bash</code><br>id 由 run 命令（后台启动）返回，或者使用 ps 来查看，并且不需要输入完整，前几位就可以，与 git 比较类似。<br>然后就进入了这个容器，并且是以 bash 这个 shell 的方式，在容器中和 Linux 的操作基本一致，如同一个小型的 Linux 系统，并且是根据需求配置好的。<br>使用 exit 命令即可退出容器</li>
+<li>停止容器：<code>docker stop id</code> ，主要是对于那些后台启动的容器来说。<br>这里的停止并不是删除，区分下镜像和容器的关系。<br>所以，也可以使用 <code>docker start id</code> 来启动容器。</li>
+<li>重启容器：<code>docker restart id</code></li>
+<li>删除镜像：<code>docker rmi id</code><br>注意和 rm 区分，一个是删除镜像，一个是删除容器。</li>
+<li>清除运行过的镜像记录（缓存）：<code>docker rm id</code> ，可以使用 <code>docker ps -a</code> 来查看记录</li>
+</ul>
+<p>如果对命令参数不熟悉，可以查看帮助，如：<code>docker run --help</code> ；可以看出除了 pull 和 run 大部分命令都是依赖于镜像的 id 的；<br><strong>一个镜像可以启动（run）多个容器</strong>，一个容器可以理解为一个虚拟环境。</p>
+<hr>
+<p>如果我们需要将本机的某个文件放到容器里，有个快捷的命令：<br><code>docker cp xxx.html [id]://usr/share/nginx/html</code><br>id 自然指的就是相应的容器了，不过你得熟悉你容器的文件分布情况才行，<strong>这种改动操作是临时的，当容器停止后改动不会被保存</strong><br>如果需要永久保存，需要执行 commit 操作：<br><code>docker commit -m &quot;test&quot; [id] name</code><br>这样就相当于是保存修改了，和 Git 是不是很像？它实际会根据改动生成一个新的镜像，所以要在最后指定新镜像的名字（版本也可以）</p>
+<hr>
+<p>使用 <code>docker tag xxx newName</code> 可以实现镜像的复制….<br>想要 push 自己的镜像除了必要的账号，需要先进行登陆 <code>docker login</code> ，然后 <code>docker push name</code> 就可以了</p>
+<h2 id="Docker中的网络"><a href="#Docker中的网络" class="headerlink" title="Docker中的网络"></a>Docker中的网络</h2><p>Docker 会虚拟出一个运行环境，这个环境当然包括网络、文件等，也是通过 namespace 来进行区分，对于网络，虚拟有三种方式：</p>
+<ul>
+<li>Bridge<br>也就是我们所说的桥接，会虚拟出独立的一套网络配置（网卡），有独立的 ip、端口、iptab 规则等<br>这也是启动 Docker 的默认模式</li>
+<li>Host<br>使用物理机的网卡，和主机共用一套网络配置</li>
+<li>None<br>不配置网络，也就是容器内的程序不会与外界发生通讯</li>
+</ul>
+<p>虚拟的方式是不是和配置虚拟机差不多呢~<br>在配置 Bridge 模式时，通常我们会配置端口映射，简单说就是当我们访问主机的某一个端口时，实际访问的是容器里的某一个端口，这个过程通过 Docker 提供的一个网桥实现（处理请求转发）<br>映射的配置可以在启动时就指定：<br><code>docker run -d -p 8080:80 name</code><br><code>-p</code> 后的第一个是本机的端口，第二个是对应的容器里的端口，上面的命令就实现了把本机 8080  的请求转发到容器的 80 端口上。<br>不放心的话可以使用 <code>netstat -na|grep 8080</code> 看看是不是处于监听的状态了。</p>
+<hr>
+<p>另外一种就是使用 <code>-P</code> 的方式，<strong>是大写的 P</strong>，这种不需要再指定对应的端口，它会在本机开一些随机端口然后映射到容器里对应应用的端口上。</p>
+<h2 id="制作镜像"><a href="#制作镜像" class="headerlink" title="制作镜像"></a>制作镜像</h2><p>重头戏来了，如何把自己开发的程序打包成一个 Docker 应用呢，就像仓库里的那些一样。<br>用到的是 Dockerfile 和 build 命令，Dockerfile 可以理解为描述了打包流程，然后使用 build 会根据这个流程进行打包。</p>
+<h3 id="编写Dockerfile"><a href="#编写Dockerfile" class="headerlink" title="编写Dockerfile"></a>编写Dockerfile</h3><p>是的，Dockerfile 只是一个文本文件，内容才是最重要的，可以直接使用 vim 来编写，名字就叫 Dockerfile，主要包括：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 1.设置基础镜像（在某个镜像的基础上）</span><br><span class="line">from tomcat</span><br><span class="line"><span class="meta">#</span> alpine 是针对 Docker 做的一个极小的 linux 环境，也常用做基础镜像</span><br><span class="line"><span class="meta">#</span> from alpine:latest</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 2.作者信息,也可以不写</span><br><span class="line">MAINTAINER Kerronex bfchengnuo@gmail.com</span><br><span class="line"><span class="meta">#</span> 官方现在推荐使用 LABEL maintainer="yourname &lt;xxx@xxx.com&gt;"</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 3.将 war 包放进容器里</span><br><span class="line">COPY xxx.war /usr/local/tomcat/webapps</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 拓展其他</span><br><span class="line">CMD echo "Hello World!"</span><br></pre></td></tr></table></figure>
+<p>上面是个简单的发布 Java 程序的环境，tomcat 的目录在那是从官网 tomcat 镜像说明页面找到的。<br>然后下面执行 <code>docker build -t appName:latest .</code> 来进行打包就可以了；-t 的作用是可以指定名字和版本，最后一个 <code>.</code> 表示当前目录。<br>然后使用 <code>docker images</code> 命令就可以找到我们自己发布的本地镜像了，运行和其他的一样</p>
+<h3 id="镜像分层"><a href="#镜像分层" class="headerlink" title="镜像分层"></a>镜像分层</h3><p>Docker 是分层存储的，在 Dockerfile 中一行就是一层，每一层都有它唯一的 ID。<br>这些层在 image (镜像)状态都是只读的（RO），当 image 运行为一个容器时，会产生一个容器层 (container layer)，它是可读可写的（RW）。<br>分层的一个好处就是会减轻不少存储压力，多个 image 难免会有许多的相同的命令，分层后就可以实现共用。</p>
+<h2 id="存储"><a href="#存储" class="headerlink" title="存储"></a>存储</h2><p>再来看看 Volume 吧，它提供<strong>独立于容器之外</strong>的<strong>持久化</strong>存储。<br>它就可以解决我们在容器内修改不会保存的问题，并且它可以<strong>提供容器与容器之间的共享数据</strong></p>
+<h3 id="映射容器里的目录到本机"><a href="#映射容器里的目录到本机" class="headerlink" title="映射容器里的目录到本机"></a>映射容器里的目录到本机</h3><p>在运行时执行命令：<br><code>docker run -d --name nginx -v /usr/share/nginx/html nginx</code><br>命令里的路径是<strong>容器里</strong>的地址，还给它起了个名字，运行后就会将配置的目录映射到本机（Host）的一个目录下，想要确定这个目录可以使用下面的命令查看容器信息：<br><code>docker inspect nginx</code><br>后面跟的是我们起的那个名字哦，不是镜像名，然后重点看 <strong>Mounts</strong> 下的 Source 和 Destination 是不是正确，就是把容器内的 Destination 地址映射到了本机的 Source 目录下。<br>在本机的 Source 下修改会同步到容器里的 Destination 目录。</p>
+<h3 id="映射主机里的目录到容器"><a href="#映射主机里的目录到容器" class="headerlink" title="映射主机里的目录到容器"></a>映射主机里的目录到容器</h3><p>与上面正好相反，把本机的一个目录映射到容器里，命令：<br><code>docker run -d -v $PWD/html:/usr/share/nginx/html nginx</code><br>这条命令就是把当前目录下的 html 文件夹映射到容器里 nginx 的目录下，这种方式用的比较多，非常的方便</p>
+<h3 id="建立只存数据的容器"><a href="#建立只存数据的容器" class="headerlink" title="建立只存数据的容器"></a>建立只存数据的容器</h3><p>这种情况或者说需求也是比较常见的，使用的命令是：<br><code>docker create -v $PWD/data:/var/mydata --name data_container ubuntu</code><br>这样我们就创建了一个仅仅用来存储数据的新容器 data_container ，它会把当前目录下的 data 文件夹挂载到与之关联的容器的 <code>/var/mydata</code> 目录下，然后我们运行一个新的容器来测试下：<br><code>docker run --volumes-from data_container ubuntu</code><br>volumes-from 的作用就是从另一个容器挂载，这样就实现了当前容器挂载仅有数据容器的目的，主要想体现的是这种仅有数据的容器可以被多个容器挂载使用，用来做数据的共享。</p>
+<h2 id="多容器APP"><a href="#多容器APP" class="headerlink" title="多容器APP"></a>多容器APP</h2><p>玩这个之前需要一个软件就是 docker-compose，在 Mac/Windows 下是自带的。<br>然后需要配置 docker-compose.yml 文件，文件名是固定的，使用的是 yaml 语法，也就是用缩进来表示层次关系，非常流行的一种配置文件格式。</p>
+<blockquote>
+<p>Dockerfile 可以让用户管理一个单独的应用容器；<br>而 Compose 则允许用户在一个模板（YAML 格式）中定义一组相关联的应用容器（被称为一个 project，即项目），例如一个 Web 服务容器再加上后端的数据库服务容器等</p>
+</blockquote>
+<p>最后写好 docker-compose 的配置文件后，就可以使用 <code>docker-compose up -d</code> 来运行了，停止就是 stop，rm 是删除；当重新修改配置文件后需要用 <code>docker-compose build</code> 重新来构建。<br>PS：在 docker-compose 配置的名字可以在其他的容器里直接用（比如 nginx 的配置文件里），不需要再配置解析。<br>关于 docker-compose 的使用这里不会多说，具体操作还是蛮复杂的，计划是等用到后再来补充，先暂且知道有这么个多容器的概念，可参考慕课网视频：<a href="https://www.imooc.com/video/15735" target="_blank" rel="noopener">https://www.imooc.com/video/15735</a></p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>有时我们需要合并两个镜像，但是这个功能并没有被提供，在 Dockerfile 中也不能使用多次 from，那么有什么好方法呢，可以使用命令先把镜像逆向出来，然后手动合并，镜像 –&gt; Dockerfile 的命令：<br><code>docker history --no-trunc=true image &gt; image1-dockerfile</code><br>但是如果命令中有 ADD、COPY 之类的命令就会有一些问题，因为这些文件并不在你的机器上，需要自行处理了。</p>
+<h2 id="附-Dockerfile示例"><a href="#附-Dockerfile示例" class="headerlink" title="附:Dockerfile示例"></a>附:Dockerfile示例</h2><p>一般是创建一个空目录，然后在这个空目录写 Dockerfile 文件，名字就叫 Dockerfile，这样打包的时候可以放心的用 <code>.</code> ：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">from ubuntu</span><br><span class="line">LABEL maintainer="Kerronex &lt;bfchengnuo@gmail.com&gt;"</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 执行命令</span><br><span class="line"><span class="meta">#</span> 替换镜像地址，加速下载，把 archive.ubuntu.com 换成 mirrros.ustc.edu.cn</span><br><span class="line">RUN sed -i 's/archive.ubuntu.com/mirrros.ustc.edu.cn/g' /etc/apt/sources.list</span><br><span class="line">RUN apt-get update</span><br><span class="line">RUN apt-get install -y nginx</span><br><span class="line">COPY index.html /var/www/html</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 设置容器的入口，会将数组展开来运行</span><br><span class="line"><span class="meta">#</span> 命令的意思是将 nginx 作为前台程序执行，而不是守护进程</span><br><span class="line">ENTRYPOINT ["/usr/sbin/nginx","-g","daemon off;"]</span><br><span class="line"><span class="meta">#</span> 暴露端口</span><br><span class="line">EXPOSE 80</span><br></pre></td></tr></table></figure>
+<p>然后可以使用 <code>curl http://localhost:80</code> 来测试一下。<br>文件中没有用的其他关键字：ADD 也是添加文件，它比 COPY 更加强大，可以添加远程文件；CMD 也是执行命令的意思，可以用于指定容器的入口，也可以使用 ENTRYPOINT 命令</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>WORKDIR</td>
+<td>指定路径</td>
+</tr>
+<tr>
+<td>MAINTAINER</td>
+<td>维护者，现在推荐使用 LABEL maintainer</td>
+</tr>
+<tr>
+<td>ENV</td>
+<td>设定环境变量</td>
+</tr>
+<tr>
+<td>ENTRYPOINT</td>
+<td>容器入口</td>
+</tr>
+<tr>
+<td>USER</td>
+<td>指定用户</td>
+</tr>
+<tr>
+<td>VOLUME</td>
+<td>mount point（容器所挂载的卷）</td>
+</tr>
+</tbody>
+</table>
+<p>当没有指定 ENTRYPOINT 的时候，就用 CMD 来启动容器，如果指定了 ENTRYPOINT 那么 CMD 指定的字串就变成了 <em>argus</em> （参数）</p>
+<h2 id="关于DockerCompose"><a href="#关于DockerCompose" class="headerlink" title="关于DockerCompose"></a>关于DockerCompose</h2><p>使用一个 Dockerfile 模板文件可以定义一个单独的应用容器，如果需要定义多个容器就需要服务编排。服务编排有很多种技术方案，Docker 官方产品是 Docker Compose 。<br>Dockerfile 可以让用户管理一个单独的应用容器；而 Compose 则允许用户在一个模板（YAML 格式）中定义一组相关联的应用容器（被称为一个 project，即项目），例如一个 Web 服务容器再加上后端的数据库服务容器等。</p>
+<blockquote>
+<p>通过 Docker-Compose 用户可以很容易地用一个配置文件定义一个多容器的应用，然后使用一条指令安装这个应用的所有依赖，完成构建。<br>Docker-Compose 解决了容器与容器之间如何管理编排的问题。</p>
+</blockquote>
+<p>Compose 中有两个重要的概念：</p>
+<ul>
+<li>服务 (service) ：一个应用的容器，实际上可以包括若干运行相同镜像的容器实例。</li>
+<li>项目 (project) ：由一组关联的应用容器组成的一个完整业务单元，在 <code>docker-compose.yml</code> 文件中定义。</li>
+</ul>
+<p>一个项目可以由多个服务（容器）关联而成，Compose 面向项目进行管理，通过子命令对项目中的一组容器进行便捷地生命周期管理。<br>Compose 项目由 Python 编写，实现上调用了 Docker 服务提供的 API 来对容器进行管理。因此，只要所操作的平台支持 Docker API，就可以在其上利用 Compose 来进行编排管理。</p>
+<p>安装：<a href="https://docs.docker.com/compose/install/" target="_blank" rel="noopener">https://docs.docker.com/compose/install/</a></p>
+<p>但是现在基本都是 K8S 的天下了，并且 K8S 支持将其转换为自己的配置文件。</p>
+<h2 id="拓展"><a href="#拓展" class="headerlink" title="拓展"></a>拓展</h2><p><a href="https://yeasy.gitbooks.io/docker_practice/content/image/build.html" target="_blank" rel="noopener">https://yeasy.gitbooks.io/docker_practice/content/image/build.html</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>喜欢就请我吃包辣条吧！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/image/pay/wx.jpg" alt="Kerronex WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/image/pay/zfb.jpg" alt="Kerronex Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Kerronex
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://sakanoy.com/2018/01/06/Docker化你的应用/" title="Docker化你的应用">https://sakanoy.com/2018/01/06/Docker化你的应用/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Docker/" rel="tag"><i class="fa fa-tag"></i> Docker</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/03/Java定时任务调度工具/" rel="next" title="Java定时任务调度工具">
+                <i class="fa fa-chevron-left"></i> Java定时任务调度工具
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/17/Java8新特性学习/" rel="prev" title="Java8新特性学习">
+                Java8新特性学习 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        
+          <p class="warninginfo">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+              评论框加载失败，无法访问 Disqus<br><br>
+              你可能需要魔法上网~~
+          </p>
+
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/image/tx.png"
+               alt="Kerronex" />
+          <p class="site-author-name" itemprop="name">Kerronex</p>
+           
+              <p class="site-description motion-element" itemprop="description">程序猿/二刺螈<br/>夜猫族/爱折腾</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">130</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="Mailto:bfchengnuo@gmail.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-envelope-o"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://GitHub.com/bfchengnuo" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://sakanoy.com/MyRecord/#/" target="_blank" title="笔记本">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  笔记本
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.cnblogs.com/bfchengnuo" target="_blank" title="博客园">
+                  
+                    <i class="fa fa-fw fa-paw"></i>
+                  
+                  博客园
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              小伙伴们~
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://heartsky.info" title="HeartSky" target="_blank">HeartSky</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.kiuber.me" title="Kiuber" target="_blank">Kiuber</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/nightcharm" title="夜Charm" target="_blank">夜Charm</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#走进Docker"><span class="nav-number">1.</span> <span class="nav-text">走进Docker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本使用"><span class="nav-number">2.</span> <span class="nav-text">基本使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker中的网络"><span class="nav-number">3.</span> <span class="nav-text">Docker中的网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#制作镜像"><span class="nav-number">4.</span> <span class="nav-text">制作镜像</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#编写Dockerfile"><span class="nav-number">4.1.</span> <span class="nav-text">编写Dockerfile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#镜像分层"><span class="nav-number">4.2.</span> <span class="nav-text">镜像分层</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#存储"><span class="nav-number">5.</span> <span class="nav-text">存储</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#映射容器里的目录到本机"><span class="nav-number">5.1.</span> <span class="nav-text">映射容器里的目录到本机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#映射主机里的目录到容器"><span class="nav-number">5.2.</span> <span class="nav-text">映射主机里的目录到容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#建立只存数据的容器"><span class="nav-number">5.3.</span> <span class="nav-text">建立只存数据的容器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多容器APP"><span class="nav-number">6.</span> <span class="nav-text">多容器APP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他"><span class="nav-number">7.</span> <span class="nav-text">其他</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附-Dockerfile示例"><span class="nav-number">8.</span> <span class="nav-text">附:Dockerfile示例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于DockerCompose"><span class="nav-number">9.</span> <span class="nav-text">关于DockerCompose</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#拓展"><span class="nav-number">10.</span> <span class="nav-text">拓展</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+    <div style="height: 370px;background-image: url(/image/bj.png);background-repeat: no-repeat; margin-left: 31%;"></div>
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+<span id="sitetime"></span>
+<span class="my-face">(●'◡'●)ﾉ♥</span>
+<script language=javascript>
+function siteTime(){
+window.setTimeout("siteTime()", 1000);
+var seconds = 1000
+var minutes = seconds * 60
+var hours = minutes * 60
+var days = hours * 24
+var years = days * 365
+
+var today = new Date()
+var todayYear = today.getFullYear()
+var todayMonth = today.getMonth()
+var todayDate = today.getDate()
+var todayHour = today.getHours()
+var todayMinute = today.getMinutes()
+var todaySecond = today.getSeconds()
+
+/* Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳) 
+year - 作为date对象的年份，为4位年份值
+month - 0-11之间的整数，做为date对象的月份
+day - 1-31之间的整数，做为date对象的天数
+hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+minutes - 0-59之间的整数，做为date对象的分钟数
+seconds - 0-59之间的整数，做为date对象的秒数
+microseconds - 0-999之间的整数，做为date对象的毫秒数 */
+var t1 = Date.UTC(2016,3,30,8,0,0)
+var t2 = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond)
+var diff = t2-t1
+
+var diffYears = Math.floor(diff/years)
+var diffDays = Math.floor((diff/days)-diffYears*365)
+var diffDaysAll = Math.floor(diff/days)
+var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours)
+var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes)
+var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds)
+document.getElementById("sitetime").innerHTML=" 本站已萌萌哒运行 "+diffDaysAll+" 天 "+diffHours+" 小时 "+diffMinutes+" 分钟 "+diffSeconds+" 秒 "
+}
+siteTime()
+</script>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共521.4k字</span>
+
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'bfchengnuo';
+      var disqus_identifier = '2018/01/06/Docker化你的应用/';
+
+      var disqus_title = "Docker化你的应用";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":130,"height":170,"hOffset":30,"vOffset":-10},"mobile":{"show":false},"react":{"opacity":0.7},"log":false});</script></body>
+</html>

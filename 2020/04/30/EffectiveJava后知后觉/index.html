@@ -1,0 +1,1250 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Microsoft Yahei:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Java," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakanoy" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/image/tb.png?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="这本书又叫高效 Java，书中的很多条目还是让我眼前一亮的，尤其并发和序列化，大概是因为这一块本来接触的就不多吧，但也有不少内容其实是早就知道的，所以作为我个人的记录，我并不会一条条的罗列出来，主要记录一些平时用的很少或者记得模糊的东西。这本书感觉如果是对入门不久的开发者来说，是非常有必要读一下的，但是如果你经常阅读 JDK 或者 Spring 等开源框架源码的老鸟，其实大部分你都可以跳着看了，因">
+<meta name="keywords" content="Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="EffectiveJava后知后觉">
+<meta property="og:url" content="https://sakanoy.com/2020/04/30/EffectiveJava后知后觉/index.html">
+<meta property="og:site_name" content="Sakanoy">
+<meta property="og:description" content="这本书又叫高效 Java，书中的很多条目还是让我眼前一亮的，尤其并发和序列化，大概是因为这一块本来接触的就不多吧，但也有不少内容其实是早就知道的，所以作为我个人的记录，我并不会一条条的罗列出来，主要记录一些平时用的很少或者记得模糊的东西。这本书感觉如果是对入门不久的开发者来说，是非常有必要读一下的，但是如果你经常阅读 JDK 或者 Spring 等开源框架源码的老鸟，其实大部分你都可以跳着看了，因">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2024-11-14T17:46:09.401Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="EffectiveJava后知后觉">
+<meta name="twitter:description" content="这本书又叫高效 Java，书中的很多条目还是让我眼前一亮的，尤其并发和序列化，大概是因为这一块本来接触的就不多吧，但也有不少内容其实是早就知道的，所以作为我个人的记录，我并不会一条条的罗列出来，主要记录一些平时用的很少或者记得模糊的东西。这本书感觉如果是对入门不久的开发者来说，是非常有必要读一下的，但是如果你经常阅读 JDK 或者 Spring 等开源框架源码的老鸟，其实大部分你都可以跳着看了，因">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://sakanoy.com/2020/04/30/EffectiveJava后知后觉/"/>
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-bounce.css">
+
+  <title> EffectiveJava后知后觉 | Sakanoy </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-77463916-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakanoy</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">立于浮华之世,奏响天籁之音.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-mark">
+          <a href="/mark" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-retweet"></i> <br />
+            
+            笔记本
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-book"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-music">
+          <a href="/music" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-music"></i> <br />
+            
+            音乐台
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://sakanoy.com/2020/04/30/EffectiveJava后知后觉/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Kerronex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/image/tx.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakanoy">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                EffectiveJava后知后觉
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-30T19:10:45+00:00">
+                2020-04-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-eye"></i> 热度
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-wordcount">
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  9,709
+                </span>
+              
+
+              
+
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <div style="display: none;color: #999" class="note warning" id='timeliness'></div>
+        <script language=javascript>
+          var days = (new Date().getTime() - 1588273845000) / 86400000;
+          if(days > 180) {
+            var infoDom = document.getElementById("timeliness");
+            infoDom.innerHTML = "提醒：本文发布于 " + Math.round(days) + " 天前，文中所描述的信息可能已发生改变，请谨慎使用。";
+            infoDom.style.display = "block"
+          }
+        </script>
+        <p>这本书又叫高效 Java，书中的很多条目还是让我眼前一亮的，尤其并发和序列化，大概是因为这一块本来接触的就不多吧，但也有不少内容其实是早就知道的，所以作为我个人的记录，我并不会一条条的罗列出来，主要记录一些平时用的很少或者记得模糊的东西。<br>这本书感觉如果是对入门不久的开发者来说，是非常有必要读一下的，但是如果你经常阅读 JDK 或者 Spring 等开源框架源码的老鸟，其实大部分你都可以跳着看了，因为从它们的源码中基本就能学到大部分的技巧。<a id="more"></a></p>
+<h2 id="创建和销毁对象"><a href="#创建和销毁对象" class="headerlink" title="创建和销毁对象"></a>创建和销毁对象</h2><p>对象的创建与销毁算是比较耗时的，在合适的时机创建对象在高性能的系统中是非常有必要的；频繁的 GC 也会让系统卡顿。</p>
+<h3 id="静态工厂代替构造器"><a href="#静态工厂代替构造器" class="headerlink" title="静态工厂代替构造器"></a>静态工厂代替构造器</h3><p>一个类允许客户端获取其实例的传统方式是提供一个公共构造方法。还有一种比较好的选择就是静态工厂，相比构造器，主要的优势有：</p>
+<ol>
+<li>拥有名称，描述更为清晰。</li>
+<li>可避免每次调用都创建一个新对象；可以确保是一个单例或者不可实例化的亦或者不可变的，这种类被称为实例受控的类。</li>
+<li>可以返回原返回类型的子类型，可以用这种方式来隐藏实现类，适用于基于接口的框架。</li>
+<li>返回对象的类可以根据输入参数的不同而不同（任何子类型都是允许的）</li>
+<li>在编写包含该方法的类时，返回的对象的类不需要存在。<br>这种灵活的方案构成了服务提供者框架的基础，例如 JDBC。</li>
+</ol>
+<p>当然也是有缺点的：</p>
+<ul>
+<li>类一般不含有公有或者受保护的构造器，所以就不能被<strong>子类化</strong>。<br>这也鼓励开发者多使用组合而不是继承。</li>
+<li>开发者很难找到它们。<br>不过也有一些惯用名称，举例说明：<br><strong>from</strong>：类型转换方法，它接受单个参数并返回此类型的相应实例；<br><strong>of</strong>：聚合方法，接受多个参数并返回该类型的实例，并把他们合并在一起；<br><strong>valueOf</strong>：from 和 to 更为详细的替代方式；<br><strong>instance 或 getinstance</strong>：返回一个由其参数 (如果有的话) 描述的实例，但不能说它具有相同的值；<br><strong>create 或 newInstance</strong>：与 instance 或 getInstance 类似，除此之外该方法保证每次调用返回一个<strong>新的实例；</strong><br><strong>getType</strong>：与 getInstance 类似，但是在工厂方法处于不同的类中的时候使用（Type 是工厂方法返回的对象类型）；<br><strong>newType</strong>：与 newInstance 类似，但是在工厂方法处于不同的类中的时候使用（Type 是工厂方法返回的对象类型）；<br><strong>type</strong>：getType 和 newType 简洁的替代方式。</li>
+</ul>
+<p>例如下面一个 boolean 提升为包装的例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Boolean <span class="title">valueOf</span><span class="params">(<span class="keyword">boolean</span> b)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> b ? Boolean.TRUE : Boolean.FALSE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里要区分与工厂模式的差异，此例中与工厂模式没有什么直接联系。<br>如果你使用接口的静态方法，注意不能为私有，但是私有却是必要的，Java 9 允许私有静态方法，但静态字段和静态成员类仍然需要公开。</p>
+<h3 id="构造方法参数过多时使用builder模式"><a href="#构造方法参数过多时使用builder模式" class="headerlink" title="构造方法参数过多时使用builder模式"></a>构造方法参数过多时使用builder模式</h3><p>静态工厂和构造器有个共同的局限性，不能很好的扩展到大量的可选参数。<br>构建器的一般套路就是让客户端利用必要的参数来调用构造器或者静态工厂得到一个 builder 对象，然后客户端在这个对象上调用各种 setter 方法设置相关参数，最后客户端调用无参的 build 方法来生成不可变的对象。<br>假设使用一个个的 setter 方法来设置，这时候对象就会出现不完整状态，单线程倒还无所谓。<br>一般来说，构建器是可以使用调用链的，这种写法非常舒服，记得在 Android 中有大量使用。</p>
+<hr>
+<p>当然，构建器也有它的局限性，要创建对象你得先搞出一个构建器来，创建对象需要开销啊，在非常注重性能的系统里就有点问题了。<br>构建器显得更加冗长，因此只有在很多参数的时候才使用，比如 4 个以上，如果以后有可能会增加参数那么一开始就最好使用构建器。<br>在参数众多，并且很多参数是可选的或者相同类型，那么 builder 模式是个很不错的选择。</p>
+<h3 id="关于单例"><a href="#关于单例" class="headerlink" title="关于单例"></a>关于单例</h3><p>单例真的是相当有料啊，常见的“饿汉式”基本可以保证单例，只能用大部分情况下，最简单的，使用反射可以轻易的调用私有的构造函数，对应的防范措施就是修改构造器，让它在创建的时候检查是否已经存在，如果已存在抛出异常。<br>如果单例的对象需求为可序列化的，那么仅仅实现标记接口是不行的，这样还是可能会出现第二个；为了维护并保证单例，必须声明所有实例域都是瞬时（transient）的，并提供一个 readResolve 方法（具体实现可以是返回单例对象即可）</p>
+<hr>
+<p>从 1.5 之后，实现单例还可以使用枚举，这种方式虽然跟上面的公有静态方法获取没啥区别，但是更简洁；无偿的提供了序列化机制，绝对防止多次实例化，这差不多已经成为最佳的实现单例方法，虽然没广泛使用。</p>
+<hr>
+<p>然后说起<strong>工具类</strong>，一般都是静态方法组成的，也不需要实例化，为了防止实例化，可以把构造改为私有，但只有这样还不行，和单例不同，这样内部可以实例化，但是工具类内部也没有实例化的需求，所以在构造里<strong>直接抛一个异常</strong>是最简单的做法，只不过这样的代码看起来比较奇怪，写上注释比较好，当然它也就不可能有子类了。</p>
+<h3 id="避免创建不必要的对象"><a href="#避免创建不必要的对象" class="headerlink" title="避免创建不必要的对象"></a>避免创建不必要的对象</h3><p>当然，能重用就不要浪费资源去创建相同功能的新对象，如果对象是不可变的那么它始终可以被重用（使用单例模式）。<br>对于同时提供了静态工厂方法和构造器的<strong>不可变类</strong>，通常使用静态工厂而不是构造器，以避免创建不必要的对象，例如 <code>Boolean.valueOf(String)</code> 和 <code>Boolean(String)</code>，后者在 Java9 中已被废弃。</p>
+<p>有些情况下看起来并不是很明细，例如 Map 中的 ketSet，返回键值的 set 集合，第一次看上去会以为每次调用都会创建一个新的 set 返回，我们可以对这个 set 进行操作；实际上，他们返回的 set 都是同一个，因为对应的是一个 Map，可以称作为这个 Map 的一个视图（适配器），所以当改变这个 set 与之关联的都会变化。<br>在使用正则匹配的时候如果多次使用也要使用 Pattern 实例，因为创建它是昂贵的。<br>PS：<strong>自动装箱是非常耗费性能的！与基本数据类型尽量不要混用。</strong></p>
+<p>当然，小对象的构造器只做少量的工作，所以小对象的创建和回收动作是非常廉价的，通过附加对象提升程序的清晰性和简洁性是好事。 </p>
+<h2 id="对象的公共方法"><a href="#对象的公共方法" class="headerlink" title="对象的公共方法"></a>对象的公共方法</h2><p>重写 equals 方法看起来很简单，但是有很多方式会导致重写出错，其结果可能是可怕的。避免此问 题的最简单方法是不覆盖 equals 方法，在这种情况下，类的每个实例只与自身相等。<br>什么时候需要重写 equals 方法呢?如果一个类包含一个逻辑相等(logical equality)的概念，此概 念有别于对象标识(object identity)，而且父类还没有重写过 equals 方法。<br>这种情况多发生在值类型的情况，例如 String、Integer 之类。如果真的需要重写，请保证下面的几个约定：</p>
+<ul>
+<li><strong>自反性:</strong> 对于任何非空引用 x， <code>x.equals(x)</code> 必须返回 true。<br>即：一个对象必须与自身相等</li>
+<li><strong>对称性:</strong> 对于任何非空引用 x 和 y，如果且仅当 <code>y.equals(x)</code> 返回 true 时 <code>x.equals(y)</code> 必须 返回 true。<br>即：任何两个对象必须在是否相等的问题上达成一致</li>
+<li><strong>传递性:</strong> 对于任何非空引用 x、y、z，如果 <code>x.equals(y)</code> 返回 true， <code>y.equals(z)</code> 返回 true，则 <code>x.equals(z)</code> 必须返回 true。<br>即：如果第一个对象等于第二个对象，第二个 对象等于第三个对象，那么第一个对象必须等于第三个对象</li>
+<li><strong>一致性:</strong> 对于任何非空引用 x 和 y，如果在 equals 比较中使用的信息没有修改，则 <code>x.equals(y)</code> 的多次调用必须始终返回 true 或始终返回 false。<br>即：如果两个对象是相等的，除非一个(或两 个)对象被修改了， 那么它们必须始终保持相等</li>
+<li>对于任何非空引用 x， <code>x.equals(null)</code> 必须返回 false。<br>即：所有的对象都必须不等于 null</li>
+</ul>
+<p>如果不遵守，程序可能就会出现各种奇奇怪怪的问题。<br>对于类型为非 float 或 double 的基本类型，使用 == 运算符进行比较；对于对象引用属性，递归地调用 equals 方法；对于 float 基本类型的属性，使用静态 <code>Float.compare()</code> 方法（double 也是类似，避免使用 equals 装箱操作）；对于数组属性，将这些准则应用于每个元素。 如果数组属性中的每 个元素都很重要，请使用其中一个重载的 Arrays.equals 方法，对于可能存在空的情况，使用 Objects 的 equals 方法也许不错。<br>equals 方法的性能可能受到属性比较顺序的影响。 为了获得最佳性能，你应该首先比较最可能不同 的属性，开销比较小的属性，或者最好是两者都满足(derived fields)</p>
+<blockquote>
+<p>编写和测试 equals(和 hashCode)方法很繁琐，生的代码也很普通。替代手动编写和测试这些方 法的优雅的手段是，使用谷歌 AutoValue 开源框架，该框架自动为你生成这些方法，只需在类上添加一 个注解即可。<br>虽然 IDE 也会提供相关功能，但是生成的代码很冗长，并且不能动态更新。</p>
+</blockquote>
+<p>然而，大多数情况下，我们并不需要去重写 eq。</p>
+<hr>
+<p><strong>在每个类中，在重写</strong> equals <strong>方法的时侯，一定要重写</strong> hashcode <strong>方法。</strong> 如果不这样做，你的类违反了 hashCode 的通用约定，这会阻止它在 HashMap 和 HashSet 这样的集合中正常工作，<strong>相等的对象必须具有相等的哈希码</strong>。<br>这在根据类的 equals 方法，两个不同的实例在逻辑上是相同的情况下显得很重要。例如 HashMap 就做了优化，缓存了与每一项(entry)相关的哈希码，如果哈希码不匹配，则不会检查对象是否相等了。<br>哈希的生成你可能看到很多都用一个 31 这个数，因为它是一个奇数的素数，避免乘法溢出，并且它可以被 JVM 优化为位运算。<br>可以看出 equals 和 hashCode 使用了大量递归，这两个方法还是很重的。<br>如果一个类是不可变的，并且计算哈希码的代价很大，那么可以考虑在对象中缓存哈希码，而不是在每次请求时重新计算哈希码。 如果你认为这种类型的大多数对象将被用作哈希键，那么应该在创建实例时计算哈希码。<br>最后，<strong>不要试图从哈希码计算中排除重要的属性来提高性能</strong></p>
+<hr>
+<p>对于  toString 的通用约定是：建议所有的子类重写这个方法，不过在静态工具类中编写 toString 方法是没有意义的，同样枚举中也完全没有必要。</p>
+<hr>
+<p>虽然存在 Cloneable 这样的接口，不幸的是，它没有达到这个目的。它的主要缺点是<strong>缺少 clone 方法</strong>，而 Object 的 clone 方法是受保护的。你只能借助反射来调用，仅仅因为它实现了 Cloneable 接口，就调用对象上的 clone 方法这想法是行不通的。<br>那么这个接口的意义是，如果一个类实现了 Cloneable 接口，那么 Object 的 clone 方法将返回该对象的逐个属性 (field-by-field) 拷贝；否则会抛出异常，这确实是一个不太好的设计。<br>通常情况下，实现一个接口用来表示可以为客户做什么。但对于 Cloneable 接 口，它会修改父类上受保护方法的行为。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> PhoneNumber <span class="title">clone</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> (PhoneNumber) <span class="keyword">super</span>.clone();</span><br><span class="line">  &#125; <span class="keyword">catch</span> (CloneNotSupportedException e) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> AssertionError();  <span class="comment">// Can't happen</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这是一个简单的例子，在没有引用变量的情况下是可行的，但是如果涉及引用变量，就得递归调用 clone，同时它用到了协变规范；这也牵扯到我们常说的深度克隆和浅度克隆。<br>在数组上调用 clone 会返回一个数组，其运行时和编译时类型与被克隆的数组相同。这是复制数组的首选习语。事实上，数组是 clone 机制的唯一有力的用途。<br>如果 elements 属性是 final 的，则以前的解决方案将不起作用，因为克隆将被禁止向该属性分配新的值，在克隆上真的是各种问题，并且 Object 的克隆方法是不同步的，也正是这样用的并不多。<br>如果确实要用，实现 Cloneable 的所有类应该重写公共 clone 方法，而这个方法的返回类型是类本身。这个方法应该首先调用 super.clone，然后修复任何需要修复的属性。<br>对象复制更好的方法是提供一个复制构造方法或复制工厂。考虑到与 Cloneable 接口相关的所有问题，新的接口不应该继承它，新的可扩展类不应该实现它。这个规则的一个明显的例外是数组，它最好用 clone 方法复制。<br>这里给几个参考：<a href="https://github.com/bfchengnuo/MyRecord/issues/25" target="_blank" rel="noopener">Java对象的属性拷贝效率比较</a>、<a href="https://github.com/bfchengnuo/MyRecord/blob/master/%E7%AC%94%E8%AE%B0/Java/%E5%9F%BA%E7%A1%80/%E4%B8%80%E5%85%A5Java%E6%B7%B1%E4%BC%BC%E6%B5%B7.md" target="_blank" rel="noopener">一入Java深似海</a>（评价 Java 中的 clone 方法？）</p>
+<h2 id="类和接口"><a href="#类和接口" class="headerlink" title="类和接口"></a>类和接口</h2><h3 id="组合优于继承"><a href="#组合优于继承" class="headerlink" title="组合优于继承"></a>组合优于继承</h3><p>不要继承一个现有的类，而应该给你的新类增加 一个私有属性，该属性是现有类的实例引用，这种设计被称为组合(composition)，因为现有的类成为新类的组成部分。<br>如果使用继承，那么当父类有所变化时，子类也会受影响，即使子类的代码并没有任何变化。<br>这很像是装饰器模式，这里要区别与代理模式；包装类的缺点很少， 一个警告是包装类不适合在回调框架中使用，可能会存在 Self 问题（this 指向）；有些人担心转发方法调用的性能影响，以及包装对象对内存占用， 两者在实践中都没有太大的影响。<br>只有在子类真的是父类的子类型的情况下，继承才是合适的。<br>所以，从这个角度，JDK 中 Stack 类不应该继承 Vector 类，Properties 不应该继承 Hashtable，它们之间使用组合更加合适。<br>继承是强大的，但它是有问题的，因为它违反封装。 只有在子类和父类之间存在真正的子类型关系时才适用。</p>
+<h3 id="接口的默认方法"><a href="#接口的默认方法" class="headerlink" title="接口的默认方法"></a>接口的默认方法</h3><p>从 Java8 开始，接口可以有默认方法了，这确实解决了一些问题，但是也引入了一些新问题，跟继承类似，接口的实现者是感知不到接口中新增的默认方法，<br>例如，一个将集合同步化的工具类，在接口新增了默认方法后并不会感知，这也导致这个方法不会被同步，如果作者不及时重写默认方法，可能就会导致问题出现。<br>在默认方法的情况下，接口的现有实现类可以在没有错误或警告的情况下编译，但在运行时可能会失败。<br>所以，应该避免使用默认方法向现有的接口添加新的方法，除非这个需要是关键的。</p>
+<h3 id="常量接口模式"><a href="#常量接口模式" class="headerlink" title="常量接口模式"></a>常量接口模式</h3><p>所谓的常量接口模式就是定义一个接口，里面用来存储常量；<br><strong>常量接口模式是对接口的糟糕使用</strong>，对类的用户来说，类实现一个常量接口是没有意义 的；事实上，它甚至可能使他们感到困惑，如果实现了常量接口，那么它的所有子类的命名空间都会被接口中的常量所污染，并且未来版本中如果不需要常量了，仍然需要实现接口，来保证二进制兼容。<br>JDK 中也有部分实现，这些接口应该被视为不规范的，不应该被效仿。更好的方式应该是使用一个不可实例化的类来做，抽象类也不可以，容易被误解是来做继承的。<br><strong>总之，接口只能用于定义类型。 它们不应该仅用于导出常量。</strong></p>
+<h3 id="关于内部类"><a href="#关于内部类" class="headerlink" title="关于内部类"></a>关于内部类</h3><p>或者叫嵌套类， <strong>如果一个嵌套类在其他一些情况下是有用的，那么它应该是一个顶级类</strong>。<br>有四种嵌套类: 静态成员类，非静态成员类，匿名类和局部类。 除了第一种以外，剩下的三种都被称为内部类。<br>如果嵌套类的实例可以与其宿主类的实例隔离存在，那么嵌套类必须是静态成员类：不可能在没有宿主实例的情况下创建非静态成员类的实例。<br>静态成员类的一个常见用途是作为公共帮助类，类似：Aa.Bb.NAME，非静态成员类的一个常见用法是定义一个 Adapter，可参考 Map  中的各种视图。<br>在非静态成员类中，每个实例都隐藏的引用了自己的宿主，存储这个引用就需要占用时间和空间，更严重的可能会导致 GC 无法回收宿主对象，就是因为引用是不可见的，很难被检测到。<br>私有静态成员类的常见用法是表示由它们的宿主类表示的对象的组件，例如 Map.Entry；<br>总结一下就是：如果一个嵌套的类需要在一个方法之外可见，或者太长而不能很好地适应一个方法，使用一个成员类。<br>如果一个成员类的每个实例都需要一个对其宿主实例的引用，使其成为非静态的;；否则，使其静态。<br>假设这个类属于一个方法内部，如果你只需 要从一个地方创建实例，并且存在一个预置类型来说明这个类的特征，那么把它作为一个匿名类；否则，把它变成局部类。</p>
+<h2 id="泛型"><a href="#泛型" class="headerlink" title="泛型"></a>泛型</h2><p>泛型已经都用的很熟练了，编译时会自动强制转换，相当于运行时擦除，注意这里编译后的字节码还是保存着泛型的信息的，还有就是泛型不可以使用原始类型（没有任何类型参数的泛型类型的名称，简单说就是不用泛型，或者使用 ？通配符的情况），这样编译器没办法帮你检查错误。<br>如果跟数组对比，会发现即有相似又有差异，最大的区别为数组是支持协变的，例如 String 数组可以赋值给 Object 数组，但是泛型不可能，也正是因为这个差异，导致不能使用泛型数组（尽管很少有用，创建无限定通配符类型的数组是合法的），所以作为替代方案一般我们都使用集合来替代，虽然牺牲了一些性能，但是安全。<br>泛型这个东西解释起来不难，但是运用到你写的代码中很难，说白了就是一个设计问题。<br>参数化不难，但是泛型化真的需要一定的水平。</p>
+<p>编译器可能无法证明你的代码是安全的，所以会给你发出警告，但是你可以证明，这种情况下你可以使用 @SuppressWarnings 注解来进行标注，并使用注释来说明原因。<br>使用 SuppressWarnings 的时候一定要小心，做到最小范围化，否则可能就出现吞掉其他警告的可能。</p>
+<p>泛型的另一个难点是限定通配符的使用：</p>
+<ul>
+<li>上限（<code>&lt;? extends E&gt;</code>）<br>说明传入的可以是 E 或者 E 的子类</li>
+<li>下限（<code>&lt;? super E&gt;</code>）<br>说明传入的值可以是 E 或者 E 的父类</li>
+</ul>
+<p>这个的用法其实有点误导，感觉有点别扭；<br>另外需要注意的一点，可变参数也不可以和泛型同用，因为可变参数的本质就是数组，泛型数组是不可以用的。<br>不过可变参数的情况下还是有点区别，它不会直接像数组那样给你一个错误，而是给你一个警告，这是因为像 <code>T...</code> 这样的用法是安全的，但是 <code>List&lt;T&gt;...</code> 这种就是不安全的，或者可以理解为如果仅仅是单纯的传递参数是安全的，总而言之，可变参数和泛型不能很好地交互。</p>
+<h2 id="枚举"><a href="#枚举" class="headerlink" title="枚举"></a>枚举</h2><p>建议使用枚举类型来代替整型常量，使用枚举确实有很多好处，但是以我的观察，还是用 int 常量的多，我猜可能是因为这种入库的时候方便，如果 Entry 使用枚举定义，可能会有点复杂，并且与前端的约定也一般是 int 标识，还要处理序列化相关，当然如果不涉及入库操作，枚举肯定是首选。<br>同时，枚举确实是非常灵活的，例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> Operation &#123;</span><br><span class="line">  PLUS, MINUS, TIMES, DIVIDE;</span><br><span class="line">  <span class="comment">// Do the arithmetic operation represented by this constant</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">apply</span><span class="params">(<span class="keyword">double</span> x, <span class="keyword">double</span> y)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">switch</span>(<span class="keyword">this</span>) &#123;</span><br><span class="line">      <span class="keyword">case</span> PLUS:   <span class="keyword">return</span> x + y;</span><br><span class="line">      <span class="keyword">case</span> MINUS:  <span class="keyword">return</span> x - y;</span><br><span class="line">      <span class="keyword">case</span> TIMES:  <span class="keyword">return</span> x * y;</span><br><span class="line">      <span class="keyword">case</span> DIVIDE: <span class="keyword">return</span> x / y;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> AssertionError(<span class="string">"Unknown op: "</span> + <span class="keyword">this</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// Enum type with constant-specific class bodies and data</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> Operation &#123;</span><br><span class="line">  PLUS(<span class="string">"+"</span>) &#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">apply</span><span class="params">(<span class="keyword">double</span> x, <span class="keyword">double</span> y)</span> </span>&#123; <span class="keyword">return</span> x + y; &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  MINUS(<span class="string">"-"</span>) &#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">apply</span><span class="params">(<span class="keyword">double</span> x, <span class="keyword">double</span> y)</span> </span>&#123; <span class="keyword">return</span> x - y; &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  TIMES(<span class="string">"*"</span>) &#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">apply</span><span class="params">(<span class="keyword">double</span> x, <span class="keyword">double</span> y)</span> </span>&#123; <span class="keyword">return</span> x * y; &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  DIVIDE(<span class="string">"/"</span>) &#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">apply</span><span class="params">(<span class="keyword">double</span> x, <span class="keyword">double</span> y)</span> </span>&#123; <span class="keyword">return</span> x / y; &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> String symbol;</span><br><span class="line">  Operation(String symbol) &#123; <span class="keyword">this</span>.symbol = symbol; &#125;</span><br><span class="line">  <span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> symbol; &#125;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">double</span> <span class="title">apply</span><span class="params">(<span class="keyword">double</span> x, <span class="keyword">double</span> y)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第一种方案是有问题的，首先我们不喜欢有异常参与，主要是展示可以这样用 switch 语法。<br>另外，永远不要从枚举的序号中得出与它相关的值; 请将其 保存在实例属性中（最好避免使 用 ordinal 方法）。</p>
+<blockquote>
+<p>对于 int 类型的常量取值，参考 JDK 的位运算顺序是个不错的选择，即：<br>1 &lt;&lt; 0  // 1<br>1 &lt;&lt; 1  // 2<br>1 &lt;&lt; 2  // 4<br>使用位域的好处：TBD</p>
+</blockquote>
+<p>枚举其实还是蛮复杂的，不过感觉我们平常用的真的很少，也许确实有一些复杂性在里面。</p>
+<h2 id="Lambdas和Streams"><a href="#Lambdas和Streams" class="headerlink" title="Lambdas和Streams"></a>Lambdas和Streams</h2><p><strong>Lambda 优于匿名类</strong>，一行代码对于 lambda 说是理想的，三行代码是合理的最大值。 如果违反这一规定，可能会严重损害程序的可读性。<br>如果枚举类型具有难以理解的常量特定行为，无法在几行内实现，或者需要访问实例属性或方法，那么常量特定的类主体仍然是行之有效的方法。<br>虽然 Lambda 是首选，但是 Lambda 并不能完全替代匿名类，其中还要注意 this 指向的问题。</p>
+<p><strong>方法引用优于 lambda 表达式</strong>，如果 lambda 变得太长或太复杂，它们也会给你一个结果；你可以从 lambda 中提取代码到一个新的方法中，并用对该方法的引用代替 lambda。 你可以给这个方法一个好名字，并把它文档记录下来（通常 IDE 会有智能提示）。<br>还有就是在 JDK 中就包含了很多内置函数，优先使用这些内置的，没有合适的再自己定义，大部分情况下，自带的就足够了，自己定义的时候记得用 @FunctionalInterface 标记。</p>
+<hr>
+<p>对于 Stream API， 该 API 提供了两个关键的抽象：流 (Stream)，表示有限或无限的数据元素序列，以及流管道 (stream pipeline)，表示对这些元素的多级计算。<br>Stream pipeline 通常是惰性 (lazily) 计算求值；直到终结操作被调用后才开始计算，而为了完成终结操作而不需要的数据元素永远不会被计算出来。 这种惰性计算求值的方式，使得无限流成为可能。<br>通常情况下，流管道会按顺序运行，如果要并行，只需要调用 parallel 方法，但是并不建议这么做。<br>Stream API 具有足够的通用性，实际上任何计算都可以使用 Stream 执行，但是「可以」，并不意味着应该这样做；过度使用流会难以阅读和维护。<br>使用 Lambda 过程中，因为没有显式类型声明，所以好的命名非常重要。<br>流式处理有一个缺点是在多个阶段中一旦将值映射到其他值，原始值就丢失了。流与迭代那种方式好，要具体情况具体分析，通常来说迭代不适合并行化，也不适合计算场景。<br>纯函数的结果仅取决于其输入；它不依赖于任何可变状态，也不更新任何状态，即所谓的无任何副作用。</p>
+<p>对于流的并行化，看似非常简单，只需要调用一下 parallel，但是编写安全高效的并发代码还是一样的困难，你可能会遇到各种奇奇怪怪的现象，并且可能没有任何错误提示。<br>所以，一定要慎用并行处理。</p>
+<h2 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h2><p>关于方法的设计，例如方法名的选取、参数不要过多、优先使用接口类型等等这些都已是业界规范，除此之外<strong>与布尔型参数相比，优先使用两个元素枚举类型</strong>。<br>对于重载，也需要警惕，<strong>重载(</strong>overloaded<strong>)方法之间的选择是静态的，而重写 (</strong>overridden<strong>)方法之间的选择是动态的</strong>，这里关键是静态选择，无论你运行时实际是什么类型，都是根据你编写时候来确定走那个重载。<br>可变参数和数组是一种，不可算重载。在数组和 Object 的重载中，null 会优先匹配数组类型，因为比 Object 更具体。<br>很多时候重载不如另起一个更好的名称，例如 readInt、readLong 比使用重载更形象。<br>像自动装箱、Lambda 之类进一步增加了重载的复杂性。开发者应当确保当传递相同的参数时，所有的重载行为都是一致的。<br>在<strong>性能关键的情况下</strong>使用可变参数时要小心，每次调用可变参数方法都会导致数组分配和初始化。</p>
+<p>尽量放回空数组或者集合，不要使用 null，编写客户端的程序员可能忘记编写特殊情况代码来处理 null 返回，如果有证据表明分配空集合会损害性能，可以通过重复返回相同的不可变空集合来避免分配，或者例如 <code>Collections.emptySet</code> 对象；<br>不论是抛出异常还是返回 null，都不合适，前者代价太高，后者需要调用者单独处理；在 Java8 中的 Optional 或许是一个比较好的方案，跟 Guava 中的用法基本一致，容器类型，包括集合、映射、Stream、数组 和 Optional，不应该封装在 Optional 中。<br>需要注意的是：返回包含已装箱基本类型的 Optional 的代价高得惊人，他们有专门的类似 OptionalInt 的包装。<br>在集合或数组中使用 Optional 的键、值或元素几乎都是不合适的。<br>除了作为返回值之外，不应该在任 何其他地方中使用 Optional，使用它也必然会带来一定的性能消耗。</p>
+<h2 id="通用程序设计"><a href="#通用程序设计" class="headerlink" title="通用程序设计"></a>通用程序设计</h2><p>从 Java 7 开始，就不应该再使用 Random。在大多数情况下，选择的随机数生成器现在是 ThreadLocalRandom<strong>。</strong> 它能产生更高质量的随机数，而且速度非常快。<br>每个程序员都应该熟悉 java.lang、java.util 和 java.io 的基础知识及其子包，也就是不要重复造轮子。<br>若需要精确答案就应避免使用 float 和 double 类型，二进制无法精确表示 0.1，就像十进制无法表示 1/3，要么进行倍数换算成整数运算，要么使用 BigDecimal，不过使用 BigDecimal 的时候一定要用字符串的构造，否则也是不精确的。<br>BigDecimal 与原始算术类型相比很不方便，而且速度要慢得多；如果数值不超过 9 位小数，可以使用 int；如果不超过 18 位，可以使用 long。如果数量可能超过 18 位，则使用 BigDecimal。</p>
+<p>警惕自动装箱的风险，在比较的时候 <code>==</code> 所带来的问题，以及包装类型默认值为 null，避免 NPE。</p>
+<p>不要去计较效率上的一些小小的得失，在 97% 的情况下，不成熟的优化才是一切问题的根源。<br>优化方面的准则：不要优化；在你还没有绝对清晰的未优化方案之前，请不要进行优化。<br>努力编写好的程序，而不是快速的程序。<br>这并不意味着在程序完成之前可以忽略性能问题，实现上的性能问题可以日后优化，对于架构缺陷，如果不重写系统，就不可能解决限制性能的问题，因此在设计时就要考虑性能。<br>总结一下就是，不要努力写快的程序，要努力写好程序；速度自然会提高。但是在设计系统时一定要考虑性能，特别是在设 API、线路层协议和持久数据格式时。<br>当你完成了系统的构建之后，请度量它的性能。如果足够快，就完成了。如果没有，利用分析器找到问题的根源，并对系统的相关部分进行优化。<br>第一步是检查算法的选择：再多的底层优化也不能弥补算法选择的不足。根据需要重复这个过程，在每次更改之后测量性能，直到你满意为止。</p>
+<p>在命名方面，不可实例化的实用程序类通常使用复数名词来命名（xxxxs），转换对象类型的实例方法用 to 开头，返回视图的方法用 as 开头；返回布尔类型的方法用 is 或者 has（比较少）开头；组件（包名）应该很短，通常为 8 个或更少的字符，鼓励使用有意义的缩写，例如 util 而不是 utilities。</p>
+<h2 id="异常"><a href="#异常" class="headerlink" title="异常"></a>异常</h2><p>只有在异常情况下才能使用异常，一切其他的骚操作都是不可取的，不仅模糊了代码意思，还降低性能，不要将它们勇于普通的控制流程。<br>优先使用标准异常例如：IllegalArgumentException、IllegalStateException、UnsupportedOperationException。<br>对于底层抛出的异常，直接抛出会让人摸不着头脑，通常会在高层进行转换，方便阅读，并且最好写清楚文档。</p>
+<h2 id="并发和序列化"><a href="#并发和序列化" class="headerlink" title="并发和序列化"></a>并发和序列化</h2><p>关于如何停止线程，stop 方法早已经废弃，主流是控制标志位的方法，但是请注意，标志位的变量一定要 volatile 保证可见性，因为 JVM 的优化（在非同步代码中可能会重排）和 Java 内存模型的关系，<strong>必须要进行 volatile 化</strong>；<br>或者使用 synchronized 进行同步读写标志位的方法，注意，是读写都需要同步，单独独立到方法中去。<br>同时，要避免过度同步，在一个被同步的区域内部，<strong>不要调用设计成要被覆盖的方法</strong>，这个类不知道该方法会做什么事情，也无法控制它，根据外来方法的作用，从同步区域中调用它会导致异常、死锁或者数据损坏（Effective Java 中的例子很经典）。<br><strong>应该将外来代码移出同步区</strong>，必要情况可以使用快照方式来避免 CME 等异常，例如使用 JUC 的 CopyOnWriteArrayList。<br>当你不确定的时候，就不要同步类，而应该建立文档，注明它不是线程安全的，让调用者从外部同步；如果你在内部同步了类，就可以使用不同的方法来实现高并发性，例如分拆锁、分离锁和非阻塞并发控制。<br>不建议使用困难的 wait 和 notify，也正是因为正确地使用 wait 和 notify 比较困难，就应该用更高级的并发工具来代替。<br>最常用的同步器是 CountDownLatch 和 Semaphore，较不常用的是 CyclicBarrier 和 Exchanger ，功能最强大的同步器是 Phaser。<br>Lock <strong>字段应该始终声明为</strong> final，对于延迟初始化，除非需要，否则不要这样做。</p>
+<hr>
+<p>关于序列化，请优先选择 Java 序列化的替代方案，序列化的一个根本问题是它的可攻击范围太大，且难以保护，而且问题还在不断增多；当你反序列化一个你不信任的字节流时，你就会受到攻击。避免序列化利用的最好方法是永远不要反序列化任何东西。<br>反序列化真的非常危险，你不应该接受来自不可信来源的 RMI 流量，但同时它确实又是必须的，或者说广泛使用的，比如 RMI（远程方法调用）、JMX（Java 管理扩展）和 JMS（Java 消息传递系统）。<br>设计不良的序列化形式，可能会造成严重后果；序列化是一种用于创建对象的超语言机制，或者说『隐藏的构造函数』，readObject 方法实际上相当于另外一个<strong>公有的构造器</strong>，或者说是一个「用字节流作为唯一参数」的构造器，并且这个字节流可以伪造；如无必要不要实现 Serializable。<br>为了防止字节流的伪造，建议重写 readObject 方法，在调用 defaultReadObject 之后进行手动校验，但这也只能防止部分攻击；自定义序列化规则的时候注意 transient 的运用，反序列化的时候进行手动恢复。<br>当一个对象被反序列化的时候，对于客户端不应该拥有的对象引用，如果那个字段包含了这样的对象引用，就必须做 保护性拷贝，这是非常重要的。<br>如果单例对象要序列化，请在 readObject 忽略任何序列化相关的逻辑，因为默认无论你做如何防范，它总会返回一个新对象。<br>readResolve 的可访问性 (accessibility) 也十分重要，单例的防攻击可以使用枚举类限制。</p>
+<p>PS：领先的跨平台结构化数据表示是 JSON 和 Protocol Buers，也称为 protobuf（二进制，效率更高）。<br>如果没有显式声明 serialVersionUID，系统会自动使用 SHA-1 进行生成。<br>建议是无论选择哪种序列化形式，都要在编写的每个可序列化类中声明显式的序列版本 UID，目的是为了版本兼容。<br>建议使用序列化代理模式（为可序列化的类设计一个私有的静态嵌套类，精确地表示外围类的逻辑状态。这个嵌套类被称为序列化代理），序列化代理方式可以阻止伪字节流的攻击以及内部字段的盗用攻击，但是也有一定的局限性，例如性能方面的损耗。</p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>如果 instanceof 的第一个操作数是 null，那么不管第二个操作数是那种类型，都返回 false；</p>
+<p>函数式方法：每次执行返回一个新的实例，而不是修改这个实例。要善用不可变对象；缺点主要是每个不同的值都需要创建一个单独的对象，创建过程可能代价很高。</p>
+<p>除非有充分的理由使类成为可变类，否则类应该是不可变的，唯一的缺点是在某些情况下可能会出现性能问题。</p>
+<p>序列化攻击。</p>
+<p>Java7 开始有了下划线语法，对于底数为 10 的数字，无论是整型还是浮点型的，都应该用下划线将数字分成三个数字组，表示一千的正负幂。</p>
+<p>Java8 开始支持可重复注解，使用 @Repeatable；</p>
+<p>标记接口类型的存在允许在编译时捕获错误，如果使用标记注解，则直到运行时才能捕获错误。<br>标记接口对于标记注解的另一个优点是可以更精确地定位目标；</p>
+<p>优先使用基本类型而不是基本类型的包装类。</p>
+<p>在 Java 7 中添加的 <code>Objects.requireNonNull</code> 方 法灵活方便，因此没有理由再手动执行空值检查。</p>
+<p>性能监控方面，JDK Micro Benchmark Framework：JMH</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>喜欢就请我吃包辣条吧！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/image/pay/wx.jpg" alt="Kerronex WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/image/pay/zfb.jpg" alt="Kerronex Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Kerronex
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://sakanoy.com/2020/04/30/EffectiveJava后知后觉/" title="EffectiveJava后知后觉">https://sakanoy.com/2020/04/30/EffectiveJava后知后觉/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"><i class="fa fa-tag"></i> Java</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/04/25/TypeScript基础语法/" rel="next" title="TypeScript基础语法">
+                <i class="fa fa-chevron-left"></i> TypeScript基础语法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/05/12/任性的语言-Golang/" rel="prev" title="任性的语言-Golang">
+                任性的语言-Golang <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        
+          <p class="warninginfo">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+              评论框加载失败，无法访问 Disqus<br><br>
+              你可能需要魔法上网~~
+          </p>
+
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/image/tx.png"
+               alt="Kerronex" />
+          <p class="site-author-name" itemprop="name">Kerronex</p>
+           
+              <p class="site-description motion-element" itemprop="description">程序猿/二刺螈<br/>夜猫族/爱折腾</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">130</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="Mailto:bfchengnuo@gmail.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-envelope-o"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://GitHub.com/bfchengnuo" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://sakanoy.com/MyRecord/#/" target="_blank" title="笔记本">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  笔记本
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.cnblogs.com/bfchengnuo" target="_blank" title="博客园">
+                  
+                    <i class="fa fa-fw fa-paw"></i>
+                  
+                  博客园
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              小伙伴们~
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://heartsky.info" title="HeartSky" target="_blank">HeartSky</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.kiuber.me" title="Kiuber" target="_blank">Kiuber</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/nightcharm" title="夜Charm" target="_blank">夜Charm</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建和销毁对象"><span class="nav-number">1.</span> <span class="nav-text">创建和销毁对象</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#静态工厂代替构造器"><span class="nav-number">1.1.</span> <span class="nav-text">静态工厂代替构造器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#构造方法参数过多时使用builder模式"><span class="nav-number">1.2.</span> <span class="nav-text">构造方法参数过多时使用builder模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于单例"><span class="nav-number">1.3.</span> <span class="nav-text">关于单例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#避免创建不必要的对象"><span class="nav-number">1.4.</span> <span class="nav-text">避免创建不必要的对象</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对象的公共方法"><span class="nav-number">2.</span> <span class="nav-text">对象的公共方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类和接口"><span class="nav-number">3.</span> <span class="nav-text">类和接口</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#组合优于继承"><span class="nav-number">3.1.</span> <span class="nav-text">组合优于继承</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#接口的默认方法"><span class="nav-number">3.2.</span> <span class="nav-text">接口的默认方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常量接口模式"><span class="nav-number">3.3.</span> <span class="nav-text">常量接口模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于内部类"><span class="nav-number">3.4.</span> <span class="nav-text">关于内部类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#泛型"><span class="nav-number">4.</span> <span class="nav-text">泛型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#枚举"><span class="nav-number">5.</span> <span class="nav-text">枚举</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lambdas和Streams"><span class="nav-number">6.</span> <span class="nav-text">Lambdas和Streams</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#方法"><span class="nav-number">7.</span> <span class="nav-text">方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通用程序设计"><span class="nav-number">8.</span> <span class="nav-text">通用程序设计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#异常"><span class="nav-number">9.</span> <span class="nav-text">异常</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#并发和序列化"><span class="nav-number">10.</span> <span class="nav-text">并发和序列化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他"><span class="nav-number">11.</span> <span class="nav-text">其他</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+    <div style="height: 370px;background-image: url(/image/bj.png);background-repeat: no-repeat; margin-left: 31%;"></div>
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+<span id="sitetime"></span>
+<span class="my-face">(●'◡'●)ﾉ♥</span>
+<script language=javascript>
+function siteTime(){
+window.setTimeout("siteTime()", 1000);
+var seconds = 1000
+var minutes = seconds * 60
+var hours = minutes * 60
+var days = hours * 24
+var years = days * 365
+
+var today = new Date()
+var todayYear = today.getFullYear()
+var todayMonth = today.getMonth()
+var todayDate = today.getDate()
+var todayHour = today.getHours()
+var todayMinute = today.getMinutes()
+var todaySecond = today.getSeconds()
+
+/* Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳) 
+year - 作为date对象的年份，为4位年份值
+month - 0-11之间的整数，做为date对象的月份
+day - 1-31之间的整数，做为date对象的天数
+hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+minutes - 0-59之间的整数，做为date对象的分钟数
+seconds - 0-59之间的整数，做为date对象的秒数
+microseconds - 0-999之间的整数，做为date对象的毫秒数 */
+var t1 = Date.UTC(2016,3,30,8,0,0)
+var t2 = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond)
+var diff = t2-t1
+
+var diffYears = Math.floor(diff/years)
+var diffDays = Math.floor((diff/days)-diffYears*365)
+var diffDaysAll = Math.floor(diff/days)
+var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours)
+var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes)
+var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds)
+document.getElementById("sitetime").innerHTML=" 本站已萌萌哒运行 "+diffDaysAll+" 天 "+diffHours+" 小时 "+diffMinutes+" 分钟 "+diffSeconds+" 秒 "
+}
+siteTime()
+</script>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共521.4k字</span>
+
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'bfchengnuo';
+      var disqus_identifier = '2020/04/30/EffectiveJava后知后觉/';
+
+      var disqus_title = "EffectiveJava后知后觉";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":130,"height":170,"hOffset":30,"vOffset":-10},"mobile":{"show":false},"react":{"opacity":0.7},"log":false});</script></body>
+</html>

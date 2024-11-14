@@ -1,0 +1,1220 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Microsoft Yahei:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="AIO,DSM,PVE,OpenWrt," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakanoy" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/image/tb.png?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="All in boom 来啦，PVE + OpenWrt + 黑群晖 DSM + Windwos10 + Ubuntu + Docker + HAOS。亡命之徒直接冲 RAID0 ！！硬件：GMK M6 + D2-320 磁盘阵列 2x4T。Q：”文章可以多配些步骤图吗，更直观”A：”不行，我懒人，太麻烦，省电模式中，再说吧”">
+<meta name="keywords" content="AIO,DSM,PVE,OpenWrt">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一台小主机的 AIO 之旅">
+<meta property="og:url" content="https://sakanoy.com/2024/11/14/AIO折腾记录/index.html">
+<meta property="og:site_name" content="Sakanoy">
+<meta property="og:description" content="All in boom 来啦，PVE + OpenWrt + 黑群晖 DSM + Windwos10 + Ubuntu + Docker + HAOS。亡命之徒直接冲 RAID0 ！！硬件：GMK M6 + D2-320 磁盘阵列 2x4T。Q：”文章可以多配些步骤图吗，更直观”A：”不行，我懒人，太麻烦，省电模式中，再说吧”">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2024-11-14T17:46:09.401Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="一台小主机的 AIO 之旅">
+<meta name="twitter:description" content="All in boom 来啦，PVE + OpenWrt + 黑群晖 DSM + Windwos10 + Ubuntu + Docker + HAOS。亡命之徒直接冲 RAID0 ！！硬件：GMK M6 + D2-320 磁盘阵列 2x4T。Q：”文章可以多配些步骤图吗，更直观”A：”不行，我懒人，太麻烦，省电模式中，再说吧”">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://sakanoy.com/2024/11/14/AIO折腾记录/"/>
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-bounce.css">
+
+  <title> 一台小主机的 AIO 之旅 | Sakanoy </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-77463916-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakanoy</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">立于浮华之世,奏响天籁之音.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-mark">
+          <a href="/mark" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-retweet"></i> <br />
+            
+            笔记本
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-book"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-music">
+          <a href="/music" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-music"></i> <br />
+            
+            音乐台
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://sakanoy.com/2024/11/14/AIO折腾记录/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Kerronex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/image/tx.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakanoy">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                一台小主机的 AIO 之旅
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2024-11-14T19:44:01+00:00">
+                2024-11-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/其他/" itemprop="url" rel="index">
+                    <span itemprop="name">其他</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-eye"></i> 热度
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-wordcount">
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  2,075
+                </span>
+              
+
+              
+
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <div style="display: none;color: #999" class="note warning" id='timeliness'></div>
+        <script language=javascript>
+          var days = (new Date().getTime() - 1731613441000) / 86400000;
+          if(days > 180) {
+            var infoDom = document.getElementById("timeliness");
+            infoDom.innerHTML = "提醒：本文发布于 " + Math.round(days) + " 天前，文中所描述的信息可能已发生改变，请谨慎使用。";
+            infoDom.style.display = "block"
+          }
+        </script>
+        <p>All in boom 来啦，PVE + OpenWrt + 黑群晖 DSM + Windwos10 + Ubuntu + Docker + HAOS。<br>亡命之徒直接冲 RAID0 ！！<br>硬件：GMK M6 + D2-320 磁盘阵列 2x4T。<br>Q：”文章可以多配些步骤图吗，更直观”<br>A：”不行，我懒人，太麻烦，省电模式中，再说吧”<br><a id="more"></a></p>
+<h2 id="安装-PVE"><a href="#安装-PVE" class="headerlink" title="安装 PVE"></a>安装 PVE</h2><p>去官网下载 ISO 镜像，我使用 Ventoy 来进行引导，也可以通过写盘工具直接把 ISO 写到 U 盘，这里最开始我卡 loading，原因是 Ventoy 的版本太老了，升级一下就正常了（不需要格盘）。<br>安装 PVE 的教程很多，也没什么注意的点，IP 只要写对就没啥问题，安装的时候 Ventoy 引导就保持默认第一个。<br>参考视频: <a href="https://www.bilibili.com/video/BV1bc411v7A3/?share_source=copy_web&amp;vd_source=bb09006a95944f3a8aec376ed6eeb2e7" target="_blank" rel="noopener">利用PVE虚拟机，来打造属于自己的All In One系统吧！</a></p>
+<p>PVE 装完后的两个比较好用的工具：<br><a href="https://bbs.x86pi.cn/thread?topicId=20" target="_blank" rel="noopener">https://bbs.x86pi.cn/thread?topicId=20</a><br><a href="https://github.com/ivanhao/pvetools" target="_blank" rel="noopener">https://github.com/ivanhao/pvetools</a><br>就是改个源，去除个订阅提示，硬盘直通可以使用 pvetools。</p>
+<p>关于标记：点数据中心 - 选项 - 标记样式设定 - 完整；然后去每个节点上最上面一栏加标记即可。</p>
+<h2 id="OpenWrt"><a href="#OpenWrt" class="headerlink" title="OpenWrt"></a>OpenWrt</h2><p>软路由还是建议安装一下，但是不推荐主力使用，做一个旁路网关就好，例如安装魔法后解决后面 Docker 拉不到镜像等问题。<br>软路由推荐不良林的视频，说的很清楚：<a href="https://youtu.be/JfSJmPFiL_s?si=09dZqcEKDu1anurs" target="_blank" rel="noopener">视频链接</a></p>
+<p>由于官方固件太简洁，这里选择 immortalwrt，首先去<a href="https://firmware-selector.immortalwrt.org/?version=23.05.4&amp;target=x86%2F64&amp;id=generic" target="_blank" rel="noopener">下载固件</a>，建议选择 COMBINED-EFI (SQUASHFS-COMBINED-EFI.IMG.GZ)版本，因为是 X86 架构直接选。</p>
+<p>上传镜像，然后使用命令:<code>qm importdisk 100 /var/lib/vz/template/iso/openwrt.img local-lvm</code> 导入到虚拟机。</p>
+<p>安装魔法三件套，openClash、homeProxy、passwall</p>
+<p>网卡优先半虚拟化不行的话就切回 E1000，CPU 能 Host 就 Host。</p>
+<blockquote>
+<p>经过测速，起码 PVE8 是不需要 img2kvm 这个工具了，直接 qm 命令导入即可，一般情况下 2 核 1G 的配置够用了。</p>
+</blockquote>
+<p>不过到现在我也还是没搞明白 OpenWrt 的配置，还是挺复杂的，理解为啥有那么多人用爱快了，后面再研究吧，现在网卡都让我删没了。。。但是能用！</p>
+<hr>
+<p>安装 DDNS-Go 配合路由器的端口转发可以实现外网访问，需要一个域名、光猫是桥接，有公网 IP。</p>
+<h2 id="DSM"><a href="#DSM" class="headerlink" title="DSM"></a>DSM</h2><p>采用的是 <a href="https://wp.gxnas.com/11849.html" target="_blank" rel="noopener">GXNAS</a> 的引导文件，或者可以看看著名的原生 RR 引导，复活版的哦 <a href="https://github.com/RROrg/rr" target="_blank" rel="noopener">https://github.com/RROrg/rr</a></p>
+<p>GXNAS 大佬的镜像直接是支持虚拟网卡的，所以直接选半虚拟化就行，性能更好。</p>
+<p>作为 All in boom，我这里当然选的是 RAID0，直接拉满，数据安全什么的全靠我定期冷备份。</p>
+<p>启用 MacOS 的时间机器支持：<a href="https://kb.synology.cn/zh-cn/DSM/tutorial/How_to_back_up_files_from_Mac_to_Synology_NAS_with_Time_Machine" target="_blank" rel="noopener">官方文档</a>，总结就是新建好共享文件夹，给新建个用户(配额还是建议写一下 300-500G 够用了)，开启 <strong>SMB</strong> 服务，高级设置里<strong>启用 Bonjour 服务发现</strong>和<strong>启用通过 SMB 进行 Bonjour Time Machine 播送</strong>，设置下文件夹完成。</p>
+<p>备份 PVE：和时间机器差不多，新建个文件夹，开启共享的 NFS 服务，然后在 NFS 权限里添加 PVE 的 IP 权限，映射为 admin，所有能勾的都勾上。然后去 PVE 存储里添加 NFS 即可，内容选 VZDump备份（或者你还想存其他东西）。<br>PS：不要备份 DSM 本身，会出问题，快照最快最小，需要本体才能恢复，停止和挂起基本一致，可以 PVE Boom 了进行恢复，建议停止模式，备份时虚拟机会暂停几分钟直到备份后启动。</p>
+<h2 id="Windows-Linux"><a href="#Windows-Linux" class="headerlink" title="Windows/Linux"></a>Windows/Linux</h2><p>我这里装的是 Win10 LTSC，Win11 有点复杂，要开 UEFI + TPM，还要登录，就不想搞的那么复杂。</p>
+<p>PS：目前最新的 Win11 优化的也很到位了 2G 内存跑轻度任务都是很流畅的。</p>
+<p>VirtIO 驱动镜像可以通过访问页面找到<a href="https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/stable-virtio/virtio-win.iso" target="_blank" rel="noopener">download the latest stable</a> 点击下载，详情移步 <a href="https://pve.proxmox.com/wiki/Windows_VirtIO_Drivers" target="_blank" rel="noopener">https://pve.proxmox.com/wiki/Windows_VirtIO_Drivers</a></p>
+<p>Win 一般肯定是通过远程桌面使用，在计算机右键属性里打开即可，就可以使用 mstsc 进行连接了；Win10 的 LTSC 刚装上可能会导致风扇狂转，这是一个 bug，更新下系统重启后就好了。</p>
+<hr>
+<p>Linux 没啥可以说的很简单，一路下一步和实体机没区别，我装了个 Ubuntu Server。<br>Docker 安装可以使用一键脚本 <code>bash &lt;(curl -sSL https://linuxmirrors.cn/docker.sh)</code> ，换源也有类似的一键换源脚本 <code>bash &lt;(curl -sSL https://linuxmirrors.cn/main.sh)</code>。</p>
+<p>需要允许远程 ssh 登陆的话修改 <code>/etc/ssh/sshd_config</code> 将 <code>PermitRootLogin prohibit-password</code> 改为 <code>PermitRootLogin yes</code> 然后重启服务 <code>service ssh restart</code></p>
+<h2 id="Docker"><a href="#Docker" class="headerlink" title="Docker"></a>Docker</h2><p>这里我选择使用 LXC 来创建一个 Docker，首先要下载一个 CT 模板，我使用的是 Ubuntu 的，因为要使用 DockerHub 这里网关使用前面 OpenWrt 的；一定要去掉五特权容器的勾；完成后去选项里面把功能里的嵌套之类全勾上。</p>
+<p>需要注意的是，LXC 虚拟虽然效率高但是不是完全的虚拟，还是会共用宿主机的一些东西或者有限制，所以 Linux 我没用 LXC，Docker 的话感觉还是可以的。</p>
+<p>为了保证 Docker 可以启动，需要在 PVE 修改一下对应 LXC 的配置，在 <code>/etc/pve/lxc/{CTID}.conf</code> 中加入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">lxc.apparmor.profile: unconfined</span><br><span class="line">lxc.cgroup.devices.allow: a</span><br><span class="line">lxc.cap.drop:</span><br></pre></td></tr></table></figure>
+<p>大部分情况下 Docker 是可以正常运行了。</p>
+<p>使用快捷指令 <code>bash &lt;(curl -sSL https://linuxmirrors.cn/docker.sh)</code> 安装 Docker，源就不换了。</p>
+<p>安装完毕后先装一个 portainer：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -p 8000:8000 -p 9000:9000 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data outlovecn/portainer-cn:latest</span><br></pre></td></tr></table></figure>
+<p>服务推荐：跑一个 <a href="https://github.com/librespeed/speedtest/blob/master/doc_docker.md" target="_blank" rel="noopener">speedtest</a> 测速下局域网的网速，或者使用 iperf3 也可以。</p>
+<h2 id="HAOS"><a href="#HAOS" class="headerlink" title="HAOS"></a>HAOS</h2><p>建议使用<a href="https://bbs.hassbian.com/thread-24065-1-1.html" target="_blank" rel="noopener">冬瓜 HAOS</a>，直接使用 PE 版本的 ISO，一键安装。</p>
+<p>还没时间仔细研究，一些插件：</p>
+<ul>
+<li>米家 - Xiaomi MIoT</li>
+<li>美的美居 - Midea AC LAN</li>
+<li>海尔智家 - <a href="https://github.com/banto6/haier" target="_blank" rel="noopener">haier</a></li>
+<li>格力 - <a href="https://www.home-assistant.io/integrations/gree/" target="_blank" rel="noopener">Gree Climate</a></li>
+<li>石头 - <a href="https://github.com/humbertogontijo/homeassistant-roborock" target="_blank" rel="noopener">homeassistant-roborock</a></li>
+<li>HomeKit Bridge - 设备接入苹果家庭</li>
+</ul>
+<p>还没仔细研究，貌似有点复杂。</p>
+<h2 id="Tailscale"><a href="#Tailscale" class="headerlink" title="Tailscale"></a>Tailscale</h2><p>最开始是想装到 Docker 里的，没发现特别好的文章，也不想自己搞了，后来看很多都是装 OpenWrt，有大部分是爱快里装的，比较简单，但是显然不适合我，但是有两个项目感觉不错：</p>
+<p><a href="https://github.com/CH3NGYZ/tailscale-openwrt" target="_blank" rel="noopener">https://github.com/CH3NGYZ/tailscale-openwrt</a><br><a href="https://github.com/adyanth/openwrt-tailscale-enabler" target="_blank" rel="noopener">https://github.com/adyanth/openwrt-tailscale-enabler</a></p>
+<p>不过很可惜的是装完我能登录，但是配置的子网路由无效，大概可能是和我 OpenWrt 前面折腾删掉网口有关，最后还是放弃；</p>
+<p>最终采用了<a href="https://acchw.top/posts/3940/index.html" target="_blank" rel="noopener">这位大佬</a> 的方案，使用 LXC 来安装，和之前配置 Docker 一样，需要在 <code>/etc/pve/lxc/{CTID}.conf</code> 文件中加入开启 TUN：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 这个 10 200 可以通过在 pve 上执行 ls -al /dev/net/tun 获得，一般都是 10 200</span><br><span class="line">lxc.cgroup2.devices.allow: c 10:200 rwm</span><br><span class="line">lxc.mount.entry: /dev/net/tun dev/net/tun none bind,create=file</span><br></pre></td></tr></table></figure>
+<p>还需要在 LXC 中的 <code>/etc/sysctl.conf</code> 开启转发：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">net.ipv4.ip_forward=1</span><br><span class="line">net.ipv6.conf.all.forwarding=1</span><br><span class="line"></span><br><span class="line"># 执行生效</span><br><span class="line"># sysctl -p /etc/sysctl.conf</span><br></pre></td></tr></table></figure>
+<p>然后使用官方的脚本安装：<code>curl -fsSL https://tailscale.com/install.sh | sh</code><br>执行 <code>tailscale up --authkey=xxxxx --accept-routes --advertise-routes=192.168.0.0/24</code> 开启，记得换成自己的网段和 authkey。<br>配置自动启动：<br>使用 systemd 来进行开启自启。在 <code>/etc/systemd/system</code> 下新建一个配置文件: <code>tailscale.service</code>, 文件内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Description=AutoStart tailscale</span><br><span class="line">   After=tailscale.service</span><br><span class="line">Requires=tailscale.service</span><br><span class="line">   [Service]</span><br><span class="line">   Type=oneshot</span><br><span class="line">   ExecStart=/usr/bin/tailscale up --authkey=你的authKey --accept-routes --advertise-routes=你的转发范围</span><br><span class="line">   ExecStop=/usr/bin/tailscale down</span><br><span class="line">   RemainAfterExit=yes</span><br><span class="line">   Restart=on-failure</span><br><span class="line">   [Install]</span><br><span class="line">   WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
+<p>然后执行如下命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">systemctl enable tailscale.service</span><br><span class="line">systemctl start tailscale.service</span><br></pre></td></tr></table></figure>
+<p>登录后首先去 Web 控制台重命名设备名字，关掉登录过期，开启自定义路由转发，之后就可以像访问内网那样在外面访问内网服务了。</p>
+<h2 id="LXC"><a href="#LXC" class="headerlink" title="LXC"></a>LXC</h2><p>修改 LXC 的主机名：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/var/lib/lxc/容器的id编号/config</span><br><span class="line">/etc/pve/lxc/容器的id编号.conf</span><br></pre></td></tr></table></figure>
+<p>只修改后面这个文件也可以，建议都改。</p>
+<p>串流，未完待续。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>喜欢就请我吃包辣条吧！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/image/pay/wx.jpg" alt="Kerronex WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/image/pay/zfb.jpg" alt="Kerronex Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Kerronex
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://sakanoy.com/2024/11/14/AIO折腾记录/" title="一台小主机的 AIO 之旅">https://sakanoy.com/2024/11/14/AIO折腾记录/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/AIO/" rel="tag"><i class="fa fa-tag"></i> AIO</a>
+          
+            <a href="/tags/DSM/" rel="tag"><i class="fa fa-tag"></i> DSM</a>
+          
+            <a href="/tags/PVE/" rel="tag"><i class="fa fa-tag"></i> PVE</a>
+          
+            <a href="/tags/OpenWrt/" rel="tag"><i class="fa fa-tag"></i> OpenWrt</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2023/05/28/Kubernetes入门/" rel="next" title="探索Kubernetes容器编排">
+                <i class="fa fa-chevron-left"></i> 探索Kubernetes容器编排
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        
+          <p class="warninginfo">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+              评论框加载失败，无法访问 Disqus<br><br>
+              你可能需要魔法上网~~
+          </p>
+
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/image/tx.png"
+               alt="Kerronex" />
+          <p class="site-author-name" itemprop="name">Kerronex</p>
+           
+              <p class="site-description motion-element" itemprop="description">程序猿/二刺螈<br/>夜猫族/爱折腾</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">130</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="Mailto:bfchengnuo@gmail.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-envelope-o"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://GitHub.com/bfchengnuo" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://sakanoy.com/MyRecord/#/" target="_blank" title="笔记本">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  笔记本
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.cnblogs.com/bfchengnuo" target="_blank" title="博客园">
+                  
+                    <i class="fa fa-fw fa-paw"></i>
+                  
+                  博客园
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              小伙伴们~
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://heartsky.info" title="HeartSky" target="_blank">HeartSky</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.kiuber.me" title="Kiuber" target="_blank">Kiuber</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/nightcharm" title="夜Charm" target="_blank">夜Charm</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-PVE"><span class="nav-number">1.</span> <span class="nav-text">安装 PVE</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OpenWrt"><span class="nav-number">2.</span> <span class="nav-text">OpenWrt</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DSM"><span class="nav-number">3.</span> <span class="nav-text">DSM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Windows-Linux"><span class="nav-number">4.</span> <span class="nav-text">Windows/Linux</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker"><span class="nav-number">5.</span> <span class="nav-text">Docker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HAOS"><span class="nav-number">6.</span> <span class="nav-text">HAOS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Tailscale"><span class="nav-number">7.</span> <span class="nav-text">Tailscale</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LXC"><span class="nav-number">8.</span> <span class="nav-text">LXC</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+    <div style="height: 370px;background-image: url(/image/bj.png);background-repeat: no-repeat; margin-left: 31%;"></div>
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+<span id="sitetime"></span>
+<span class="my-face">(●'◡'●)ﾉ♥</span>
+<script language=javascript>
+function siteTime(){
+window.setTimeout("siteTime()", 1000);
+var seconds = 1000
+var minutes = seconds * 60
+var hours = minutes * 60
+var days = hours * 24
+var years = days * 365
+
+var today = new Date()
+var todayYear = today.getFullYear()
+var todayMonth = today.getMonth()
+var todayDate = today.getDate()
+var todayHour = today.getHours()
+var todayMinute = today.getMinutes()
+var todaySecond = today.getSeconds()
+
+/* Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳) 
+year - 作为date对象的年份，为4位年份值
+month - 0-11之间的整数，做为date对象的月份
+day - 1-31之间的整数，做为date对象的天数
+hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+minutes - 0-59之间的整数，做为date对象的分钟数
+seconds - 0-59之间的整数，做为date对象的秒数
+microseconds - 0-999之间的整数，做为date对象的毫秒数 */
+var t1 = Date.UTC(2016,3,30,8,0,0)
+var t2 = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond)
+var diff = t2-t1
+
+var diffYears = Math.floor(diff/years)
+var diffDays = Math.floor((diff/days)-diffYears*365)
+var diffDaysAll = Math.floor(diff/days)
+var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours)
+var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes)
+var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds)
+document.getElementById("sitetime").innerHTML=" 本站已萌萌哒运行 "+diffDaysAll+" 天 "+diffHours+" 小时 "+diffMinutes+" 分钟 "+diffSeconds+" 秒 "
+}
+siteTime()
+</script>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共521.4k字</span>
+
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'bfchengnuo';
+      var disqus_identifier = '2024/11/14/AIO折腾记录/';
+
+      var disqus_title = "一台小主机的 AIO 之旅";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":130,"height":170,"hOffset":30,"vOffset":-10},"mobile":{"show":false},"react":{"opacity":0.7},"log":false});</script></body>
+</html>

@@ -1,0 +1,1451 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Microsoft Yahei:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="k8s,Kubernetes,k3s,Rancher," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakanoy" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/image/tb.png?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="写这篇笔记是在已经大体了解 Kubernetes 是什么东西的基础上的，如果不理解我很久之前写过一篇烂尾文可以参考 K8s入门。。。那么为什么又想起来看 K8s，云原生是趋势，对于小公司和项目也许选择云计算服务商会是个低成本还算好的解决方案，但是一旦做大，这笔账其实就不合算了，最终都会自建云原生平台，作为一个后端，也愈发感觉到 DevOps 的重要性，开发与运维的边界在某些情况下变得模糊，或者说都">
+<meta name="keywords" content="k8s,Kubernetes,k3s,Rancher">
+<meta property="og:type" content="article">
+<meta property="og:title" content="探索Kubernetes容器编排">
+<meta property="og:url" content="https://sakanoy.com/2023/05/28/Kubernetes入门/index.html">
+<meta property="og:site_name" content="Sakanoy">
+<meta property="og:description" content="写这篇笔记是在已经大体了解 Kubernetes 是什么东西的基础上的，如果不理解我很久之前写过一篇烂尾文可以参考 K8s入门。。。那么为什么又想起来看 K8s，云原生是趋势，对于小公司和项目也许选择云计算服务商会是个低成本还算好的解决方案，但是一旦做大，这笔账其实就不合算了，最终都会自建云原生平台，作为一个后端，也愈发感觉到 DevOps 的重要性，开发与运维的边界在某些情况下变得模糊，或者说都">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://sakanoy.com/image/k8s1.png">
+<meta property="og:updated_time" content="2024-11-14T17:46:09.405Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="探索Kubernetes容器编排">
+<meta name="twitter:description" content="写这篇笔记是在已经大体了解 Kubernetes 是什么东西的基础上的，如果不理解我很久之前写过一篇烂尾文可以参考 K8s入门。。。那么为什么又想起来看 K8s，云原生是趋势，对于小公司和项目也许选择云计算服务商会是个低成本还算好的解决方案，但是一旦做大，这笔账其实就不合算了，最终都会自建云原生平台，作为一个后端，也愈发感觉到 DevOps 的重要性，开发与运维的边界在某些情况下变得模糊，或者说都">
+<meta name="twitter:image" content="https://sakanoy.com/image/k8s1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://sakanoy.com/2023/05/28/Kubernetes入门/"/>
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-bounce.css">
+
+  <title> 探索Kubernetes容器编排 | Sakanoy </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-77463916-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakanoy</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">立于浮华之世,奏响天籁之音.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-mark">
+          <a href="/mark" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-retweet"></i> <br />
+            
+            笔记本
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-book"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-music">
+          <a href="/music" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-music"></i> <br />
+            
+            音乐台
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://sakanoy.com/2023/05/28/Kubernetes入门/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Kerronex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/image/tx.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakanoy">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                探索Kubernetes容器编排
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2023-05-28T19:44:01+00:00">
+                2023-05-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/云计算/" itemprop="url" rel="index">
+                    <span itemprop="name">云计算</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-eye"></i> 热度
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-wordcount">
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  13,582
+                </span>
+              
+
+              
+
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <div style="display: none;color: #999" class="note warning" id='timeliness'></div>
+        <script language=javascript>
+          var days = (new Date().getTime() - 1685303041000) / 86400000;
+          if(days > 180) {
+            var infoDom = document.getElementById("timeliness");
+            infoDom.innerHTML = "提醒：本文发布于 " + Math.round(days) + " 天前，文中所描述的信息可能已发生改变，请谨慎使用。";
+            infoDom.style.display = "block"
+          }
+        </script>
+        <p>写这篇笔记是在已经大体了解 Kubernetes 是什么东西的基础上的，如果不理解我很久之前写过一篇烂尾文可以参考 <a href="https://github.com/bfchengnuo/MyRecord/blob/master/%E7%AC%94%E8%AE%B0/TODO/Kubernetes%E5%85%A5%E9%97%A8.md" target="_blank" rel="noopener">K8s入门</a>。。。<br>那么为什么又想起来看 K8s，云原生是趋势，对于小公司和项目也许选择云计算服务商会是个低成本还算好的解决方案，但是一旦做大，这笔账其实就不合算了，最终都会自建云原生平台，作为一个后端，也愈发感觉到 DevOps 的重要性，开发与运维的边界在某些情况下变得模糊，或者说都要懂一点才能更好的适应现在的环境。<br>这一系列文章记录我学习历程，作为后端并不会在这上面耗费太多精力，力求达到平均水平即可。<br><a id="more"></a><br>学习新东西，对我来说最大的问题是开始阶段，无从下口的感觉，不知道从哪开始，这时候如果能建立一个大体的框架，然后再慢慢去填充这种方式感觉比较合理；但是大体框架的建立也是让人不知所措，我一般从入门书籍或者网上找课程的方式建立，本次依旧是这样，祝我学习顺利。</p>
+<h2 id="更新记录"><a href="#更新记录" class="headerlink" title="更新记录"></a>更新记录</h2><p>k8s 确实有点过于复杂，搭建过程有很多细节，并且需要非常多的组件来支持，机器性能也是个问题，碍于手头机器配置不够，云主机也不太想购买，目前只能停在纸上谈兵上，等日后再实践踩坑；本阶段先扫盲一下相关的概念。</p>
+<ul>
+<li>ChatGPT 出来后，对于一些常用命令和资源清单的编写貌似不需要罗列了，让它给你写比看文章更高效，不过记得校验一下，如果不正确还是要进行二次确认。</li>
+</ul>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>安装上可以简单分为三类：</p>
+<ol>
+<li><a href="https://minikube.sigs.k8s.io/docs/start/" target="_blank" rel="noopener">Minikube</a> （推荐安装 K3s）<br>Minikube 可以实现一种轻量级的 Kubernetes 集群，通过在本地计算机上创建虚拟机并部署只包含单个节点的简单集群。Minikube 适用于 Linux，MacOS 和 Windows 系统。Minikube CLI 提供集群管理的基本操作，包括 start、stop、status、和 delete。<br>简单说，就是为了便于开发，开发我门可能没那么多机器和资源，使用它就可以快速的体验 k8s。</li>
+<li>云计算厂商<br>安装最简单，master 节点一般由厂商进行托管，通过 UI 选一下机器和配置下一步付钱即可。</li>
+<li>裸机<br>就是准备几台物理机，不管是实际的机器还是 VPS，还是虚拟化的机器。</li>
+</ol>
+<p>其中裸机上最常见的安装方式，一般分为两种：二进制和 <a href="https://kubernetes.io/zh-cn/docs/setup/production-environment/tools/kubeadm/install-kubeadm/" target="_blank" rel="noopener">kubeadm 方式</a> （使用 <code>kubeadm config print init-defaults</code> 查看默认配置），后者官方比较推荐，kubeadm 方式比较简单，适合规模不大的情况，基本都是利用容器的方式来安装，这样也会导致完全启动的时间会比较长；大型生产环境中建议使用二进制方式。</p>
+<blockquote>
+<p>从 Kubernetes 1.24 开始，dockershim 已经从 kubelet 中移除，但因为历史问题 Docker 却不支持 Kubernetes 主推的 CRI（容器运行时接口）标准，所以 Docker 不能再作为 Kubernetes 的容器运行时了，即从Kubernetes v1.24 开始不再使用 Docker了。</p>
+<p>但是如果想继续使用 Docker 的话，可以在 Kubelet 和 Docker 之间加上一个中间层 cri-docker。cri-docker 是一个支持 CRI 标准的 shim（垫片）。一头通过 CRI 跟 Kubelet 交互，另一头跟 Docker Api 交互，从而间接的实现了 Kubernetes 以 Docker 作为容器运行时。但是这种架构缺点也很明显，调用链更长，效率更低。</p>
+<p>可以考虑将 Containerd 作为 Kubernetes 的容器运行时. 相关内容可以搜一下相关科普文章，或者看我整理的<a href="https://github.com/bfchengnuo/MyRecord/blob/master/笔记/云原生/Docker、Containerd、RunC扫盲.md" target="_blank" rel="noopener">Docker、Containerd、RunC扫盲</a></p>
+</blockquote>
+<p>具体的安装步骤就不说了，还是挺复杂的，网上也一大把的文档，总结几个关键点；<br>修改主机名（hostnamectl）、节点信息写入 host、关防火墙和 swap、安装 ntpdate 同步服务器时间、通过一个虚拟 IP（VIP）做负载均衡，入口是在 service，然后访问 pod，master 节点的网段跟 service 不要在一个网段、高可用（主节点安装 HAproxy，keep-alive）、如果使用的是 docker 还需要将 cgroup driver 设置为 systemd（默认是 cgroupfs），配置日志 journald 等等。</p>
+<h2 id="集群架构"><a href="#集群架构" class="headerlink" title="集群架构"></a>集群架构</h2><p>K8s 必然是跑在集群中的，再来复习一下基本的概念：</p>
+<ul>
+<li><p>master<br>主节点，控制平台，不需要很高性能，不跑任务，通常一个就行了，也可以开多个主节点来提高集群可用度。</p>
+</li>
+<li><p>worker<br>工作节点，可以是虚拟机或物理计算机，任务都在这里跑，机器性能需要好点；通常都有很多个，可以不断加机器扩大集群；每个工作节点由主节点管理</p>
+</li>
+</ul>
+<p>所以正常情况下，使用 k8s 必须有两台机器，一台 master 节点，一台做 worker 节点。</p>
+<p><img src="/image/k8s1.png" alt="img"></p>
+<p>对于高可用架构，例如 Master 节点尽量维持在奇数，避免投票机制带来的选举冲突问题。</p>
+<h2 id="Node"><a href="#Node" class="headerlink" title="Node"></a>Node</h2><blockquote>
+<p>Node 是 Kubernetes 中的<strong>工作节点</strong>，最开始被称为 minion。一个 Node 可以是 VM 或物理机。<br>每个 Node（节点）具有运行 pod 的一些必要服务，<strong>并由 Master 组件进行管理</strong>，Node 节点上的服务包括 Docker、kubelet 和 kube-proxy。</p>
+</blockquote>
+<p>Node 也算是 K8s 的一个组件，节点组件运行在 Node，提供 Kubernetes 运行时环境，以及维护 Pod。可以说 Node 节点的作用就是来运行应用的工作节点。<br>处理生产级流量的 Kubernetes 集群至少应具有三个 Node。<br>Node 使用 Master 暴露的 Kubernetes API 与 Master 通信。终端用户也可以使用 Kubernetes API 与集群交互。</p>
+<h2 id="Pod"><a href="#Pod" class="headerlink" title="Pod"></a>Pod</h2><p>K8S 调度、管理的最小单位，一个 Pod 可以<strong>包含一个或多个容器</strong>，每个 Pod 有自己的虚拟 IP。一个工作节点可以有多个 pod，主节点会考量负载自动调度 pod 到哪个节点运行。<br>同一容器集（Pod）中的所有容器共享同一个 IP 地址、IPC、主机名称及其它资源（存储、网络、以及怎样运行这些容器的声明）。容器集会将网络和存储从底层容器中抽象出来。<br>注意：自己手动创建的容器无法被管理。</p>
+<p>Pod实现共享网络的机制：</p>
+<blockquote>
+<p>Pod 创建时，会先起一个 Pause 容器，或者叫 init 容器、根容器，<br>之后才会创建一个或多个业务容器，这些业务容器会共用 Pause 网络协议栈（以及存储等），所以业务容器之间的端口不能重复。</p>
+</blockquote>
+<p>在一个 Pod 中起多个容器的情况，多数是他们有互相依赖关系，尤其是 I/O、网络的依赖。</p>
+<h3 id="Pod控制器"><a href="#Pod控制器" class="headerlink" title="Pod控制器"></a>Pod控制器</h3><p>下面来说说 Pod 控制器，<del>RC（ReplicationController）</del>、RS（ReplicaSet），RC 用于确保在集群中运行指定数量的 Pod 副本，并在 Pod 发生故障时进行自动替换，我们称之为自愈能力。在新版本中官方更推荐使用 RC 的升级版 RS。</p>
+<p>RC 和 RS 是实现 Pod 副本控制的核心控制器，而 Deployment 是在它们的基础上构建的更高级别的控制器。Deployment 可以看作是 RC 和 RS 的上层抽象，它使用 RS 来确保 Pod 副本数量的正确性，<strong>并实现了滚动升级和回滚等功能</strong>。</p>
+<p>Deployment 不直接参与 Pod 创建，是通过 RS 来实现的，Deployment 实现回滚和滚动升级的原理是通过管理多个 RS 版本来实现的；每次更新 Deployment 时，它会创建一个新的 RS；回滚时，Deployment 会找到上一个版本的 RS，并将其 Pod 数量恢复到原来的状态。<br>如何判断是否满足数量其实是根据标签 label 来匹配的。在更新和回滚的时候，默认是按 25% 来进行操作，例如先创建 25% 新的 Pod，然后删除 25% 的旧的，通过对应的 RS 操作完成。<br>有一种特殊情况是：当需要创建 5 个，创建到 3 个也就是没有完全创建完成时，突然更新了版本，那么 RS 会立即杀掉创建好的 3 个，然后开始建新版本，并不会等到旧版本全部创建完毕后再进行。同时默认保存所有历史版本。</p>
+<h4 id="HPA"><a href="#HPA" class="headerlink" title="HPA"></a>HPA</h4><p>HPA 是 Horizontal Pod Autoscaler 的缩写，它是 Kubernetes 提供的一种<strong>自动扩展 Pod 数量的机制</strong>。<br>HPA 可以根据 CPU 使用率、内存使用率等指标自动调整 Pod 的数量，从而实现自动扩缩容。HPA 的工作原理是通过定期检查 Pod 的 CPU 使用率、内存使用率等指标，然后根据指标的变化情况来调整 Pod 的数量。<br>HPA 支持 ReplicaSet、StatefulSet 和 Deployment 部署。</p>
+<h4 id="DaemonSet"><a href="#DaemonSet" class="headerlink" title="DaemonSet"></a>DaemonSet</h4><p>DaemonSet 通常用于在每个节点上运行集群守护进程、日志收集守护进程、监控守护进程等。<br><strong>DaemonSet</strong> 确保全部（或者某些）<strong>节点上</strong>运行<strong>一个</strong> Pod 的副本。 当有节点加入集群时，也会为他们新增一个 Pod。当有节点从集群移除时，这些 Pod 也会被回收。删除 DaemonSet 将会删除它创建的所有 Pod。</p>
+<blockquote>
+<p>关于 apiVersion 的选择，在 Kubernetes 1.9 及更早期版本中，DaemonSet 只能通过 extensions/v1beta1 API 进行管理，而在 Kubernetes 1.10 及之后的版本中，DaemonSet 已经被调整为 apps/v1 API，并逐步废弃了 extensions/v1beta1 API。<br><code>v1</code> 是最基本的 API 版本，一般情况下足够用。</p>
+</blockquote>
+<h4 id="Job与CronJob"><a href="#Job与CronJob" class="headerlink" title="Job与CronJob"></a>Job与CronJob</h4><p>Job 用于管理短暂任务，会创建一个或者多个 Pod，如果非正常终止，将继续重试 Pod 的执行，直到指定数量的 Pod 成功终止。 随着 Pod 成功结束，Job 跟踪记录成功完成的 Pod 个数。当数量达到指定的成功个数阈值时，任务（即 Job）结束。 删除 Job 的操作会清除所创建的全部 Pod。 挂起 Job 的操作会删除 Job 的所有活跃 Pod，直到 Job 被再次恢复执行。<br>当一个 Job 执行完毕，会保留在 API 中，以便观察是否成功以及执行过程，当然也可以配置自动清理。</p>
+<p>CronJob 用于创建基于时隔重复调度的 Job，CronJob 用于执行排期操作，例如备份、生成报告等。 一个 CronJob 对象就像 Unix 系统上的 crontab（cron table）文件中的一行。 它用 Cron 格式进行编写， 并周期性地在给定的调度时间执行 Job。</p>
+<h3 id="Pod生命周期"><a href="#Pod生命周期" class="headerlink" title="Pod生命周期"></a>Pod生命周期</h3><p>任何技术中的生命周期都非常重要，了解生命周期可以更方便的进行排查问题、扩展等。</p>
+<ul>
+<li><p>init 容器<br>如果 Pod 的 Init 容器失败，kubelet 会不断地重启该 Init 容器直到该容器成功为止。<br>它们用于在启动应用程序之前执行一些必要的操作或者检查，并确保所需的资源可用。例如，可能需要等待某个服务启动完毕、加载配置文件、运行数据库迁移脚本等操作。如果这些操作失败，则 Pod 不会进入 Running 状态，所以可以作为一种延迟主容器启动的方案。<br>如果有多个，Init Container 将按照定义的顺序逐个运行。每个容器都必须成功完成后，才能执行下一个容器，执行完毕后就会退出，不会一直存在，也就是只存在于初始阶段。</p>
+<p>在 Kubernetes 中，Secret 是一种用于存储敏感信息的机制，例如密码、API 密钥或其他机密数据，Secret 可以加密存储，并且只能通过授权的 Pod 访问。<br>Init Container 可以访问和使用 Secret 存储的敏感信息。这对于需要在容器启动之前加载密码或其他机密信息的应用程序非常有用。<br>在 Pod 启动时，Kubernetes 将加载该 Secret，并将其作为环境变量传递给容器，所以也可以用环境变量的方式来获取，不过对于机密文件，可能就需要 init c 了。</p>
+<p>一个 Pod 里可能有多个容器，每一个容器都有一套完整的以上 init 过程。</p>
+</li>
+<li><p>Pending 挂起<br>Pod 已经被创建，但是它的容器还没有被调度到一个节点上。例如需要的镜像还没有下载完成。</p>
+</li>
+<li><p>Running<br>Pod 中的容器已经被调度到了一个节点上，并且正在运行中（包括正处于启动和重启中）。如果配置了 <code>postStart</code> 回调，那么该回调已经执行且已完成。<br>处于该状态时，并不代表你的服务可以正常访问（就绪 <strong>Ready</strong> 才是表示可以对外服务）。</p>
+</li>
+<li><p>Succeeded<br>Pod 中的所有容器都已经成功地执行完任务并退出了。</p>
+</li>
+<li><p>Failed<br>Pod 中的某个容器因为错误而终止了执行。</p>
+</li>
+<li><p>Unknown<br>Kubernetes 无法确定 Pod 的状态。这通常是由于与 Pod 相关的信息丢失或不可访问导致的。</p>
+</li>
+</ul>
+<p>在 init 后主容器运行时，可以在开始与结尾进行一个回调，做一下准备和收尾工作，这个就不展开了很简单。<br>与生命周期密切相关的，还有两种探测（由 kubelet 执行）：</p>
+<ol>
+<li>生存探测（Liveness Probe）<br>用于检查容器是否在运行中，如果容器无法响应，则 Kubernetes 会将其标记为失败，并尝试重启该容器。例如，可以通过执行某个特定的命令或者发送一个 HTTP 请求来进行生存探测。<br>一般会一直伴随主容器的运行，支持的方式可以是 TCP、HTTP、命令等。</li>
+<li>就绪探测（Readiness Probe）<br>用于检查容器是否已经准备好接受流量，如果容器还没有完全启动或者正在加载数据，则 Kubernetes 不会将流量路由到该容器。这有助于确保应用程序不会接收到无法处理的请求。例如，可以通过监视某个特定的端口或者等待某个文件创建完成来进行就绪探测。<br>一般发生在 init 后主容器的开始阶段。</li>
+</ol>
+<p>有些时候容器虽然 Running 但是可能进程还没准备好对外服务，或者进程出现了假死；这种情况探测技术就变的非常有用。</p>
+<h2 id="StatefulSet"><a href="#StatefulSet" class="headerlink" title="StatefulSet"></a>StatefulSet</h2><p>StatefulSet 主要用于部署有状态服务，需要搭配 HeadLess 和 PVC 使用，可能需要先了解一下这两部分知识：</p>
+<ul>
+<li>稳定的持久化存储，PVC 实现<br>举例来说，当 StatefulSet 中的一个 Pod 被删除后，根据副本数量会重新创建，新的 Pod 的 IP 与被删的肯定是不一致的，但是由于 Pod 仍然具有相同的网络标识符，因此会尝试重用之前分配给该 Pod 的 PVC，所以新 Pod 与 PVC 的绑定关系不会丢失（每一个副本都有自己的 PVC）。</li>
+<li>稳定的网络标识，<em>HeadLess</em>（SVC 的一种）实现（clusterIP: None），在下面 SVC 中理解。<br>DNS 规则一般是：<code>&lt;pod-name&gt;.&lt;headless-service-name&gt;.&lt;namespace&gt;.svc.cluster.local</code>，当服务处于相同的命名空间下时，可以省略写为：<code>&lt;pod-name&gt;.&lt;headless-service-name&gt;</code><br>如果查询 <code>&lt;headless-service-name&gt;.&lt;namespace&gt;.svc.cluster.local</code> 的 DNS 记录，将会返回所有副本 Pod 节点的 IP。</li>
+<li>有序部署和回收，基于 Pause（init c），例如先启动 MySQL 再 Java</li>
+</ul>
+<p>在 StatefulSet 中，由于每个 Pod 都有自己独立的名称（例如 web-0、web-1 等），因此也需要为每个 Pod 分配一个唯一的 PVC。这样才能保证每个 Pod 都有自己独立的存储卷，并且可以在重启或迁移时保留其之前的数据。<br>通过 Headless Service 则可以将每个 Pod 映射到一个唯一的 DNS 记录中。这样，在调用应用程序时，就可以通过 DNS 解析来直接访问特定的 Pod，从而实现数据的有序访问。<br>在应用程序中，使用 Headless Service 的名称加上 Pod 的名称或索引编号等信息作为域名，来直接访问特定的 Pod。</p>
+<p>在创建 StatefulSet 资源清单时，可以直接使用模板（volumeClaimTemplate）来创建 PVC，当副本先被创建时，如果 PVC 还不存在， Kubernetes 控制面会为该副本自动创建一个 PVC。<br>当资源被删除时，可以使用 StatefulSetAutoDeletePVC 特性来自动删除 PVC，它有几种策略可选，默认与之前策略一致，删除时 PVC 不受影响。 </p>
+<p>但是目前来说，总有一些有状态服务不方便使用 StatefulSet 部署，甚至说不方便使用 K8s 部署，例如 MySQL，这里说的不方便不是不能，而是没有想象中的那么稳定；也不是说数据库服务就不行，例如 MongoDB 就可以很稳定的部署；这个具体分情况。</p>
+<h2 id="K8s组件与工具"><a href="#K8s组件与工具" class="headerlink" title="K8s组件与工具"></a>K8s组件与工具</h2><p>控制相关：</p>
+<ul>
+<li>kube-apiserver API 服务器<br>公开了 Kubernetes API</li>
+<li>etcd 键值数据库<br>可以作为保存 Kubernetes 所有集群数据的后台数据库，分布式、高可用。<br>相比 Redis，etcd 更适合分布式、强一致性、高可靠性的场景。例如服务发现、集群协调等场景。</li>
+<li>kube-scheduler<br>调度 Pod 到哪个节点运行</li>
+<li>kube-controller<br>集群控制器</li>
+<li>cloud-controller<br>与云服务商交互</li>
+</ul>
+<p>Node 相关（节点组件会在每个节点上运行，负责维护运行的 Pod 并提供 Kubernetes 运行环境）：</p>
+<ul>
+<li>kubelet<br>在集群中每个节点（node）上运行。 它保证容器（containers）都运行在 Pod 中，并确保处于运行的健康状态；kubelet 不会管理不是由 Kubernetes 创建的容器（自主式与控制器管理的）。</li>
+<li>kube-proxy<br>是 Node 上的运行的网络代理， 实现 Kubernetes 服务（Service） 概念的一部分。它维护节点上的一些网络规则， 这些网络规则会允许从集群内部或外部的网络会话与 Pod 进行网络通信。<br>如果操作系统提供了可用的数据包过滤层，则 kube-proxy 会通过它来实现网络规则。 否则，kube-proxy 仅做流量转发。</li>
+<li>Container Runtime<br>Kubernetes 支持许多容器运行环境，例如 containerd、 CRI-O 以及 Kubernetes CRI (容器运行环境接口) 的其他任何实现。</li>
+</ul>
+<p>其他工具：</p>
+<ul>
+<li>kubectl<br>Kubernetes 命令行工具 kubectl， 让你可以对 Kubernetes 集群运行命令。 你可以使用 kubectl 来部署应用、监测和管理集群资源以及查看日志。</li>
+<li>CoreDNS<br>可以让集群内（SVC）使用自定义域名来访问</li>
+<li>Ingress<br>官方默认 4 层负载均衡，它可以实现 7 层。</li>
+<li>Prometheus<br>集群监控能力</li>
+<li>ELK<br>日志接入、分析平台</li>
+<li>Federation<br>跨集群统一管理支持</li>
+</ul>
+<p>在命令行界面使用 Kubectl 创建和管理 Deployment。Kubectl 是使用 Kubernetes API 与集群进行交互的。</p>
+<h2 id="Service-SVC"><a href="#Service-SVC" class="headerlink" title="Service/SVC"></a>Service/SVC</h2><p>Service 是将运行在一个或一组 Pod 上的网络应用程序公开为网络服务的方法（或者说是用于暴露应用程序网络服务的对象类型）。Kubernetes 服务代理会自动将服务请求分发到正确的容器集，无论这个容器集会移到集群中的哪个位置，甚至可以被替换掉（Pod 销毁重建后 IP 会改变）。具有的特性：</p>
+<ul>
+<li>Service 通过 label 关联对应的 Pod</li>
+<li>Servcie 生命周期不跟 Pod 绑定，不会因为 Pod 重创改变 IP</li>
+<li>提供了负载均衡功能，自动转发流量到不同 Pod</li>
+<li>可对集群外部提供访问端口</li>
+<li>集群内部可通过服务名字访问</li>
+</ul>
+<p>Service 可以将应用程序的一个或多个副本绑定在一个虚拟 IP（ClusterIP）上，并为集群中的其他对象提供一个固定的 DNS 名称。Service 可以用来实现应用程序的负载均衡、服务发现和内部通信等功能。<br>Kubernetes 支持以下几种类型的 Service：</p>
+<ol>
+<li>ClusterIP：将 Service 暴露在集群内部，只能通过集群内部的 IP 地址访问，仅在集群内部可用（默认）。<br>适用于服务间通信，通常用于微服务架构中，例如 Web 后端和数据库之间的通信。可以避免服务重启后的 IP 变动的影响；</li>
+<li>NodePort：将 Service 暴露在每个节点上的固定端口上，可以通过<strong>节点</strong>的 IP 地址和端口号访问，内部也可以使用该 Service 的 DNS 名称来访问集群内的服务，有一定的 LB 效果。<br>适用于需要将 Service 暴露给集群外部的情况。</li>
+<li>LoadBalancer：将 Service 暴露在外部负载均衡器上，可以通过负载均衡器的 IP 地址和端口号访问，一般需要花钱购买云服务商提供的 LB 服务。</li>
+<li>ExternalName：将 Service 作为一个 DNS 名称暴露出去，可以通过该名称访问 Service，相当于是一条内部的 CNAME 记录。<br>如果正在使用外部系统作为后端服务，并希望在 Kubernetes 中将其命名为 Service，可以使用 ExternalName 来实现。</li>
+</ol>
+<p>Service 可以与 Deployment、StatefulSet、DaemonSet 等控制器对象类型配合使用，以实现应用程序的水平扩展和负载均衡等功能。</p>
+<p>Service 的 ClusterIP 地址是由 kube-proxy 组件负责维护和更新的。kube-proxy 主要有三种模式：userspace、iptables 和 ipvs。不同的模式实现方式不同，但其基本原理都相同，都是通过监听 Kubernetes API Server 发送的事件来实现 Service IP 地址的自动更新。<br>主要用到的就是两种，目前最新版本都推荐使用 IPVS；</p>
+<ul>
+<li>iptables<br>kube-proxy 组件使用 iptables 规则来实现 Service 的负载均衡和 IP 地址转发。在该模式下，kube-proxy 会监控 Kubernetes API Server 发送的事件，并根据事件信息生成或更新相应的 iptables 规则。这些规则可以将请求转发到正确的后端 Pod，并保证源 IP 地址不变。<br>客户端访问 SVC，通过 iptables 路由到具体 pod。</li>
+<li>ipvs<br>kube-proxy 组件使用 Linux 内核中的 IPVS（IP Virtual Server）模块来实现 Service 的负载均衡和 IP 地址转发。与 iptables 不同，ipvs 可以快速处理大量的网络连接，并支持多种负载均衡算法和自动故障检测与恢复机制。在该模式下，kube-proxy 会监控 Kubernetes API Server 发送的事件，并根据事件信息生成或更新相应的 ipvs 规则。</li>
+</ul>
+<p>总之就是它们原理上差不多，但是 ipvs 具有更好的性能。这里有个点可能不太好理解，就是 SVC 也要使用 Node 节点的 IP 访问，我直接暴露 pod 的端口不就行了吗？</p>
+<p>首先，集群内部的情况下，更普遍地会使用 Service 名称来访问 Service，而不是直接使用其 IP 地址。当创建一个 Service 后，Kubernetes 会自动为该 Service 分配一个 DNS 名称，并将该名称与 Service 的 ClusterIP 绑定。<br>例如使用 NodePort 方式时，会在每个节点上分配一个端口，并将<strong>该端口映射到 Service 的 ClusterIP 上</strong>。ClusterIP 是一个虚拟 IP 地址，这个 ClusterIP 不属于任何一个节点，而是由 Kubernetes 控制平面管理。<br>外部客户端也可以使用任何的节点 IP 和暴露的端口进行访问，请求会根据其端口对应的 Service 配置找到与该服务关联的 ClusterIP 地址，并将客户端的请求路由到该地址。<br>一旦请求到达 Service 后，Kubernetes 将使用负载均衡算法（例如 Round Robin），将请求路由到后面运行的一组 Pod 上。这些 Pod 可以运行任何位置，包括不同节点上的多个 Pod。</p>
+<hr>
+<p>Headless Service 是一种特殊的 Service 类型，它不会为 Service 分配 Cluster IP（<code>clusterIP: None</code>），而是直接返回后端 Pod 的 IP 地址列表。换句话说，Headless Service <strong>不会负责转发请求到具体的 Pod</strong>。一个非常有用的作用是 StatefulSet。<br>它主要用于 DNS 解析和集群内服务的发现。例如，当用户使用 DNS 名称来访问 Service 时，Kubernetes 可以通过 Headless Service 将 DNS 请求解析成与 Service 相关联的所有 Pod 的 IP 地址列表，并返回给用户。这样，用户就可以直接与 Pod 进行通信，<strong>而无需经过 Service 和其背后的负载均衡器</strong>。<br>由于 Headless Service <strong>不涉及负载均衡和 IP 地址转发</strong>，因此它的性能和稳定性通常比普通 Service 更高。此外，Headless Service 还支持 Kubernetes 中的服务发现机制，能够自动监测和更新后端 Pod 的状态变化，确保始终返回最新的 IP 地址列表。因为如果直接暴露了 Pod 的 IP 地址，因此必须提前考虑好网络安全和访问控制等问题。</p>
+<h2 id="Ingress"><a href="#Ingress" class="headerlink" title="Ingress"></a>Ingress</h2><p>Ingress 是一种 API 对象，<strong>用于将外部流量路由到集群内的 Service 上</strong>。它提供了一种灵活、统一和扩展性强的方式来管理 HTTP 和 HTTPS 流量，并支持多种负载均衡算法、路径匹配规则和 TLS 加密等功能。</p>
+<p>使用 Ingress 能够方便地管理集群中的<strong>多个 Service</strong>，并将其暴露给外部客户端。Ingress 可以实现以下功能：</p>
+<ol>
+<li>路径匹配：可以根据请求的 URL 路径将流量路由到不同的后端 Service 上。</li>
+<li>主机名匹配：可以根据请求的主机名（即域名）将流量路由到不同的后端 Service 上。</li>
+<li>TLS 加密：可以对 Ingress 进行 TLS 加密，保护客户端与服务端之间的通信安全。</li>
+<li>多种负载均衡算法：可以根据需求选择不同的负载均衡算法，如轮询、最小连接数等。</li>
+</ol>
+<p>需要注意的是，要使用 Ingress 需要满足以下条件：</p>
+<ol>
+<li>集群中必须存在一个符合规范的 Ingress Controller（如 Nginx、Traefik、Haproxy 等），用于监听 Ingress 对象的变化并更新对应的负载均衡器或反向代理。</li>
+<li>需要为每个 Ingress 配置一个规则，指定其路径、主机名、后端 Service （其类型设置为 <code>NodePort</code> 或 <code>LoadBalancer</code>）等相关信息。</li>
+<li>如果需要对 Ingress 进行 TLS 加密，则需要先创建一个 Kubernetes Secret，用于存储证书和私钥等敏感信息，并将其与 Ingress 绑定。</li>
+</ol>
+<p>使用最多的还是 Ingress-Nginx，本质来说其实就是启动了一个 Nginx，只不过不需要我们去写 NG 的配置文件而使用 k8s yml 自动完成了。<br>Ingress 可以帮我们实现七层代理，原本只支持到四层代理。</p>
+<blockquote>
+<p>七层代理和四层代理都是计算机网络中常用的代理类型，它们在不同的 OSI 模型层次上工作并提供了不同的功能。</p>
+<ul>
+<li>四层代理（传输层代理）：工作在 OSI 模型的传输层，主要负责对网络连接进行管理和控制。四层代理能够根据源 IP 地址、目标 IP 地址、源端口号和目标端口号等信息来对传输的数据进行转发，以达到负载均衡、流量控制和安全过滤等目的。</li>
+<li>七层代理（应用层代理）：工作在 OSI 模型的应用层，具有更高的可扩展性和灵活性。七层代理能够深入了解应用程序的协议、数据格式和语义，并对传输的数据进行精细化处理。七层代理可以根据应用程序的特殊需求，对数据进行修改、重写和过滤，以实现更高级别的功能，如内容缓存、反向代理、Web 加速和应用层防火墙等。</li>
+</ul>
+<p>四层代理更依赖于基本的网络传输协议，而七层代理则更加注重应用程序的细节和语义。<br>简单说就是四层代理更加底层，速度快延迟低，占用资源也少，而七层具有更高的灵活性。</p>
+</blockquote>
+<p>Ingress 与 SVC 之间可能会有点难以理解，尤其是跟 SVC 的 NodePort 对比，简单说 Ingress 是已经暴露了一个 IP 和端口，终端用户可以直接通过 Ingress 暴露的 IP 进行访问。此时，后面运行的 Service 的 type 类型是否为 ClusterIP 或 NodePort 在某种程度上已经不再重要了。</p>
+<p>不过在同等条件下，NodePort 类型的 Service 可能会比 ClusterIP 类型的 Service 略微快一些；<br>NodePort 类型的 Service 可能会更加不可靠一些，因为它需要暴露节点上的端口，可能会遇到端口号冲突、网络分区等问题。</p>
+<h2 id="存储"><a href="#存储" class="headerlink" title="存储"></a>存储</h2><h3 id="ConfigMap"><a href="#ConfigMap" class="headerlink" title="ConfigMap"></a>ConfigMap</h3><p>ConfigMap 是一种用于存储配置数据的 API 对象，它可以将配置数据从 Pod 代码中分离出来，实现了配置和代码的分离，提高了应用程序的可移植性和可维护性。<br>ConfigMap 可以是一个文件或者文件夹，或者是硬编码到 YAML 中；使用上可以通过环境变量或者挂载 Volume 的方式；<br>需要注意的是，ConfigMap 存储的数据为纯文本格式，因此不适合存储大型二进制文件。</p>
+<h3 id="Secret"><a href="#Secret" class="headerlink" title="Secret"></a>Secret</h3><p>Secret 是一种用于存储敏感信息的 API 对象，例如密码、证书等。Secret 可以对数据进行加密处理，并提供各种不同类型的加密方式和安全性保障。<br>Kubernetes 中的 Secret 存储常用的三种类型：</p>
+<ol>
+<li>Opaque：Opaque 类型的 Secret 是最通用的类型，它可以存储任意格式的数据。Opaque Secret 中的数据将会被编码为 <strong>base64 格式，但并未进行加密</strong>。</li>
+<li>Service Account：Service Account 类型的 Secret 主要用于身份验证和授权，包含了一个或多个令牌，用于验证 Pod 中的容器是否具有访问其他资源的权限。</li>
+<li>docker-registry：用来存储 Docker 仓库的认证信息和配置信息，并在容器中使用该 Secret 来进行身份验证和授权操作。<br>在资源清单中使用 imagePullSecrets 来在 pull 镜像时进行认证。</li>
+</ol>
+<p>Kubernetes 中的 Service Account 只能用于访问 Kubernetes API 或其他与 Kubernetes 集群相关的资源和对象，并且不适用于外部服务或资源的访问。<br>Service Account 通常由应用程序自动使用，并由 Kubernetes 自动处理。如果声明了 Service Account 会自动挂载到 <code>/run/secrets/kubernetes.io/serviceaccount</code>，部分发行版或者老的 Linux 会在 <code>/var/run</code> 下。</p>
+<p>Opaque 在使用时，不管是环境变量还是挂载，都会自动解码，当然存储的时候也要求值必须是 base64.</p>
+<h3 id="Volume"><a href="#Volume" class="headerlink" title="Volume"></a>Volume</h3><p>Volume 是一种用于持久化和共享数据的抽象概念。Volume 可以将不同类型的存储介质（例如本地磁盘、网络存储或云存储等）封装为统一的接口，并在 Pod 中使用。<br>Volume 一些常见的类型：</p>
+<ul>
+<li>emptyDir<br>emptyDir 是一种<strong>临时性</strong>的 Volume，用于在<strong>单个 Pod 的多个容器之间</strong>共享数据。emptyDir 将数据存储在 Pod 所在的节点上，并在 <strong>Pod 被删除或重新调度时自动清理</strong>。<br>需要注意的是，当 Pod 中的容器崩溃尝试重启/新建时 Volume 不会清除数据。</li>
+<li>hostPath<br>hostPath 是一种将主机节点上的文件或目录作为 Volume 挂载到 Pod 中的方法。hostPath 可以让 Pod 访问主机节点上的文件系统（或者主机访问 Pod 中的文件），但也可能导致安全性问题和资源争用。</li>
+</ul>
+<p>其他的还有很多类型，因为用的不多就不贴了。</p>
+<h3 id="PV-PVC"><a href="#PV-PVC" class="headerlink" title="PV/PVC"></a>PV/PVC</h3><p>PersistentVolume（PV）是一种用于持久化存储数据的资源对象。PV 可以将不同类型和容量的存储介质（例如本地磁盘、网络存储或云存储等）封装为统一的接口，并在整个 Kubernetes 集群中使用。<br>区别与 Volume 的几个特点：</p>
+<ul>
+<li>范围<br>Volume 是一个容器级别的概念，用于将数据持久化到 Pod 中。而 PV 是一个集群级别的概念，用于将数据持久化到整个 Kubernetes 集群中。</li>
+<li>生命周期<br>Volume 的生命周期与 Pod 相关联，当 Pod 被删除或重启时，相关的 Volume 也会被删除或重新创建。而 PV 则独立于 Pod 存在，并且可以在多个 Pod 之间共享和复用。</li>
+<li>管理方式<br>Volume 可以在 Pod 中直接定义和管理，而 PV 则需要通过 PersistentVolume 和 PersistentVolumeClaim 对象进行定义和管理。</li>
+<li>耦合性<br>PV 将存储介质与 Pod 解耦，使得 Pod 可以从实际存储细节中隔离出来。这使得存储介质可以轻松地更换和升级，而无需对 Pod 进行修改。<br>同理，当 Pod 删除时，PVC 并不会被删除，依然可以为其他 Pod 提供服务。</li>
+</ul>
+<p>而 PersistentVolumeClaim（PVC）则可以理解为存储资源的使用者，它定义了<strong>对 PV 的访问要求</strong>，例如存储类型、访问模式和容量等信息。PVC 可以请求 Kubernetes 动态分配或静态绑定一个 PV，并将其挂载到 Pod 中，以实现数据的持久化和共享。</p>
+<p>PVC 概念上与 Pod 类似。 Pod 会耗用节点资源，而 PVC 申领会耗用 PV 资源。Pod 可以请求特定数量的资源（CPU 和内存）；同样 PVC 申领也可以请求特定的大小和访问模式 （例如，可以要求 PV 卷能够以 ReadWriteOnce、ReadOnlyMany 或 ReadWriteMany 模式之一来挂载）。</p>
+<p>当 PVC 请求一个 PV 时，Kubernetes 会根据 PVC 的要求，在可用的 PV 池中寻找匹配的 PV。如果找到多个匹配的 PV，则 Kubernetes 会按照一定的策略进行选择和绑定。一旦绑定成功，PVC 和 PV 就形成了一种类似于 “占位符” 的关系。当 PVC 被删除时，它会释放与之关联的 PV。<br>一个 PV 可以被多个 PVC 绑定和使用，但每个 PVC 只能绑定一个 PV。如果多个 PVC 请求同一个 PV，则 Kubernetes 会按照先来先服务的原则进行分配，直到 PV 的容量用尽为止。</p>
+<hr>
+<p>根据 PV 的创建方式可分为两种：</p>
+<ol>
+<li>静态PV<br>手动分配的方式，它要求管理员提前创建好一定数量的 PV，并将其存储属性和访问模式等信息进行配置。<br>静态 PV 的优点是稳定可靠，但缺点是不够灵活，难以应对动态变化的需求。</li>
+<li>动态PV<br>自动分配的方式，它利用 Kubernetes 动态资源管理特性，根据 PVC 对 PV 的请求，动态地创建、绑定和管理 PV。<br>动态 PV 的优点是灵活方便，可以动态适应不同的需求，但缺点是可能会产生较大的管理负担。</li>
+</ol>
+<p>动态 PV 一般是配合云计算服务来使用的，主要是价格昂贵。</p>
+<hr>
+<p>每个 PersistentVolume（PV）都有一个访问模式（Access Mode），用于定义 Pod 如何访问 PV 中的数据。Kubernetes 支持以下三种访问模式：</p>
+<ol>
+<li>ReadWriteOnce（RWO）：<br>只允许单个节点以读写方式挂载 PV。这意味着同一时间内只能有一个 Pod 访问该 PV，并且只能将其挂载到同一个节点上。</li>
+<li>ReadOnlyMany（ROX）：<br>允许多个节点以只读方式挂载 PV。这意味着多个 Pod 可以同时访问该 PV，并且可以将其挂载到多个节点上，但不能进行写操作。</li>
+<li>ReadWriteMany（RWX）：<br>允许多个节点以读写方式挂载 PV。这意味着多个 Pod 可以同时访问该 PV，并且可以将其挂载到多个节点上，也可以进行读写操作。</li>
+</ol>
+<hr>
+<p>当 PersistentVolume（PV）上的数据不再需要时（当其被从申领中释放时如何处理该数据卷），可以使用回收策略对 PV 进行清理和释放。Kubernetes 提供了以下三种回收策略：</p>
+<ol>
+<li>Retain（保留）：<br>指定在被释放后保留其数据。这意味着 PV 中的数据不会被删除，并且管理员需要手动清理它们。通常用于需要手动备份或迁移数据的场景。<br>例如当 PVC 被删除时，由于卷上仍然存在这前一申领人的数据，该卷还不能用于其他申领。 </li>
+<li>Delete（删除）：<br>删除 PVC 时也会将 PV 对象从 Kubernetes 中移除，同时也会从外部基础设施（如 AWS EBS、GCE PD、Azure Disk 或 Cinder 卷）中移除所关联的存储资产。</li>
+<li>Recycle（回收）：<br>在被释放后重新格式化存储介质并清除所有数据。<br>在新版本中，回收策略 <code>Recycle</code> 已被废弃。取而代之的建议方案是使用动态制备。</li>
+</ol>
+<p><strong>PV 的回收策略是在 PersistentVolumeClaim（PVC）被删除后触发的</strong>。具体而言，当一个 PVC 被删除时，Kubernetes 会检查其绑定的 PV 是否仍然被其他 PVC 使用，如果没有，则会按照该 PV 的回收策略进行清理和释放。</p>
+<hr>
+<p>使用 PV 时，每个卷会处于以下阶段（Phase）之一：</p>
+<ul>
+<li>Available（可用）– 卷是一个空闲资源，尚未绑定到任何申领；</li>
+<li>Bound（已绑定）– 该卷已经绑定到某申领（PVC）；</li>
+<li>Released（已释放）– 所绑定的申领已被删除，但是资源尚未被集群回收；也就是对应的 PVC 被删除。</li>
+<li>Failed（失败）– 卷的自动回收操作失败。</li>
+</ul>
+<p>区别于 PVC 的状态，当查看 PVC 状态时，也会列出绑定的 PV 的状态，而 PVC 的状态一般是：Pending/Bound/Lost。</p>
+<p>对于 StatefulSet 当 Pod 重建后依然有相同的网络标识符，可以绑定之前的 PVC 保证数据不会丢失（每一个副本会有单独的 PVC）；对于在 Deployment 资源清单中配置的副本和 PVC，所有 Pod 会共享 PVC，也不需要考虑新建还是更新的了（猜测，未证实）。</p>
+<h2 id="网络策略"><a href="#网络策略" class="headerlink" title="网络策略"></a>网络策略</h2><p>在 Kubernetes 中，有两种主要的网络模型：Overlay 网络和基于主机的网络。</p>
+<ol>
+<li>Overlay 网络：Overlay 网络是一种虚拟网络，它在物理网络之上创建一个逻辑网络，用于容器之间的通信。Overlay 网络通常使用隧道技术（如 VXLAN、GRE、IPsec 等）将容器数据包封装在物理网络的数据包中传输。Kubernetes 中的 Flannel、Calico（更推荐吧）、Weave Net 等网络插件都是基于 Overlay 网络实现的。</li>
+<li>基于主机的网络：基于主机的网络是一种直接将容器连接到主机网络上的网络模型，容器与主机之间共享同一个网络命名空间。这种网络模型通常使用 Linux Bridge 或者直接使用主机网络接口来实现。Kubernetes 中的 kube-proxy 就是基于主机的网络模型实现的。</li>
+</ol>
+<p>Flannel 是一个用于容器网络的开源项目，旨在为 Kubernetes 集群提供简单、快速、可靠的网络连接。Flannel 的主要作用是将容器连接到同一网络中，并允许它们之间进行通信。Flannel 通过在每个节点上创建一个虚拟网络（VXLAN 或 UDP），将容器的 IP 地址映射到集群中的其他节点上。这种方式可以实现跨节点的容器通信，同时<strong>保证容器的 IP 地址在整个集群中唯一</strong>。<br>对于实现的原理，简单说就是维护一个路由表（使用 ETCD），因为每个 Node 都有 Flanneld，利用路由表可以共享 IP 对应信息，在进行集群初始化的时候需要安装一下，可以在 kubeadm 的默认模板中事先配置好。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">wget https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml</span><br><span class="line"><span class="comment"># 修改配置文件，例如 - --iface=eth0</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装</span></span><br><span class="line">kubectl apply -f kube-flannel.yml</span><br><span class="line"><span class="comment"># 查看 pod</span></span><br><span class="line">kubectl get pods --all-namespaces</span><br></pre></td></tr></table></figure>
+<p>以上，可以在 kubeadm 初始化完成后使用 kubectl 快速安装。</p>
+<h2 id="集群调度"><a href="#集群调度" class="headerlink" title="集群调度"></a>集群调度</h2><p>在 Kubernetes 中，调度 是指将 Pod 放置到合适的节点上，以便对应节点上的 Kubelet 能够运行这些 Pod。默认的调度器就是 kube-scheduler。<br>调度过程一般可划分为两个阶段，过滤和打分；<br>过滤阶段会将所有满足 Pod 调度需求的节点选出来。 例如，PodFitsResources 过滤函数会检查候选节点的可用资源能否满足 Pod 的资源请求。<br>在打分阶段，调度器会为 Pod 从所有可调度节点中选取一个最合适的节点。 根据当前启用的打分规则，调度器会给每一个可调度节点进行打分。最后会将 Pod 调度到得分最高的节点上。如果存在多个得分最高的节点，kube-scheduler 会从中随机选取一个。<br>这里会有一些可选的调度策略，例如 CPU 或者 内存占用最低的优先。</p>
+<p><code>podspec.nodename</code> 是 PodSpec 的另一个属性，用于指定 Pod 所部署的节点名称。当 Pod 的 <code>podspec.nodename</code> 属性被设置时，Kubernetes 调度器将不会再考虑其他节点来调度该 Pod，并且会直接将该 Pod 分配给指定的节点上运行；这种方式称为静态 Pod 调度，当然也可以使用标签选择。</p>
+<p>节点亲和性（Node Affinity）是指将 Pod 调度到与其相关的节点上的能力。通俗来说，它可以让我们通过一些限制条件（如硬件配置、软件环境等）来控制 Pod 应该部署在哪些节点上；其中又分为软策略和硬策略，也就是尽量满足和必须满足。</p>
+<p>污点（Taint）是一种标记，用于指示节点上存在特定的限制条件，这些条件会影响 Pod 在该节点上的调度。与节点亲和性（Node Affinity）相反，污点可以使节点更具有选择性，以便根据实际需求来控制 Pod 不能被调度到某些节点上。<br>容忍度（Toleration） 是应用于 Pod 上的。容忍度允许调度器调度带有对应污点的 Pod。 容忍度允许调度但并不保证调度：作为其功能的一部分， 调度器也会评估其他参数。<br>污点和容忍度（Toleration）相互配合，可以用来避免 Pod 被分配到不合适的节点上。 每个节点上都可以应用一个或多个污点，这表示对于那些不能容忍这些污点的 Pod， 是不会被该节点接受的。<br>我们建立的 Pod 不会运行在 Master 节点就是使用了这个特性打了一个 NoSchedule。</p>
+<h2 id="K3s"><a href="#K3s" class="headerlink" title="K3s"></a>K3s</h2><p>Rancher Labs 是业界领先的容器软件提供商，其旗舰产品 Rancher 是一款开源的企业级 Kubernetes 管理平台，极为出色地管理和安装 Kubernetes 集群。</p>
+<p>k3s 将安装 Kubernetes 所需的一切打包进仅有 60MB 大小的二进制文件中，并且完全实现了 Kubernetes API。为了减少运行 Kubernetes 所需的内存，Rancher 删除了很多不必要的驱动程序，并用附加组件对其进行替换。K3s 仅需要 kernel 和 cgroup 挂载。<br>k3s 是一款完全通过 CNCF 认证的 Kubernetes 发行版，这意味着你可以编写 YAML 来对完整版的 Kubernetes 进行操作，并且它们也将适用于 k3s 集群。<br>由于它只需要极低的资源就可以运行，因此它能够在任何 512MB RAM 以上的设备上运行集群，换言之，我们可以让 pod 在 master 和节点上运行。专为物联网及边缘计算设计。</p>
+<p>所以，对于日常开发用，K3s 是个比 Minikube 更好的选择，介于 Minikube 和 K8s 之间的最优解。如果你处于边缘计算等小型部署的场景或仅仅需要部署一些非核心集群进行开发/测试，那么选择 k3s 则是性价比更高的选择。</p>
+<p>与 K8s 对比：</p>
+<ul>
+<li>移除过时的功能、Alpha 功能、非默认功能，这些功能在大多数 Kubernetes 集群中已不可用。</li>
+<li><p>删除内置插件(比如云供应商插件和存储插件)，可用外部插件程序替换。K3s 在默认状态下只会启动除自身进程之外的两个应用：coredns 和 traefik。</p>
+</li>
+<li><p>添加 SQLite3 作为默认的数据存储。etcd3 仍然可用，但并非默认项。</p>
+</li>
+<li><p>默认执行容器从 docker 换成了 containerd。</p>
+</li>
+<li><p>封装在简单的启动程序中，该启动程序处理很多复杂的 TLS 和选项。</p>
+</li>
+<li>内置了 local storage provider、service load balancer、helm controller、Traefik ingress controller，开箱即用。</li>
+<li>所有 Kubernetes 控制平面组件如 api-server、scheduler 等封装成为一个精简二进制程序，控制平面只需要一个进程即可运行。</li>
+</ul>
+<p>综上，一般来说，K3s 基本也满足大部分需求了。k3s 官方准备了一键安装脚步，部署非常方便：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 主/Server 节点</span></span><br><span class="line">curl -sfL https://get.k3s.io | sh -</span><br><span class="line"></span><br><span class="line"><span class="comment"># node/Agent 节点</span></span><br><span class="line">curl -sfL https://get.k3s.io | K3S_URL=https://myserver:6443 K3S_TOKEN=mynodetoken sh -</span><br></pre></td></tr></table></figure>
+<p>接着就可以部署 Rancher 进行多集群管理了，最好找一台独立的机器，支持 Helm 或者 Docker 的方式进行部署，操作也非常简单，一行命令搞定，然后根据引导界面选择新建集群还是导入已有集群，也就是执行几行命令的事，因为 K8s 已经不支持 dockershim，之前都是用 docker 作为容器运行时，目前新版的 k3s 已经切换到 containerd，当然也可以通过 cri-dockerd 继续使用 Docker。</p>
+<p>而另一个 Rancher 出品的 k8s 集群部署工具 RKE 也挺不错的，功能类似 kubeadm 都主要用来快速初始化集群。</p>
+<blockquote>
+<p>RKE（Rancher Kubernetes Engine）是经过认证的 Kubernetes 发行版，也是用于创建和管理 Kubernetes 集群的 CLI 工具和库。<br>RKE 是一款经过 CNCF 认证的开源 Kubernetes 发行版，可以在 Docker 容器内运行。它通过删除大部分主机依赖项，并为部署、升级和回滚提供一个稳定的路径，从而解决了 Kubernetes 最常见的安装复杂性问题。</p>
+<p>RKE2，也称为 RKE Government，是 Rancher 的下一代 Kubernetes 发行版。RKE2 完美结合了 1.x 版本的 RKE（以下简称 RKE1）和 K3s。<br>重要的是，<strong>RKE2 不像 RKE1 一样依赖 Docker</strong>。RKE1 使用 Docker 来部署和管理 control plane 组件以及 Kubernetes 的容器运行时。RKE2 将 control plane 组件作为由 kubelet 管理的静态 pod 启动。嵌入式容器运行时是 containerd。</p>
+</blockquote>
+<p>无论安装哪一个，安装的时候一定要注意版本对应，可以从<a href="https://www.suse.com/suse-rancher/support-matrix/all-supported-versions/rancher-v2-7-3/" target="_blank" rel="noopener">这里</a>查阅版本的支持范围。</p>
+<ul>
+<li><a href="https://docs.k3s.io/zh/" target="_blank" rel="noopener">k3s 文档</a></li>
+<li><a href="https://docs.rancher.cn/docs/rke/installation/_index/" target="_blank" rel="noopener">RKE 文档</a></li>
+<li><a href="https://docs.rke2.io/zh/" target="_blank" rel="noopener">RKE2 文档</a></li>
+<li><a href="https://ranchermanager.docs.rancher.com/zh/pages-for-subheaders/installation-requirements" target="_blank" rel="noopener">Rancher 文档</a></li>
+</ul>
+<p>不得不说，Rancher 真是把 k8s 弄到了开箱即用，生产环境下也完全不是问题，并且文档有中文，赞。<br>爱折腾的可以尝试使用 <a href="https://docs.rancherdesktop.io/zh/" target="_blank" rel="noopener">Rancher Desktop</a> 来代替开发机的 Docker，它内置 k3s 应该表现还是可以的。</p>
+<h2 id="常用命令整理"><a href="#常用命令整理" class="headerlink" title="常用命令整理"></a>常用命令整理</h2><h3 id="minikube"><a href="#minikube" class="headerlink" title="minikube"></a>minikube</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 启动集群</span></span><br><span class="line">minikube start</span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看节点。kubectl 是一个用来跟 K8S 集群进行交互的命令行工具</span></span><br><span class="line">kubectl get node</span><br><span class="line"><span class="meta">#</span><span class="bash"> 停止集群</span></span><br><span class="line">minikube stop</span><br><span class="line"><span class="meta">#</span><span class="bash"> 清空集群</span></span><br><span class="line">minikube delete --all</span><br><span class="line"><span class="meta">#</span><span class="bash"> 安装集群可视化 Web UI 控制台</span></span><br><span class="line">minikube dashboard</span><br></pre></td></tr></table></figure>
+<h3 id="kubectl"><a href="#kubectl" class="headerlink" title="kubectl"></a>kubectl</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 部署应用，使用 create 创建如果存在会返回失败</span></span><br><span class="line">kubectl apply -f app.yaml</span><br><span class="line"><span class="meta">#</span><span class="bash"> 快速创建一个 pod，1.18 后是使用 Deployment 来创建的</span></span><br><span class="line">kubectl run mypod --image=myimage</span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看 deployment，rs 也一样</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> get 可以跟 pod/deployment/svc/rs</span></span><br><span class="line">kubectl get deployment</span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看 pod 详细信息</span></span><br><span class="line">kubectl get pod -o wide</span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看系统命名空间的 pod，默认是 default</span></span><br><span class="line">kubectl get pod -n kube-system</span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看 pod 详情</span></span><br><span class="line">kubectl describe pod pod-name</span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看 <span class="built_in">log</span></span></span><br><span class="line">kubectl logs pod-name</span><br><span class="line"><span class="meta">#</span><span class="bash"> 进入 Pod 容器终端， -c container-name 可以指定进入哪个容器。</span></span><br><span class="line">kubectl exec -it pod-name -- bash</span><br><span class="line"><span class="meta">#</span><span class="bash"> 伸缩扩展副本</span></span><br><span class="line">kubectl scale deployment test-k8s --replicas=5</span><br><span class="line"><span class="meta">#</span><span class="bash"> 把集群内端口映射到节点</span></span><br><span class="line">kubectl port-forward pod-name 8090:8080</span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看历史</span></span><br><span class="line">kubectl rollout history deployment test-k8s</span><br><span class="line"><span class="meta">#</span><span class="bash"> 回到上个版本</span></span><br><span class="line">kubectl rollout undo deployment test-k8s</span><br><span class="line"><span class="meta">#</span><span class="bash"> 回到指定版本</span></span><br><span class="line">kubectl rollout undo deployment test-k8s --to-revision=2</span><br><span class="line"><span class="meta">#</span><span class="bash"> 删除部署</span></span><br><span class="line">kubectl delete deployment test-k8s</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看全部</span></span><br><span class="line">kubectl get all</span><br><span class="line"><span class="meta">#</span><span class="bash"> 重新部署</span></span><br><span class="line">kubectl rollout restart deployment test-k8s</span><br><span class="line"><span class="meta">#</span><span class="bash"> 命令修改镜像，--record 表示把这个命令记录到操作历史中</span></span><br><span class="line">kubectl set image deployment test-k8s test-k8s=ccr.ccs.tencentyun.com/k8s-tutorial/test-k8s:v2-with-error --record</span><br><span class="line"><span class="meta">#</span><span class="bash"> 暂停运行，暂停后，对 deployment 的修改不会立刻生效，恢复后才应用设置</span></span><br><span class="line">kubectl rollout pause deployment test-k8s</span><br><span class="line"><span class="meta">#</span><span class="bash"> 恢复</span></span><br><span class="line">kubectl rollout resume deployment test-k8s</span><br><span class="line"><span class="meta">#</span><span class="bash"> 输出到文件</span></span><br><span class="line">kubectl get deployment test-k8s -o yaml &gt;&gt; app2.yaml</span><br><span class="line"><span class="meta">#</span><span class="bash"> 删除全部资源</span></span><br><span class="line">kubectl delete all --all</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 将一个已有的 Kubernetes 资源对象暴露为一个新的 Service</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 将名为 myapp 的 Deployment 暴露为一个新的 LoadBalancer 类型的 Service</span></span><br><span class="line">kubectl expose deployment myapp --type=LoadBalancer --port=80 --target-port=8080</span><br><span class="line">kubectl get svc</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 修改 SVC 网络类型</span></span><br><span class="line">kubectl edit svc xxxx</span><br></pre></td></tr></table></figure>
+<p>更多可以直接问 ChatGPT。</p>
+<h2 id="资源清单"><a href="#资源清单" class="headerlink" title="资源清单"></a>资源清单</h2><p>在 Kubernetes 中，资源清单（Resource Manifest）是一个包含 Kubernetes 对象定义的 YAML 文件。它描述了在 Kubernetes 集群中创建、配置或管理的任何一种对象，例如 Pod、Service、Deployment、ConfigMap 等。通常可以与 Kubectl 命令一起使用，例如：<code>kubectl apply -f deployment.yaml</code></p>
+<p>资源分类：</p>
+<ul>
+<li>命名空间级别<br>即：只在当前的命名空间有效，</li>
+<li>集群级别<br>全集群可用，可跨命名空间</li>
+<li>元数据型<br>类似 HPA 这种通过指标来进行操作。也可归属于上面两种</li>
+</ul>
+<p>资源清单中有一些属性属于必选：</p>
+<ol>
+<li>apiVersion<br>Kubernetes API 的版本号。可通过 <code>kubectl api-versions</code> 查询</li>
+<li>kind<br>资源对象的类型，例如 Pod、Service 或 Deployment。</li>
+<li>metadata<br>元数据，包括资源对象的名称和标签等信息。</li>
+<li>spec<br>资源对象的规格，包括容器设置、网络设置、存储设置以及其他相关信息。具体内容取决于资源对象的类型。</li>
+</ol>
+<p>对于 metadata 和 spec，下面细分了很多项，下面展示一个最简单的清单文件：</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line"><span class="attr">  name:</span> <span class="string">mypod</span></span><br><span class="line">  <span class="comment"># 标签易于管理</span></span><br><span class="line"><span class="attr">  labels:</span></span><br><span class="line"><span class="attr">    app:</span> <span class="string">myapp</span></span><br><span class="line"><span class="attr">    version:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line"><span class="attr">  containers:</span></span><br><span class="line"><span class="attr">  - name:</span> <span class="string">mycontainer</span></span><br><span class="line"><span class="attr">    image:</span> <span class="string">nginx</span></span><br></pre></td></tr></table></figure>
+<p>后续生成资源清单可以使用 Helm，然后配合 ChatGPT 进行微调。</p>
+<h2 id="补充：Cgroup"><a href="#补充：Cgroup" class="headerlink" title="补充：Cgroup"></a>补充：Cgroup</h2><p>Cgroup，全称 Control Group（控制组），是 Linux 系统内核提供的一个特性（Linux 2.6.24内核开始将 Cgroup 加入主线），主要用于限制和隔离一组进程对系统资源的使用，也就是做资源 QoS。可控制的资源主要包括 CPU、内存、block I/O、网络带宽等等。</p>
+<p>Cgroup 提供了一个原生接口并通过 cgroupfs 提供（从这句话我们可以知道 cgroupfs 就是 Cgroup 的一个接口的封装）。类似于 procfs 和 sysfs，是一种虚拟文件系统。并且 cgroupfs 是可以挂载的，默认情况下挂载在 <code>/sys/fs/cgroup</code> 目录。</p>
+<p>Systemd 也是对于 Cgroup 接口的一个封装。systemd 以 PID 的形式在系统启动的时候运行，并提供了一套系统管理守护程序、库和实用程序，用来控制、管理 Linux 计算机操作系统资源。</p>
+<p>相对来说 Systemd 更加简单，而且目前已经被主流 Linux 发行版所支持（Red Hat 系列、Debian 系列等），而且经过几个版本的迭代已经很成熟了，所以不管是 Docker 本身还是在 K8S 中建议使用 Systemd 来进行资源控制与管理。</p>
+<p>cgroupfs 是文件驱动修改，内核功能没有提供任何的系统调用接口，而是对 linux vfs 的一个实现，因此可以用类似文件系统的方式进行操作。</p>
+<p>systemd 封装了 cgroups 的软件也能让你通过它们定义的接口控制 cgroups 的内容，因此是通过接口调用驱动修改。</p>
+<h2 id="相关工具"><a href="#相关工具" class="headerlink" title="相关工具"></a>相关工具</h2><p>对于一些场景，我们需要使用代码来控制 K8s，这方面可以使用 Kubernetes API 来实现，官方提供了 REST API 的接口，也可以使用相关语言的 SDK 来实现。</p>
+<p>文档参考：<a href="https://kubernetes.io/zh-cn/docs/concepts/overview/kubernetes-api/" target="_blank" rel="noopener">https://kubernetes.io/zh-cn/docs/concepts/overview/kubernetes-api/</a></p>
+<p>集群之间都是通过证书来进行认证的，证书由 Master 进行签发，而 Pod 因为会频繁新建和销毁，签发证书的方式就不太合适，使用的是 Service Accounts 它被用于为 Pod 提供访问 Kubernetes API 和其他 Kubernetes 资源的标准方式。每个 Service Account 都会分配一个唯一的名称和一个对应的 Token，该 Token 可以被应用程序用来进行身份验证和授权。每个 Pod 都有一个默认的 Service Account，上面 Secret 中介绍过。</p>
+<p>关于鉴权，则推荐使用 RBAC 方式，它声明了四种 Kubernetes 对象：<strong>Role</strong>、<strong>ClusterRole</strong>、<strong>RoleBinding</strong> 和 <strong>ClusterRoleBinding</strong>。带有 Cluster 的则表示是集群级别的权限，否则需要指定是那个命名空间下的权限。<br>Role 通常与 Role Binding 结合使用，用于将指定的角色分配给特定的用户或服务账户。而 ClusterRole 则通常与 ClusterRoleBinding 结合使用，用于将角色分配给整个集群的用户或服务账户。<br>K8s 不提供用户管理，在证书签发时已经包含了这部分信息。</p>
+<p>可视化可以使用 <a href="https://artifacthub.io/packages/helm/k8s-dashboard/kubernetes-dashboard" target="_blank" rel="noopener">kubernetes-dashboard</a><br>监控可以用 Prometheus、Grafana</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://github.com/bfchengnuo/MyRecord/blob/master/%E7%AC%94%E8%AE%B0/TODO/Kubernetes%E5%85%A5%E9%97%A8.md" target="_blank" rel="noopener">K8s入门</a><br><a href="https://github.com/bfchengnuo/MyRecord/blob/master/笔记/云原生/Docker、Containerd、RunC扫盲.md" target="_blank" rel="noopener">Docker、Containerd、RunC扫盲</a><br><a href="http://docs.kubernetes.org.cn/683.html" target="_blank" rel="noopener">kubectl命令表</a><br><a href="https://kubernetes.io/zh-cn/docs/concepts/overview/components/" target="_blank" rel="noopener">Kubernetes组件</a><br><a href="https://juejin.cn/post/6955368911705473060" target="_blank" rel="noopener">k3s vs k8s vs k9s</a><br><a href="https://kubernetes.io/zh-cn/docs/reference/access-authn-authz/rbac/" target="_blank" rel="noopener">鉴权</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>喜欢就请我吃包辣条吧！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/image/pay/wx.jpg" alt="Kerronex WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/image/pay/zfb.jpg" alt="Kerronex Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Kerronex
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://sakanoy.com/2023/05/28/Kubernetes入门/" title="探索Kubernetes容器编排">https://sakanoy.com/2023/05/28/Kubernetes入门/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/k8s/" rel="tag"><i class="fa fa-tag"></i> k8s</a>
+          
+            <a href="/tags/Kubernetes/" rel="tag"><i class="fa fa-tag"></i> Kubernetes</a>
+          
+            <a href="/tags/k3s/" rel="tag"><i class="fa fa-tag"></i> k3s</a>
+          
+            <a href="/tags/Rancher/" rel="tag"><i class="fa fa-tag"></i> Rancher</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/06/23/ClashX使用入门/" rel="next" title="ClashX使用入门">
+                <i class="fa fa-chevron-left"></i> ClashX使用入门
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2024/11/14/AIO折腾记录/" rel="prev" title="一台小主机的 AIO 之旅">
+                一台小主机的 AIO 之旅 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        
+          <p class="warninginfo">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+              评论框加载失败，无法访问 Disqus<br><br>
+              你可能需要魔法上网~~
+          </p>
+
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/image/tx.png"
+               alt="Kerronex" />
+          <p class="site-author-name" itemprop="name">Kerronex</p>
+           
+              <p class="site-description motion-element" itemprop="description">程序猿/二刺螈<br/>夜猫族/爱折腾</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">130</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="Mailto:bfchengnuo@gmail.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-envelope-o"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://GitHub.com/bfchengnuo" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://sakanoy.com/MyRecord/#/" target="_blank" title="笔记本">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  笔记本
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.cnblogs.com/bfchengnuo" target="_blank" title="博客园">
+                  
+                    <i class="fa fa-fw fa-paw"></i>
+                  
+                  博客园
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              小伙伴们~
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://heartsky.info" title="HeartSky" target="_blank">HeartSky</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.kiuber.me" title="Kiuber" target="_blank">Kiuber</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/nightcharm" title="夜Charm" target="_blank">夜Charm</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#更新记录"><span class="nav-number">1.</span> <span class="nav-text">更新记录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-number">2.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集群架构"><span class="nav-number">3.</span> <span class="nav-text">集群架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Node"><span class="nav-number">4.</span> <span class="nav-text">Node</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pod"><span class="nav-number">5.</span> <span class="nav-text">Pod</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Pod控制器"><span class="nav-number">5.1.</span> <span class="nav-text">Pod控制器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#HPA"><span class="nav-number">5.1.1.</span> <span class="nav-text">HPA</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DaemonSet"><span class="nav-number">5.1.2.</span> <span class="nav-text">DaemonSet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Job与CronJob"><span class="nav-number">5.1.3.</span> <span class="nav-text">Job与CronJob</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pod生命周期"><span class="nav-number">5.2.</span> <span class="nav-text">Pod生命周期</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#StatefulSet"><span class="nav-number">6.</span> <span class="nav-text">StatefulSet</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#K8s组件与工具"><span class="nav-number">7.</span> <span class="nav-text">K8s组件与工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Service-SVC"><span class="nav-number">8.</span> <span class="nav-text">Service/SVC</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ingress"><span class="nav-number">9.</span> <span class="nav-text">Ingress</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#存储"><span class="nav-number">10.</span> <span class="nav-text">存储</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ConfigMap"><span class="nav-number">10.1.</span> <span class="nav-text">ConfigMap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Secret"><span class="nav-number">10.2.</span> <span class="nav-text">Secret</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Volume"><span class="nav-number">10.3.</span> <span class="nav-text">Volume</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PV-PVC"><span class="nav-number">10.4.</span> <span class="nav-text">PV/PVC</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络策略"><span class="nav-number">11.</span> <span class="nav-text">网络策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集群调度"><span class="nav-number">12.</span> <span class="nav-text">集群调度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#K3s"><span class="nav-number">13.</span> <span class="nav-text">K3s</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用命令整理"><span class="nav-number">14.</span> <span class="nav-text">常用命令整理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#minikube"><span class="nav-number">14.1.</span> <span class="nav-text">minikube</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kubectl"><span class="nav-number">14.2.</span> <span class="nav-text">kubectl</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#资源清单"><span class="nav-number">15.</span> <span class="nav-text">资源清单</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#补充：Cgroup"><span class="nav-number">16.</span> <span class="nav-text">补充：Cgroup</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相关工具"><span class="nav-number">17.</span> <span class="nav-text">相关工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">18.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+    <div style="height: 370px;background-image: url(/image/bj.png);background-repeat: no-repeat; margin-left: 31%;"></div>
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+<span id="sitetime"></span>
+<span class="my-face">(●'◡'●)ﾉ♥</span>
+<script language=javascript>
+function siteTime(){
+window.setTimeout("siteTime()", 1000);
+var seconds = 1000
+var minutes = seconds * 60
+var hours = minutes * 60
+var days = hours * 24
+var years = days * 365
+
+var today = new Date()
+var todayYear = today.getFullYear()
+var todayMonth = today.getMonth()
+var todayDate = today.getDate()
+var todayHour = today.getHours()
+var todayMinute = today.getMinutes()
+var todaySecond = today.getSeconds()
+
+/* Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳) 
+year - 作为date对象的年份，为4位年份值
+month - 0-11之间的整数，做为date对象的月份
+day - 1-31之间的整数，做为date对象的天数
+hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+minutes - 0-59之间的整数，做为date对象的分钟数
+seconds - 0-59之间的整数，做为date对象的秒数
+microseconds - 0-999之间的整数，做为date对象的毫秒数 */
+var t1 = Date.UTC(2016,3,30,8,0,0)
+var t2 = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond)
+var diff = t2-t1
+
+var diffYears = Math.floor(diff/years)
+var diffDays = Math.floor((diff/days)-diffYears*365)
+var diffDaysAll = Math.floor(diff/days)
+var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours)
+var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes)
+var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds)
+document.getElementById("sitetime").innerHTML=" 本站已萌萌哒运行 "+diffDaysAll+" 天 "+diffHours+" 小时 "+diffMinutes+" 分钟 "+diffSeconds+" 秒 "
+}
+siteTime()
+</script>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共521.4k字</span>
+
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'bfchengnuo';
+      var disqus_identifier = '2023/05/28/Kubernetes入门/';
+
+      var disqus_title = "探索Kubernetes容器编排";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":130,"height":170,"hOffset":30,"vOffset":-10},"mobile":{"show":false},"react":{"opacity":0.7},"log":false});</script></body>
+</html>

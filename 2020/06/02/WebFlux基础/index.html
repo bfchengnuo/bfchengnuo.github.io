@@ -1,0 +1,1316 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Microsoft Yahei:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Java,Spring,WebFlux," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakanoy" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/image/tb.png?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="响应式（或者叫反应式）的异步非阻塞编程模式，大概率是未来的主流，函数式编程是基础（所以要求 Java8+），可以看作是观察者模式（或者说生产者消费者模式）的延伸。Spring 5 中最重要改动是把反应式编程的思想应用到了框架的各个方面，Spring 5 的反应式编程以 Reactor 库为基础，之前我其实已经过了把瘾（然后发现忘的差不多了，所以来复盘），毕竟 Spring5 也已经出来很久了，更不">
+<meta name="keywords" content="Java,Spring,WebFlux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WebFlux基础">
+<meta property="og:url" content="https://sakanoy.com/2020/06/02/WebFlux基础/index.html">
+<meta property="og:site_name" content="Sakanoy">
+<meta property="og:description" content="响应式（或者叫反应式）的异步非阻塞编程模式，大概率是未来的主流，函数式编程是基础（所以要求 Java8+），可以看作是观察者模式（或者说生产者消费者模式）的延伸。Spring 5 中最重要改动是把反应式编程的思想应用到了框架的各个方面，Spring 5 的反应式编程以 Reactor 库为基础，之前我其实已经过了把瘾（然后发现忘的差不多了，所以来复盘），毕竟 Spring5 也已经出来很久了，更不">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://sakanoy.com/image/dev/Spring-Reactive.jpg">
+<meta property="og:updated_time" content="2024-11-14T17:46:09.413Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="WebFlux基础">
+<meta name="twitter:description" content="响应式（或者叫反应式）的异步非阻塞编程模式，大概率是未来的主流，函数式编程是基础（所以要求 Java8+），可以看作是观察者模式（或者说生产者消费者模式）的延伸。Spring 5 中最重要改动是把反应式编程的思想应用到了框架的各个方面，Spring 5 的反应式编程以 Reactor 库为基础，之前我其实已经过了把瘾（然后发现忘的差不多了，所以来复盘），毕竟 Spring5 也已经出来很久了，更不">
+<meta name="twitter:image" content="https://sakanoy.com/image/dev/Spring-Reactive.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://sakanoy.com/2020/06/02/WebFlux基础/"/>
+
+
+
+
+<script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-bounce.css">
+
+  <title> WebFlux基础 | Sakanoy </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-77463916-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakanoy</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">立于浮华之世,奏响天籁之音.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-mark">
+          <a href="/mark" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-retweet"></i> <br />
+            
+            笔记本
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-book"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-music">
+          <a href="/music" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-music"></i> <br />
+            
+            音乐台
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://sakanoy.com/2020/06/02/WebFlux基础/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Kerronex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/image/tx.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakanoy">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                WebFlux基础
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-06-02T17:03:31+00:00">
+                2020-06-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-eye"></i> 热度
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-wordcount">
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  6,880
+                </span>
+              
+
+              
+
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <div style="display: none;color: #999" class="note warning" id='timeliness'></div>
+        <script language=javascript>
+          var days = (new Date().getTime() - 1591117411000) / 86400000;
+          if(days > 180) {
+            var infoDom = document.getElementById("timeliness");
+            infoDom.innerHTML = "提醒：本文发布于 " + Math.round(days) + " 天前，文中所描述的信息可能已发生改变，请谨慎使用。";
+            infoDom.style.display = "block"
+          }
+        </script>
+        <p>响应式（或者叫反应式）的异步非阻塞编程模式，大概率是未来的主流，函数式编程是基础（所以要求 Java8+），可以看作是观察者模式（或者说生产者消费者模式）的延伸。<br>Spring 5 中最重要改动是把反应式编程的思想应用到了框架的各个方面，Spring 5 的反应式编程以 Reactor 库为基础，之前我其实已经过了把瘾（<del>然后发现忘的差不多了，所以来复盘</del>），毕竟 Spring5 也已经出来很久了，更不要说 RxJava，不过也仅仅是尝鲜，这一篇整理下相关基础知识入个门。<br>开发人员可以使用 WebFlux 创建高性能的 Web 应用和客户端（包括其中的 HTTP、服务器推送事件和 WebSocket 支持）。<br>在 SpringBoot2 中也跟进了 WebFlux 的支持，默认使用 Netty，也可以切换 Servlet3.0+ 的容器。<a id="more"></a><br>反应式编程主要解决的是吞吐量的问题（或者说内存、线程压力），而不是速度问题，一定要搞清楚这一点，意味着使用相同的资源可以处理更加多的请求。<br>随着网络应用和微服务的不断发展，高并发、高吞吐量的特性越来越吸引人，Node、Go 显示出了强劲的竞争力，Java 需要更新自己来适应潮流，拥有了 WebFlux （或者说 Reactive Programming）就有了一战的底气。</p>
+<p>比较尴尬的是例如 JDBC 等配套设施还没有太多的跟进，所以目前来看用的还不算多，不过这些问题迟早会解决。</p>
+<h2 id="WebFlux-简介"><a href="#WebFlux-简介" class="headerlink" title="WebFlux 简介"></a>WebFlux 简介</h2><p>WebFlux 模块的名称是 spring-webflux，名称中的 Flux 来源于 Reactor 中的类 Flux。<br>该模块中包含了对反应式 HTTP、服务器推送事件和 WebSocket 的客户端和服务器端的支持。对于开发人员来说，比较重要的是服务器端的开发。<br>在服务器端，WebFlux 支持两种不同的编程模型：</p>
+<ol>
+<li>Spring MVC 中使用的基于 Java 注解的方式；</li>
+<li>基于 Java 8 的 lambda 表达式的函数式编程模型。</li>
+</ol>
+<p><strong>这两种编程模型只是在代码编写方式上存在不同。它们运行在同样的反应式底层架构之上，因此在运行时是相同的</strong>。</p>
+<p>WebFlux 需要底层提供运行时的支持，WebFlux 可以运行在支持 Servlet 3.1 非阻塞 IO API 的 Servlet 容器上，或是其他异步运行时环境，如 Netty 和 Undertow。</p>
+<blockquote>
+<p>对标 JSR-315 和 JSR-340，分别对应 Servlet 规范的 3.0 和 3.1<br>3.0 提供了异步化；而 3.1 提供了非阻塞。</p>
+</blockquote>
+<p>最方便的构建 WebFlux 应用的方式是使用 SpringBoot 的初始化器，选择 Reactive Web 依赖。</p>
+<p><img src="/image/dev/Spring-Reactive.jpg" alt=""></p>
+<h2 id="Reactor简介"><a href="#Reactor简介" class="headerlink" title="Reactor简介"></a>Reactor简介</h2><p>Reactor 是一个基础库，可用它构建时效性<strong>流式数据</strong>应用，或者有<strong>低延迟</strong>和<strong>容错性</strong>要求的微/纳/皮级服务。<br>简单说，Reactor 是一个轻量级 <strong>JVM 基础库</strong>，帮助你的服务或应用高效，异步地传递消息。<br>Reactor 仅仅致力于解决异步和函数调用问题。和 Spring 天然无缝整合（毕竟 Reactor 框架是 Pivotal 公司开发的，实现了 Reactive Programming 思想）。</p>
+<blockquote>
+<p>“高效”是指什么?</p>
+<ul>
+<li>消息从 A 传递到 B 时，产生很少的<strong>内存</strong>垃圾，甚至不产生。</li>
+<li>解决消费者处理消息的效率低于生产者时带来的<strong>溢出</strong>问题。</li>
+<li>尽可能提供非阻塞<strong>异步流</strong>。</li>
+</ul>
+<p>PS：Spring 5 其最大的意义就是能将反应式编程技术（它就是常见的观察者模式的一种延伸）的普及向前推进一大步。而作为在背后支持 Spring 5 反应式编程的框架 Reactor，也相应的发布了 3.1.0 版本。</p>
+</blockquote>
+<p>从经验可知（主要是 rage 和 drunk 的推特），异步编程很难，而像 JVM 这类提供众多可选参数的平台则尤其困难。<br>Reactor 旨在帮助大多数用例<strong>真正非阻塞地运行</strong>。提供的 API 比 JDK 的 JUC 库低级原语更高效。Reactor 提供了下列功能的替代函数 (并<strong>建议不使用 JDK 原生语句</strong>)：</p>
+<ul>
+<li>阻塞等待： 如 <code>Future.get()</code></li>
+<li>不安全的数据访问： 如 <code>ReentrantLock.lock()</code></li>
+<li>异常冒泡： 如 <code>try…catch…finally</code></li>
+<li>同步阻塞： 如 <code>synchronized{}</code></li>
+<li>Wrapper 分配（GC 压力）： 如 <code>new Wrapper(event)</code></li>
+</ul>
+<p>当消息传递效率成为系统性能瓶颈的时候(10k msg/s，100k msg/s，1M…)，非阻塞机制就显得尤为重要。例如看下面的一段代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> ExecutorService  threadPool = Executors.newFixedThreadPool(<span class="number">8</span>);</span><br><span class="line"><span class="keyword">final</span> List&lt;T&gt; batches = <span class="keyword">new</span> ArrayList&lt;T&gt;();</span><br><span class="line"></span><br><span class="line">Callable&lt;T&gt; t = <span class="keyword">new</span> Callable&lt;T&gt;() &#123; <span class="comment">// *1</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> T <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span>(batches) &#123; <span class="comment">// *2</span></span><br><span class="line">      T result = callDatabase(msg); <span class="comment">// *3</span></span><br><span class="line">      batches.add(result);</span><br><span class="line">      <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">Future&lt;T&gt; f = threadPool.submit(t); <span class="comment">// *4</span></span><br><span class="line">T result = f.get() <span class="comment">// *5</span></span><br></pre></td></tr></table></figure>
+<p>注释中标注的几点：</p>
+<ol>
+<li>Callable 分配：可能导致 GC 压力。</li>
+<li>同步过程强制每个线程执行停：检查操作。</li>
+<li>消息的消费可能比生产慢。</li>
+<li>使用线程池（ThreadPool）将任务传递给目标线程：通过 FutureTask 方式肯定会产生 GC 压力。</li>
+<li>阻塞直至 <code>callDatabase()</code> 回调。</li>
+</ol>
+<p>在这个简单的例子中，存在的显著问题有：</p>
+<ul>
+<li>分配对象可能产生 GC 压力，特别是当任务运行时间过长。 每次 GC 暂停都会影响全局性能。</li>
+<li>默认的队列是无界的，任务会因为数据库调用而堆积。 积压虽然不会直接导致内存泄漏，但会带来严重副作用：GC 暂停时要扫描更多的对象；有丢失重要数据位的风险；等等 … 典型链式队列节点分配时会产生大量内存压力。</li>
+<li>阻塞回调容易产生恶性循环。 阻塞回调会降低消息生产者的效率。在实践中，任务提交后需要等待结果返回，此时流式过程几乎演变为同步的了。 会话过程抛出的任何带数据存储的异常都会以不受控的方式被传递给生产者，否定了任何通常在线程边界附近可用的容错性。</li>
+</ul>
+<p>要实现完全非阻塞是很难办到的，尤其是在有着类似<strong>微服务架构</strong>这样时髦绰号的分布式系统的世界里。因此 Reactor 做了部分妥协，尝试利用最优的可用模式，使开发者觉得他们是在写异步纳米服务，而不是什么数学论文。<br>到了某个阶段，延迟是每一个系统到都要面对的实实在在的问题。为此：</p>
+<blockquote>
+<p>Reactor 提供的框架可以帮助减轻应用中<strong>由延迟产生的副作用</strong>，只需要增加一点点开销：</p>
+<ul>
+<li>使用了一些聪明的结构，通过启动预分配策略解决运行时<strong>分配问题</strong>；</li>
+<li>通过确定信息传递主结构的<strong>边界</strong>，避免任务的无限堆叠；</li>
+<li>采用主流的<strong>响应与事件驱动构架</strong>模式，提供包含反馈在内的<strong>非阻塞端对端流</strong>；</li>
+<li>引入新的 <a href="http://projectreactor.io/docs/reference/#reactivestreams" target="_blank" rel="noopener">Reactive Streams</a> 标准,拒绝超过当前容量请求，从而保证限制结构的有效性；</li>
+<li>在 IPC 上也使用了类似理念，提供对流控制友好的<strong>非阻塞 IO 驱动</strong>；</li>
+<li>开放了帮助开发者们以<strong>零副作用</strong>方式组织他们代码的函数接口，借助这些函数来处理容错性和线程安全。</li>
+</ul>
+</blockquote>
+<p>为实现异步目标，响应式技术和 Reactor 模块该如何搭配：</p>
+<ul>
+<li>Spring XD + Reactor-Net (Core/Stream)： 使用 Reactor 作为 Sink/Source IO 驱动。</li>
+<li>Grails | Spring + Reactor-Stream (Core)： 用 Stream 和 Promise 做后台处理。</li>
+<li>Spring Data + Reactor-Bus (Core)： 发射数据库事件 (保存/删除/…)。</li>
+<li>Spring Integration Java DSL + Reactor Stream (Core)： Spring 集成的微批量信息通道。</li>
+<li>RxJavaReactiveStreams + RxJava + Reactor-Core： 融合富结构与高效异步 IO 处理</li>
+<li>RxJavaReactiveStreams + RxJava + Reactor-Net (Core/Stream)： 用 RxJava 做数据输入，异步 IO 驱动做传输。</li>
+</ul>
+<p><strong>Reactor 核心</strong>含有如下特性：</p>
+<blockquote>
+<ul>
+<li><strong>通用 IO &amp; 函数式类型</strong>，一些 Java 8 接口的反向移植函数，提供者，消费者，谓词，双向消费者，双向函数</li>
+<li>元组</li>
+<li>资源池、暂停器、定时器</li>
+<li>缓冲器，编解码和少量预定义的编解码器</li>
+<li><strong>环境</strong>上下文</li>
+<li><strong>调度者</strong>约定和几个预定义调度者</li>
+<li>预定义<strong>响应式数据流处理者</strong></li>
+</ul>
+</blockquote>
+<p>Reactor-核心自身可替代其它消息传递机制，完成时序任务调度，或者帮你将代码组织为函数块，实现 Java 8 的反向移植接口。这种拆分便于同其他的响应式库配合使用，而没耐心的开发者也不用再去费劲弄懂环形缓冲区了。</p>
+<h2 id="反应式编程"><a href="#反应式编程" class="headerlink" title="反应式编程"></a>反应式编程</h2><p>反应式编程（Reactive Programming）这种新的编程范式越来越受到开发人员的欢迎。在 Java 社区中比较流行的是 RxJava 和 RxJava 2。Spring5 中使用的是另外一个新的反应式编程库 Reactor。</p>
+<blockquote>
+<p>Reactive Programming，中文称反应式编程，是一种高性能应用的编程方式。<br>其最早是由微软提出并引入到 .NET 平台中，随后 ES6 也引入了类似的技术。<br>在 Java 平台上，较早采用反应式编程技术的是 Netflix 公司开源的 RxJava 框架。现在大家比较熟知的 Hystrix 就是以 RxJava 为基础开发的。</p>
+</blockquote>
+<p><strong>反应式编程来源于数据流和变化的传播</strong>，举个例子：比如求值一个简单的表达式 <code>c=a+b</code>，当 a 或者 b 的值发生变化时，传统的编程范式需要对 a+b 进行重新计算来得到 c 的值。如果使用反应式编程，当 a 或者 b 的值发生变化时，c 的值会自动更新。<br>反应式编程最早由 .NET 平台上的 Reactive Extensions (Rx) 库来实现。后来迁移到 Java 平台之后就产生了著名的 RxJava 库，并产生了很多其他编程语言上的对应实现。在这些实现的基础上产生了后来的反应式流（Reactive Streams）规范。该规范定义了反应式流的相关接口，并将集成到 Java 9 中。</p>
+<hr>
+<p>在传统的编程范式中，我们一般通过迭代器（Iterator）模式来遍历一个序列。这种遍历方式是由调用者来控制节奏的，<strong>采用的是拉的方式</strong>：每次由调用者通过 <code>next()</code>方法来获取序列中的下一个值。<br>使用反应式流时采用的则是<strong>推的方式</strong>，即常见的发布者-订阅者模式：当发布者有新的数据产生时，这些数据会被推送到订阅者来进行处理。<br>在反应式流上可以添加各种不同的操作来对数据进行处理，形成数据处理链。这个以声明式的方式添加的处理链只在订阅者进行订阅操作时才会真正执行。</p>
+<hr>
+<p>反应式流中第一个重要概念是<strong>负压（backpressure）</strong>。在基本的消息推送模式中，当消息发布者产生数据的速度过快时，会使得消息订阅者的处理速度无法跟上产生的速度，从而给订阅者造成很大的压力。当压力过大时，有可能造成订阅者本身的奔溃，所产生的级联效应甚至可能造成整个系统的瘫痪。<br>负压的作用在于提供一种从订阅者到生产者的反馈渠道。<strong>订阅者</strong>可以通过 <code>request()</code> 方法来声明其一次所能处理的消息数量，而生产者就只会产生相应数量的消息，直到下一次 <code>request()</code> 方法调用。这实际上变成了推拉结合的模式。</p>
+<h2 id="Flux和Mono"><a href="#Flux和Mono" class="headerlink" title="Flux和Mono"></a>Flux和Mono</h2><p>Flux 和 Mono 是 Reactor 中的两个基本概念（Java9 中也看到了类似的对象，可以理解为 Reactor = JDK8 Stream + JDK9 Reactive Stream）。Flux 表示的是包含 <strong>0 到 N 个元素的异步序列</strong>。在该序列中可以包含三种不同类型的消息通知：</p>
+<ul>
+<li>正常的包含元素的消息</li>
+<li>序列结束的消息</li>
+<li>序列出错的消息</li>
+</ul>
+<p>当消息通知产生时，订阅者中对应的方法 <code>onNext()</code>, <code>onComplete()</code> 和 <code>onError()</code> 会被调用。<br>Mono 表示的是包含 <strong>0 或者 1 个元素的异步序列</strong>。该序列中同样可以包含与 Flux 相同的三种类型的消息通知。<br>Flux 和 Mono 之间可以进行转换。对一个 Flux 序列进行计数操作，得到的结果是一个 <code>Mono&lt;Long&gt;</code> 对象。把两个 Mono 序列合并在一起，得到的是一个 Flux 对象。</p>
+<ul>
+<li><code>Mono</code> 实现了 <code>org.reactivestreams.Publisher</code> 接口，代表 0 到 1 个元素的发布者。</li>
+<li><code>Flux</code> 同样实现了 <code>org.reactivestreams.Publisher</code> 接口，代表 0 到 N 个元素的发表者。</li>
+<li><code>Scheduler</code> 表示背后驱动反应式流的调度器，通常由各种线程池实现。</li>
+</ul>
+<blockquote>
+<p>在 Java 平台上，Netflix（开发了 RxJava）、TypeSafe（开发了 Scala、Akka）、Pivatol（开发了 Spring、Reactor）共同制定了一个被称为 <a href="https%3A%2F%2Fgithub.com%2Freactive-streams%2Freactive-streams-jvm">Reactive Streams 项目（规范）</a>，用于制定反应式编程相关的规范以及接口。<br>主要接口有：Publisher、Subscriber、Subcription。</p>
+<p>直接消费的 Mono 或 Flux 的方式就是调用 <code>subscribe</code> 方法。如果在 Web Flux 接口中开发，直接返回 Mono 或 Flux 即可。Web Flux 框架会为我们完成最后的 Response 输出工作。</p>
+<p>异步并不代表并行，如果需要并行，使用 zip 方法完成。使用反应式，任何环节都需避免阻塞。对于客户端是透明的。</p>
+</blockquote>
+<p><strong>Reactive Streams 是规范，Reactor 实现了 Reactive Streams。Web Flux 以 Reactor 为基础，实现 Web 领域的反应式编程框架。</strong></p>
+<h2 id="使用Reactor"><a href="#使用Reactor" class="headerlink" title="使用Reactor"></a>使用Reactor</h2><p>创建 Flux，Reactor 提供了一系列的静态方法来创建 Flux</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 可以指定序列中包含的全部元素。创建出来的 Flux 序列在发布这些元素之后会自动结束。</span></span><br><span class="line">Flux.just(<span class="string">"Hello"</span>, <span class="string">"World"</span>).subscribe(System.out::println);</span><br><span class="line"></span><br><span class="line"><span class="comment">// （还有 fromIterable 和 fromStream）可以从一个数组、Iterable 对象或 Stream 对象中创建 Flux 对象。</span></span><br><span class="line">Flux.fromArray(<span class="keyword">new</span> Integer[] &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;).subscribe(System.out::println);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建一个不包含任何元素，只发布结束消息的序列。</span></span><br><span class="line"><span class="comment">// 此外还有 error 和 never</span></span><br><span class="line">Flux.empty().subscribe(System.out::println);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建包含从 start 起始的 count 个数量的 Integer 对象的序列。</span></span><br><span class="line">Flux.range(<span class="number">1</span>, <span class="number">10</span>).subscribe(System.out::println);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建一个包含了从 0 开始递增的 Long 对象的序列。</span></span><br><span class="line"><span class="comment">// 其中包含的元素按照指定的间隔来发布。</span></span><br><span class="line"><span class="comment">// 除了间隔时间之外，还可以指定起始元素发布之前的延迟时间。</span></span><br><span class="line">Flux.interval(Duration.of(<span class="number">10</span>, ChronoUnit.SECONDS)).subscribe(System.out::println);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 与 interval()方法的作用相同，只不过该方法通过毫秒数来指定时间间隔和延迟时间。</span></span><br><span class="line">Flux.intervalMillis(<span class="number">1000</span>).subscribe(System.out::println);</span><br></pre></td></tr></table></figure>
+<p>上面的这些静态方法适合于简单的序列生成，当序列的生成需要复杂的逻辑时，则应该使用 <code>generate()</code> 或 <code>create()</code> 方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// generate 方式</span></span><br><span class="line">Flux.generate(sink -&gt; &#123;</span><br><span class="line">    sink.next(<span class="string">"Hello"</span>);</span><br><span class="line">    sink.complete();</span><br><span class="line">&#125;).subscribe(System.out::println);</span><br><span class="line"></span><br><span class="line"><span class="keyword">final</span> Random random = <span class="keyword">new</span> Random();</span><br><span class="line">Flux.generate(ArrayList::<span class="keyword">new</span>, (list, sink) -&gt; &#123;</span><br><span class="line">    <span class="keyword">int</span> value = random.nextInt(<span class="number">100</span>);</span><br><span class="line">    list.add(value);</span><br><span class="line">    sink.next(value);</span><br><span class="line">    <span class="keyword">if</span> (list.size() == <span class="number">10</span>) &#123;</span><br><span class="line">        sink.complete();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> list;</span><br><span class="line">&#125;).subscribe(System.out::println);</span><br><span class="line"></span><br><span class="line"><span class="comment">// create 方式</span></span><br><span class="line">Flux.create(sink -&gt; &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">        sink.next(i);</span><br><span class="line">    &#125;</span><br><span class="line">    sink.complete();</span><br><span class="line">&#125;).subscribe(System.out::println);</span><br></pre></td></tr></table></figure>
+<p>Mono 的创建方式与之前介绍的 Flux 比较相似。Mono 类中也包含了一些与 Flux 类中相同的静态方法。这些方法包括 just()，empty()，error() 和 never()等。除了这些方法之外，Mono 还有一些独有的静态方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Mono.fromSupplier(() -&gt; <span class="string">"Hello"</span>).subscribe(System.out::println);</span><br><span class="line"><span class="comment">// 从一个 Optional 对象或可能为 null 的对象中创建 Mono。</span></span><br><span class="line"><span class="comment">// 只有 Optional 对象中包含值或对象不为 null 时，Mono 序列才产生对应的元素。</span></span><br><span class="line">Mono.justOrEmpty(Optional.of(<span class="string">"Hello"</span>)).subscribe(System.out::println);</span><br><span class="line">Mono.create(sink -&gt; sink.success(<span class="string">"Hello"</span>)).subscribe(System.out::println);</span><br></pre></td></tr></table></figure>
+<hr>
+<p>和 RxJava 一样，Reactor 的强大之处在于可以在反应式流上通过声明式的方式添加多种不同的操作符。<br>例如 buffer 和 bufferTimeout 这两个操作符的作用是把当前流中的元素收集到集合中，并把集合对象作为流中的新元素。<br>还有 filter 、take、reduce 和 reduceWith、merge 和 mergeSequential、flatMap 和 flatMapSequential、消息处理、调度器相关的方法，这方面其实有很多内容，但是没细看，估计短时间内接触不到，有个印象等用的时候知道有这么个东西然后再查 API 好了。</p>
+<h2 id="使用WebFlux"><a href="#使用WebFlux" class="headerlink" title="使用WebFlux"></a>使用WebFlux</h2><p>使用 WebFlux 与 Spring MVC 的不同在于，<strong>WebFlux 所使用的类型是与反应式编程相关的 Flux 和 Mono 等，而不是简单的对象</strong>。对于简单的 Hello World 示例来说，这两者之间并没有什么太大的差别。对于复杂的应用来说，反应式编程和负压的优势会体现出来，可以带来整体的性能的提升。</p>
+<p>吞吐量为何会大幅提升？因为使用 WebFlux 后，容器的线程不会被阻塞，只会给业务代码一个回调函数（<code>asyncContext.complete()</code>），业务代码处理完了再通知我！这样就可以使用少量的线程处理更加高的请求，从而实现高吞吐量（结合负压不会造成过高的处理压力）。</p>
+<p>类中的方法都以 Flux 或 Mono 对象作为返回值，这也是 WebFlux 应用的特征。Flux 类型的参数表示的是有多个对象需要处理。可以使用 <code>doOnNext()</code> 来对其中的每个对象进行处理。<br>除了服务器端实现之外，WebFlux 也提供了反应式客户端，可以访问 HTTP、SSE 和 WebSocket 服务器端。分别对应：Web 的 HTTP、SSE、WebSocket，这里不再多说。</p>
+<p>这里不贴代码了，参考我 <a href="https://github.com/bfchengnuo/JavaReplay/tree/master/WebFlux" target="_blank" rel="noopener">Github</a> 的这个模块。</p>
+<h2 id="服务器推送事件"><a href="#服务器推送事件" class="headerlink" title="服务器推送事件"></a>服务器推送事件</h2><p>服务器推送事件（Server-Sent Events，SSE）<strong>允许服务器端不断地推送数据到客户端</strong>。<br>相对于 WebSocket 而言，服务器推送事件只支持服务器端到客户端的<strong>单向数据传递</strong>。虽然功能较弱，但优势在于 SSE <strong>在已有的 HTTP 协议上使用简单易懂的文本格式来表示传输的数据</strong>。<br>作为 W3C 的推荐规范，SSE 在浏览器端的支持也比较广泛，除了 IE 之外的其他浏览器都提供了支持。在 IE 上也可以使用 polyfill 库来提供支持。<br>在服务器端来说，SSE 是一个不断产生新数据的流，非常适合于用反应式流来表示。在 WebFlux 中创建 SSE 的服务器端是非常简单的。只需要返回的对象的类型是 <code>Flux&lt;ServerSentEvent&gt;</code>，就会被自动按照 SSE 规范要求的格式来发送响应，或者指定 MediaType。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@RequestMapping</span>(<span class="string">"/sse"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SseController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@GetMapping</span>(<span class="string">"/randomNumbers"</span>)</span><br><span class="line">  <span class="keyword">public</span> Flux&lt;ServerSentEvent&lt;Integer&gt;&gt; randomNumbers() &#123;</span><br><span class="line">    <span class="keyword">return</span> Flux.interval(Duration.ofSeconds(<span class="number">1</span>))</span><br><span class="line">      .map(seq -&gt; Tuples.of(seq, ThreadLocalRandom.current().nextInt()))</span><br><span class="line">      .map(data -&gt; ServerSentEvent.&lt;Integer&gt;builder()</span><br><span class="line">           .event(<span class="string">"random"</span>)</span><br><span class="line">           .id(Long.toString(data.getT1()))</span><br><span class="line">           .data(data.getT2())</span><br><span class="line">           .build());</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@GetMapping</span>(value = <span class="string">"/stream"</span>, produces = MediaType.TEXT_EVENT_STREAM_VALUE)</span><br><span class="line">  <span class="function"><span class="keyword">public</span> Flux&lt;User&gt; <span class="title">streamAll</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> userRepository.findAll();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>SseController 是一个使用 SSE 的控制器的示例。其中的方法 <code>randomNumbers()</code> 表示的是每隔一秒产生一个随机数的 SSE 端点。我们可以使用类 <code>ServerSentEvent.Builder</code> 来创建 ServerSentEvent 对象。这里我们指定了事件名称 random，以及每个事件的标识符和数据。事件的标识符是一个递增的整数，而数据则是产生的随机数。</p>
+<p>PS：我记得在我写的 SB2.x 的初尝试那篇文章中关于这个有个小例子。</p>
+<h3 id="WebSocket"><a href="#WebSocket" class="headerlink" title="WebSocket"></a>WebSocket</h3><p>WebSocket 支持客户端与服务器端的<strong>双向通讯</strong>。当客户端与服务器端之间的交互方式比较复杂时，可以使用 WebSocket。<br>WebSocket 在主流的浏览器上都得到了支持。WebFlux 也对创建 WebSocket 服务器端提供了支持。在服务器端，我们需要实现接口 <code>org.springframework.web.reactive.socket.WebSocketHandler</code> 来处理 WebSocket 通讯。接口 WebSocketHandler 的方法 handle 的参数是接口 WebSocketSession 的对象，可以用来获取客户端信息、接送消息和发送消息。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EchoHandler</span> <span class="keyword">implements</span> <span class="title">WebSocketHandler</span> </span>&#123;</span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Mono&lt;Void&gt; <span class="title">handle</span><span class="params">(<span class="keyword">final</span> WebSocketSession session)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> session.send(</span><br><span class="line">      session.receive()</span><br><span class="line">      .map(msg -&gt; session.textMessage(<span class="string">"ECHO -&gt; "</span> + msg.getPayloadAsText())));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>EchoHandler 对于每个接收的消息，会发送一个添加了 “ECHO -&gt; “ 前缀的响应消息。WebSocketSession 的 receive 方法的返回值是一个 <code>Flux&lt;WebSocketMessage&gt;</code> 对象，表示的是接收到的消息流。而 send 方法的参数是一个 <code>Publisher&lt;WebSocketMessage&gt;</code> 对象，表示要发送的消息流。在 handle 方法，使用 map 操作对 receive 方法得到的 <code>Flux&lt;WebSocketMessage&gt;</code> 中包含的消息继续处理，然后直接由 send 方法来发送。</p>
+<p>在创建了 WebSocket 的处理器 EchoHandler 之后，下一步需要把它注册到 WebFlux 中。我们首先需要创建一个类 WebSocketHandlerAdapter 的对象，该对象负责把 WebSocketHandler 关联到 WebFlux 中。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebSocketConfiguration</span> </span>&#123;</span><br><span class="line">  <span class="meta">@Autowired</span></span><br><span class="line">  <span class="meta">@Bean</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> HandlerMapping <span class="title">webSocketMapping</span><span class="params">(<span class="keyword">final</span> EchoHandler echoHandler)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> Map&lt;String, WebSocketHandler&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;(<span class="number">1</span>);</span><br><span class="line">    map.put(<span class="string">"/echo"</span>, echoHandler);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> SimpleUrlHandlerMapping mapping = <span class="keyword">new</span> SimpleUrlHandlerMapping();</span><br><span class="line">    mapping.setOrder(Ordered.HIGHEST_PRECEDENCE);</span><br><span class="line">    mapping.setUrlMap(map);</span><br><span class="line">    <span class="keyword">return</span> mapping;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Bean</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> WebSocketHandlerAdapter <span class="title">handlerAdapter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> WebSocketHandlerAdapter();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中的 HandlerMapping 类型的 bean 把 EchoHandler 映射到路径 <code>/echo</code>。</p>
+<p>参考代码：<a href="https://github.com/bfchengnuo/JavaReplay/tree/master/WebFlux" target="_blank" rel="noopener">Github</a></p>
+<h2 id="函数式编程模型"><a href="#函数式编程模型" class="headerlink" title="函数式编程模型"></a>函数式编程模型</h2><p>WebFlux 还支持基于 lambda 表达式的函数式编程模型。与基于 Java 注解的编程模型相比，函数式编程模型的抽象层次更低，代码编写更灵活，可以满足一些对动态性要求更高的场景。不过在编写时的代码复杂度也较高，学习曲线也较陡。开发人员可以根据实际的需要来选择合适的编程模型。目前 Spring Boot 不支持在一个应用中同时使用两种不同的编程模式。<br>在函数式编程模型中，<strong>每个请求是由一个函数来处理的</strong>， 通过接口 <code>org.springframework.web.reactive.function.server.HandlerFunction</code> 来表示。<br>HandlerFunction 是一个函数式接口，其中只有一个方法 <code>Mono&lt;T extends ServerResponse&gt; handle(ServerRequest request)</code>，因此可以用 labmda 表达式来实现该接口。<br>接口 ServerRequest 表示的是一个 HTTP 请求。通过该接口可以<strong>获取到请求的相关信息</strong>，如请求路径、HTTP 头、查询参数和请求内容等。方法 handle 的返回值是一个 <code>Mono&lt;T extends ServerResponse&gt;</code> 对象。<br>接口 ServerResponse 用来表示 HTTP 响应。ServerResponse 中包含了很多静态方法来创建不同 HTTP 状态码的响应对象。<br>下面是一个简单的计算器实现来展示函数式编程模型的用法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CalculatorHandler</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> Mono&lt;ServerResponse&gt; <span class="title">add</span><span class="params">(<span class="keyword">final</span> ServerRequest request)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> calculate(request, (v1, v2) -&gt; v1 + v2);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Mono&lt;ServerResponse&gt; <span class="title">subtract</span><span class="params">(<span class="keyword">final</span> ServerRequest request)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> calculate(request, (v1, v2) -&gt; v1 - v2);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Mono&lt;ServerResponse&gt;  <span class="title">multiply</span><span class="params">(<span class="keyword">final</span> ServerRequest request)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> calculate(request, (v1, v2) -&gt; v1 * v2);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Mono&lt;ServerResponse&gt; <span class="title">divide</span><span class="params">(<span class="keyword">final</span> ServerRequest request)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> calculate(request, (v1, v2) -&gt; v1 / v2);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">private</span> Mono&lt;ServerResponse&gt; <span class="title">calculate</span><span class="params">(<span class="keyword">final</span> ServerRequest request,</span></span></span><br><span class="line"><span class="function"><span class="params">                                         <span class="keyword">final</span> BiFunction&lt;Integer, Integer, Integer&gt; calculateFunc)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> Tuple2&lt;Integer, Integer&gt; operands = extractOperands(request);</span><br><span class="line">    <span class="keyword">return</span> ServerResponse</span><br><span class="line">      .ok()</span><br><span class="line">      .body(Mono.just(calculateFunc.apply(operands.getT1(), operands.getT2())), Integer.class);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">private</span> Tuple2&lt;Integer, Integer&gt; <span class="title">extractOperands</span><span class="params">(<span class="keyword">final</span> ServerRequest request)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Tuples.of(parseOperand(request, <span class="string">"v1"</span>), parseOperand(request, <span class="string">"v2"</span>));</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">parseOperand</span><span class="params">(<span class="keyword">final</span> ServerRequest request, <span class="keyword">final</span> String param)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> Integer.parseInt(request.queryParam(param).orElse(<span class="string">"0"</span>));</span><br><span class="line">    &#125; <span class="keyword">catch</span> (<span class="keyword">final</span> NumberFormatException e) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述代码给出了处理不同请求的类 CalculatorHandler，其中包含的方法 add、subtract、multiply 和 divide 都是接口 HandlerFunction 的实现。这些方法分别对应加、减、乘、除四种运算。每种运算都是从 HTTP 请求中获取到两个作为操作数的整数，再把运算的结果返回。<br>在创建了处理请求的 HandlerFunction 之后，下一步是为这些 HandlerFunction <strong>提供路由信息</strong>，也就是这些 HandlerFunction 被调用的条件。这是通过函数式接口 <code>org.springframework.web.reactive.function.server.RouterFunction</code> 来完成的。接口 RouterFunction 的方法 <code>Mono&lt;HandlerFunction&lt;T extends ServerResponse&gt;&gt; route(ServerRequest request)</code> 对每个 ServerRequest，都返回对应的 0 个或 1 个 HandlerFunction 对象，以 <code>Mono&lt;HandlerFunction&gt;</code> 来表示。</p>
+<p>当找到对应的 HandlerFunction 时，该 HandlerFunction 被调用来处理该 ServerRequest，并把得到的 ServerResponse 返回。在使用 WebFlux 的 Spring Boot 应用中，只需要创建 RouterFunction 类型的 bean，就会被自动注册来处理请求并调用相应的 HandlerFunction。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Config</span> </span>&#123;</span><br><span class="line">  <span class="meta">@Bean</span></span><br><span class="line">  <span class="meta">@Autowired</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> RouterFunction&lt;ServerResponse&gt; <span class="title">routerFunction</span><span class="params">(<span class="keyword">final</span> CalculatorHandler calculatorHandler)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> RouterFunctions.route(</span><br><span class="line">      RequestPredicates.path(<span class="string">"/calculator"</span>),</span><br><span class="line">      request -&gt; request.queryParam(<span class="string">"operator"</span>).map(operator -&gt;</span><br><span class="line">                                                    Mono.justOrEmpty(ReflectionUtils.findMethod(</span><br><span class="line">                                                      CalculatorHandler.class,</span><br><span class="line">                                                      operator,</span><br><span class="line">                                                      ServerRequest.class))</span><br><span class="line">                                                    .flatMap(method -&gt; (Mono&lt;ServerResponse&gt;) ReflectionUtils.invokeMethod(method, calculatorHandler, request))</span><br><span class="line">                                                    .switchIfEmpty(ServerResponse.badRequest().build())</span><br><span class="line">                                                    .onErrorResume(ex -&gt; ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR).build()))</span><br><span class="line">      .orElse(ServerResponse.badRequest().build()));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的代码是相关的配置类 Config。方法 <code>RouterFunctions.route</code> 用来根据 Predicate 是否匹配来确定 HandlerFunction 是否被应用。RequestPredicates 中包含了很多静态方法来创建常用的基于不同匹配规则的 Predicate。如 <code>RequestPredicates.path</code> 用来根据 HTTP 请求的路径来进行匹配。此处我们检查请求的路径是 <code>/calculator</code>。</p>
+<p>使用 ServerRequest 的 queryParam 方法来获取到查询参数 operator 的值，然后通过反射 API 在类 CalculatorHandler 中找到与查询参数 operator 的值名称相同的方法来确定要调用的 HandlerFunction 的实现，最后调用查找到的方法来处理该请求。如果找不到查询参数 operator 或是 operator 的值不在识别的列表中，服务器端返回 400 错误；如果反射 API 的方法调用中出现错误，服务器端返回 500 错误。</p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p><strong>响应式数据流</strong>作为一种新的数据流规范应用于 Java 9 及其后续版本，并被多个供应商和技术企业采纳，这一规范的定位非常清晰，旨在提供同/异步数据序列流式控制机制，并在 JVM 上首先推广。该规范由 4 个 Java 接口，1 个 TCK 和一些样例组成。</p>
+<hr>
+<p><strong>响应式扩展</strong>，就是通常所说的 Rx，是一组定义良好的函数式 API，大规模扩展了<strong>观察者模式</strong>。<br>Rx 模式支持响应式数据序列处理，主要的设计要点有：</p>
+<ul>
+<li>使用回调链分离时间/延迟：仅当数据可用时才会回调</li>
+<li>分离线程模型：用 Observable / Stream 来处理同步或异步</li>
+<li>控制错误链/终止：数据载荷信号以及错误与完成信号都传递给回调链</li>
+<li>解决各种预定义 API 中多重分散-聚合和构造问题</li>
+</ul>
+<p>JVM 中响应式扩展的标准实现是 RxJava。它提供了强大的函数式 API，并将原始微软库中几乎全部的概念移植了过来。</p>
+<blockquote>
+<p>响应式数据流和响应式扩展算是最近比较新的技术了，因为牵扯到异步非阻塞技术比较难理解，但是从 Spring5 的方向来看，这是未来，至于如何学习，我还在摸索那条路比较好。</p>
+</blockquote>
+<hr>
+<p>Netty 示例相关参考：<a href="https://github.com/bfchengnuo/java_learn/tree/master/ExampleCode/WebSocket_Netty" target="_blank" rel="noopener">Github</a></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://www.ibm.com/developerworks/cn/java/spring5-webflux-reactive/index.html" target="_blank" rel="noopener">https://www.ibm.com/developerworks/cn/java/spring5-webflux-reactive/index.html</a><br><a href="https://www.ibm.com/developerworks/cn/java/j-cn-with-reactor-response-encode/index.html" target="_blank" rel="noopener">https://www.ibm.com/developerworks/cn/java/j-cn-with-reactor-response-encode/index.html</a><br><a href="https://www.jianshu.com/p/7ee89f70dfe5" target="_blank" rel="noopener">https://www.jianshu.com/p/7ee89f70dfe5</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>喜欢就请我吃包辣条吧！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/image/pay/wx.jpg" alt="Kerronex WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/image/pay/zfb.jpg" alt="Kerronex Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Kerronex
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://sakanoy.com/2020/06/02/WebFlux基础/" title="WebFlux基础">https://sakanoy.com/2020/06/02/WebFlux基础/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"><i class="fa fa-tag"></i> Java</a>
+          
+            <a href="/tags/Spring/" rel="tag"><i class="fa fa-tag"></i> Spring</a>
+          
+            <a href="/tags/WebFlux/" rel="tag"><i class="fa fa-tag"></i> WebFlux</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/05/12/任性的语言-Golang/" rel="next" title="任性的语言-Golang">
+                <i class="fa fa-chevron-left"></i> 任性的语言-Golang
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/07/02/Golang之并发编程/" rel="prev" title="Golang之并发编程">
+                Golang之并发编程 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        
+          <p class="warninginfo">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+              评论框加载失败，无法访问 Disqus<br><br>
+              你可能需要魔法上网~~
+          </p>
+
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/image/tx.png"
+               alt="Kerronex" />
+          <p class="site-author-name" itemprop="name">Kerronex</p>
+           
+              <p class="site-description motion-element" itemprop="description">程序猿/二刺螈<br/>夜猫族/爱折腾</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">130</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="Mailto:bfchengnuo@gmail.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-envelope-o"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://GitHub.com/bfchengnuo" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://sakanoy.com/MyRecord/#/" target="_blank" title="笔记本">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  笔记本
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.cnblogs.com/bfchengnuo" target="_blank" title="博客园">
+                  
+                    <i class="fa fa-fw fa-paw"></i>
+                  
+                  博客园
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              小伙伴们~
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://heartsky.info" title="HeartSky" target="_blank">HeartSky</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.kiuber.me" title="Kiuber" target="_blank">Kiuber</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/nightcharm" title="夜Charm" target="_blank">夜Charm</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#WebFlux-简介"><span class="nav-number">1.</span> <span class="nav-text">WebFlux 简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reactor简介"><span class="nav-number">2.</span> <span class="nav-text">Reactor简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#反应式编程"><span class="nav-number">3.</span> <span class="nav-text">反应式编程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Flux和Mono"><span class="nav-number">4.</span> <span class="nav-text">Flux和Mono</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用Reactor"><span class="nav-number">5.</span> <span class="nav-text">使用Reactor</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用WebFlux"><span class="nav-number">6.</span> <span class="nav-text">使用WebFlux</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#服务器推送事件"><span class="nav-number">7.</span> <span class="nav-text">服务器推送事件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#WebSocket"><span class="nav-number">7.1.</span> <span class="nav-text">WebSocket</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数式编程模型"><span class="nav-number">8.</span> <span class="nav-text">函数式编程模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他"><span class="nav-number">9.</span> <span class="nav-text">其他</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">10.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+    <div style="height: 370px;background-image: url(/image/bj.png);background-repeat: no-repeat; margin-left: 31%;"></div>
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+<span id="sitetime"></span>
+<span class="my-face">(●'◡'●)ﾉ♥</span>
+<script language=javascript>
+function siteTime(){
+window.setTimeout("siteTime()", 1000);
+var seconds = 1000
+var minutes = seconds * 60
+var hours = minutes * 60
+var days = hours * 24
+var years = days * 365
+
+var today = new Date()
+var todayYear = today.getFullYear()
+var todayMonth = today.getMonth()
+var todayDate = today.getDate()
+var todayHour = today.getHours()
+var todayMinute = today.getMinutes()
+var todaySecond = today.getSeconds()
+
+/* Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳) 
+year - 作为date对象的年份，为4位年份值
+month - 0-11之间的整数，做为date对象的月份
+day - 1-31之间的整数，做为date对象的天数
+hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+minutes - 0-59之间的整数，做为date对象的分钟数
+seconds - 0-59之间的整数，做为date对象的秒数
+microseconds - 0-999之间的整数，做为date对象的毫秒数 */
+var t1 = Date.UTC(2016,3,30,8,0,0)
+var t2 = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond)
+var diff = t2-t1
+
+var diffYears = Math.floor(diff/years)
+var diffDays = Math.floor((diff/days)-diffYears*365)
+var diffDaysAll = Math.floor(diff/days)
+var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours)
+var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes)
+var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds)
+document.getElementById("sitetime").innerHTML=" 本站已萌萌哒运行 "+diffDaysAll+" 天 "+diffHours+" 小时 "+diffMinutes+" 分钟 "+diffSeconds+" 秒 "
+}
+siteTime()
+</script>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共521.4k字</span>
+
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'bfchengnuo';
+      var disqus_identifier = '2020/06/02/WebFlux基础/';
+
+      var disqus_title = "WebFlux基础";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":130,"height":170,"hOffset":30,"vOffset":-10},"mobile":{"show":false},"react":{"opacity":0.7},"log":false});</script></body>
+</html>

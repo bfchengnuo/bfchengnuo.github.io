@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[博客迁移公告]]></title>
+    <url>%2F2025%2F07%2F20%2F%E8%BF%81%E7%A7%BB%E5%85%AC%E5%91%8A%2F</url>
+    <content type="text"><![CDATA[博客新地址：https://moe.sakanoy.com 十年前接触到了 Github，当时主要就是为了搭建自己的免费博客，以记录学习过程中的心得，当时最火的方案毫无疑问是 Hexo + NexT 主题，上学期间对什么对感兴趣，也有时间去研究，写了不少乱七八糟的东西，虽不说有多少精品，数量上几百篇应该是够的。 虽然最近几年写的东西越来越少，时间精力确实大不如之前，不是没东西可写而是写一篇长文太耗费时间精力了，一些几句话能说明白的也不屑于形成一篇博客，都放在我的 BBS/Memo 里记录存档了。 还有一个关键是文章多了之后 Hexo 编译一次太慢了，NexT 的原作者早就退坑，现在看旧博客有种年久失修的苍老感。 搭建新博客这个想法已经很久很久了，一直在拖延，这两天有时间搞了一下，其实一旦开了头进入状态了还是很不错的一件事。 新博客使用的是 Hugo，基于 Go 的一个静态网站工具，彻底解决 Hexo 编译慢的问题，当然它的可玩性和资源可能不如 Hexo，毕竟我也过了折腾的年纪。 昨天把旧博客的一些配置迁移到了新项目，目前也算是比较满意了，文章的话现在还不打算迁移过来，等我哪天有空挑一下把有用的搞过来，剩下的就保持原样吧。]]></content>
+      <categories>
+        <category>其他</category>
+      </categories>
+  </entry>
+  <entry>
     <title><![CDATA[一台小主机的 AIO 之旅]]></title>
     <url>%2F2024%2F11%2F14%2FAIO%E6%8A%98%E8%85%BE%E8%AE%B0%E5%BD%95%2F</url>
     <content type="text"><![CDATA[All in boom 来啦，PVE + OpenWrt + 黑群晖 DSM + Windwos10 + Ubuntu + Docker + HAOS。亡命之徒直接冲 RAID0 ！！硬件：GMK M6 + D2-320 磁盘阵列 2x4T。Q：”文章可以多配些步骤图吗，更直观”A：”不行，我懒人，太麻烦，省电模式中，再说吧” 安装 PVE去官网下载 ISO 镜像，我使用 Ventoy 来进行引导，也可以通过写盘工具直接把 ISO 写到 U 盘，这里最开始我卡 loading，原因是 Ventoy 的版本太老了，升级一下就正常了（不需要格盘）。安装 PVE 的教程很多，也没什么注意的点，IP 只要写对就没啥问题，安装的时候 Ventoy 引导就保持默认第一个。参考视频: 利用PVE虚拟机，来打造属于自己的All In One系统吧！ PVE 装完后的两个比较好用的工具：https://bbs.x86pi.cn/thread?topicId=20https://github.com/ivanhao/pvetools就是改个源，去除个订阅提示，硬盘直通可以使用 pvetools。 关于标记：点数据中心 - 选项 - 标记样式设定 - 完整；然后去每个节点上最上面一栏加标记即可。 OpenWrt软路由还是建议安装一下，但是不推荐主力使用，做一个旁路网关就好，例如安装魔法后解决后面 Docker 拉不到镜像等问题。软路由推荐不良林的视频，说的很清楚：视频链接 由于官方固件太简洁，这里选择 immortalwrt，首先去下载固件，建议选择 COMBINED-EFI (SQUASHFS-COMBINED-EFI.IMG.GZ)版本，因为是 X86 架构直接选。 上传镜像，然后使用命令:qm importdisk 100 /var/lib/vz/template/iso/openwrt.img local-lvm 导入到虚拟机。 安装魔法三件套，openClash、homeProxy、passwall 网卡优先半虚拟化不行的话就切回 E1000，CPU 能 Host 就 Host。 经过测速，起码 PVE8 是不需要 img2kvm 这个工具了，直接 qm 命令导入即可，一般情况下 2 核 1G 的配置够用了。 不过到现在我也还是没搞明白 OpenWrt 的配置，还是挺复杂的，理解为啥有那么多人用爱快了，后面再研究吧，现在网卡都让我删没了。。。但是能用！ 安装 DDNS-Go 配合路由器的端口转发可以实现外网访问，需要一个域名、光猫是桥接，有公网 IP。 DSM采用的是 GXNAS 的引导文件，或者可以看看著名的原生 RR 引导，复活版的哦 https://github.com/RROrg/rr GXNAS 大佬的镜像直接是支持虚拟网卡的，所以直接选半虚拟化就行，性能更好。 作为 All in boom，我这里当然选的是 RAID0，直接拉满，数据安全什么的全靠我定期冷备份。 启用 MacOS 的时间机器支持：官方文档，总结就是新建好共享文件夹，给新建个用户(配额还是建议写一下 300-500G 够用了)，开启 SMB 服务，高级设置里启用 Bonjour 服务发现和启用通过 SMB 进行 Bonjour Time Machine 播送，设置下文件夹完成。 备份 PVE：和时间机器差不多，新建个文件夹，开启共享的 NFS 服务，然后在 NFS 权限里添加 PVE 的 IP 权限，映射为 admin，所有能勾的都勾上。然后去 PVE 存储里添加 NFS 即可，内容选 VZDump备份（或者你还想存其他东西）。PS：不要备份 DSM 本身，会出问题，快照最快最小，需要本体才能恢复，停止和挂起基本一致，可以 PVE Boom 了进行恢复，建议停止模式，备份时虚拟机会暂停几分钟直到备份后启动。 Windows/Linux我这里装的是 Win10 LTSC，Win11 有点复杂，要开 UEFI + TPM，还要登录，就不想搞的那么复杂。 PS：目前最新的 Win11 优化的也很到位了 2G 内存跑轻度任务都是很流畅的。 VirtIO 驱动镜像可以通过访问页面找到download the latest stable 点击下载，详情移步 https://pve.proxmox.com/wiki/Windows_VirtIO_Drivers Win 一般肯定是通过远程桌面使用，在计算机右键属性里打开即可，就可以使用 mstsc 进行连接了；Win10 的 LTSC 刚装上可能会导致风扇狂转，这是一个 bug，更新下系统重启后就好了。 Linux 没啥可以说的很简单，一路下一步和实体机没区别，我装了个 Ubuntu Server。Docker 安装可以使用一键脚本 bash &lt;(curl -sSL https://linuxmirrors.cn/docker.sh) ，换源也有类似的一键换源脚本 bash &lt;(curl -sSL https://linuxmirrors.cn/main.sh)。 需要允许远程 ssh 登陆的话修改 /etc/ssh/sshd_config 将 PermitRootLogin prohibit-password 改为 PermitRootLogin yes 然后重启服务 service ssh restart Docker这里我选择使用 LXC 来创建一个 Docker，首先要下载一个 CT 模板，我使用的是 Ubuntu 的，因为要使用 DockerHub 这里网关使用前面 OpenWrt 的；一定要去掉五特权容器的勾；完成后去选项里面把功能里的嵌套之类全勾上。 需要注意的是，LXC 虚拟虽然效率高但是不是完全的虚拟，还是会共用宿主机的一些东西或者有限制，所以 Linux 我没用 LXC，Docker 的话感觉还是可以的。 为了保证 Docker 可以启动，需要在 PVE 修改一下对应 LXC 的配置，在 /etc/pve/lxc/{CTID}.conf 中加入： 123lxc.apparmor.profile: unconfinedlxc.cgroup.devices.allow: alxc.cap.drop: 大部分情况下 Docker 是可以正常运行了。 使用快捷指令 bash &lt;(curl -sSL https://linuxmirrors.cn/docker.sh) 安装 Docker，源就不换了。 安装完毕后先装一个 portainer： 1docker run -d -p 8000:8000 -p 9000:9000 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data outlovecn/portainer-cn:latest 服务推荐：跑一个 speedtest 测速下局域网的网速，或者使用 iperf3 也可以。 HAOS建议使用冬瓜 HAOS，直接使用 PE 版本的 ISO，一键安装。 还没时间仔细研究，一些插件： 米家 - Xiaomi MIoT 美的美居 - Midea AC LAN 海尔智家 - haier 格力 - Gree Climate 石头 - homeassistant-roborock HomeKit Bridge - 设备接入苹果家庭 还没仔细研究，貌似有点复杂。 Tailscale最开始是想装到 Docker 里的，没发现特别好的文章，也不想自己搞了，后来看很多都是装 OpenWrt，有大部分是爱快里装的，比较简单，但是显然不适合我，但是有两个项目感觉不错： https://github.com/CH3NGYZ/tailscale-openwrthttps://github.com/adyanth/openwrt-tailscale-enabler 不过很可惜的是装完我能登录，但是配置的子网路由无效，大概可能是和我 OpenWrt 前面折腾删掉网口有关，最后还是放弃； 最终采用了这位大佬 的方案，使用 LXC 来安装，和之前配置 Docker 一样，需要在 /etc/pve/lxc/{CTID}.conf 文件中加入开启 TUN： 123# 这个 10 200 可以通过在 pve 上执行 ls -al /dev/net/tun 获得，一般都是 10 200lxc.cgroup2.devices.allow: c 10:200 rwmlxc.mount.entry: /dev/net/tun dev/net/tun none bind,create=file 还需要在 LXC 中的 /etc/sysctl.conf 开启转发： 12345net.ipv4.ip_forward=1net.ipv6.conf.all.forwarding=1# 执行生效# sysctl -p /etc/sysctl.conf 然后使用官方的脚本安装：curl -fsSL https://tailscale.com/install.sh | sh执行 tailscale up --authkey=xxxxx --accept-routes --advertise-routes=192.168.0.0/24 开启，记得换成自己的网段和 authkey。配置自动启动：使用 systemd 来进行开启自启。在 /etc/systemd/system 下新建一个配置文件: tailscale.service, 文件内容如下： 1234567891011Description=AutoStart tailscale After=tailscale.serviceRequires=tailscale.service [Service] Type=oneshot ExecStart=/usr/bin/tailscale up --authkey=你的authKey --accept-routes --advertise-routes=你的转发范围 ExecStop=/usr/bin/tailscale down RemainAfterExit=yes Restart=on-failure [Install] WantedBy=multi-user.target 然后执行如下命令： 12systemctl enable tailscale.servicesystemctl start tailscale.service 登录后首先去 Web 控制台重命名设备名字，关掉登录过期，开启自定义路由转发，之后就可以像访问内网那样在外面访问内网服务了。 LXC修改 LXC 的主机名： 12/var/lib/lxc/容器的id编号/config/etc/pve/lxc/容器的id编号.conf 只修改后面这个文件也可以，建议都改。 串流，未完待续。]]></content>
@@ -1464,17 +1472,6 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[VBOX启动错误]]></title>
-    <url>%2F2016%2F03%2F21%2FVBOX%E6%97%A0%E6%B3%95%E5%90%AF%E5%8A%A8%E9%97%AE%E9%A2%98%2F</url>
-    <content type="text"><![CDATA[网上查了很久，最多的就是说版本的bug，回退到4.3的版本就可以了，但好像也没有什么效果，依然错误。 解决方案是因为系统是64位的原因导致某些服务无法启动，也或许是因为是windows10的原因，目前windows10的兼容性还不是很好，git、kdiff3之类的软件默认是英文界面。。。 打开安装目录D:\Program Files\Oracle\VirtualBox\drivers\vboxdrv右键VBoxDrv.inf安装，然后重启应该就可以了。(我就是忘了重启又折腾了好久o(￣▽￣)ゞ))￣▽￣)o) PS：win10下，5.x以上的版本才支持桥连呢]]></content>
-      <categories>
-        <category>我是修电脑的</category>
-      </categories>
-      <tags>
-        <tag>VBOX</tag>
-      </tags>
-  </entry>
-  <entry>
     <title><![CDATA[eclipse格式化代码无效/常用快捷键]]></title>
     <url>%2F2016%2F03%2F21%2Feclipse%E6%A0%BC%E5%BC%8F%E5%8C%96%E4%BB%A3%E7%A0%81%E6%97%A0%E6%95%88%E5%8F%8A%E5%BF%AB%E6%8D%B7%E9%94%AE%2F</url>
     <content type="text"><![CDATA[原因 快捷键被占用(被输入法给占用了) 解决 关闭或者更改输入法的快捷键即可也可以修改eclipse的快捷键，搜索key就可以快速定位，然后就自己设吧 解决一类问题。复制行的快捷键可能被显卡给占了 常用快捷键 作用 快捷键 格式化代码 ctrl + shift + F 快速搜索 ctrl + shift + R 移动代码 alt + ↑/↓ 复制行 alt + ctrl + ↑/↓ 删除行 Ctrl + D 导包 ctrl + shift + o 快速修正 ctrl + 1 代码注释 行/块,反注释 ctrl + / [ctrl+shift+/(反斜线为取消)] 快速提示 alt + / 前进后退到上次代码 alt + ←/→ 查看方法 F2 查看类的继承关系 ctrl+T 更改为大写 ctrl+shift+X 更改为小写 ctrl+shift+Y 按单词跳跃 Ctrl + ←/→ 按单词选择 Ctrl + Shift + ←/→ 文档注释 ALT + SHIFT + J 弹出包围代码块 Alt+Shift+Z 更多：http://www.cnblogs.com/Ming8006/p/5980293.html 其他配置修改作者模板： window –&gt; preference –&gt; java –&gt; codeStyple –&gt; codetemplate]]></content>
@@ -1483,17 +1480,6 @@
       </categories>
       <tags>
         <tag>开发工具</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[MySQL安装和服务无法启动-3534解决]]></title>
-    <url>%2F2016%2F03%2F21%2FMySQL%E6%9C%8D%E5%8A%A1%E6%97%A0%E6%B3%95%E5%90%AF%E5%8A%A8%E8%A7%A3%E5%86%B3%E4%BB%A5%E5%8F%8A%E5%AE%89%E8%A3%85%2F</url>
-    <content type="text"><![CDATA[应该是配置文件没有设置好，多见于绿色版吧，安装版一般没问题有问题卸载重装大法能解决大部分问题啦~ MySQL安装在配置文件写入下列信息12345678910111213141516[mysql]# 设置mysql客户端默认字符集default-character-set=utf8 [mysqld]#设置3306端口port = 3306 # 设置mysql的安装目录basedir=D:\mysql\mysql-5.6.17-winx64# 设置mysql数据库的数据的存放目录datadir=D:\mysql\mysql-5.6.17-winx64\data# 允许最大连接数max_connections=200# 服务端使用的字符集默认为8比特编码的latin1字符集character-set-server=utf8# 创建新表时将使用的默认存储引擎default-storage-engine=INNODB CMD管理员运行进入bin目录执行mysqld install即可 服务无法启动成功安装以后，启动MySQL，输入： net start mysql 提示： ”MySQL 服务无法启动，服务没有报告任何错误，请键入 NET HELPMSG 3534 以获得更多的帮助。” 查了下，在当前目录下输入： mysqld-initialize mysqld --initialize-insecure 还是出错，又查了下，原因是： mysqld –initialize-insecure自动生成无密码的root用户 mysqld –initialize自动生成带随机密码的root用户。 data文件夹不为空是不能执行这个命令的。 解决办法：先删除data目录下的所有文件或者移走。 服务器安装一般服务器安装的都不是官方原版，而是基于原版的衍生版，使用方面和原生的操作完全一样，但是性能方面会有大大的提高，常见的衍生版有 MariaDB 和 PerconaServer，前者是原作者的另一个项目，后者性能有显著提升 安装后常用的操作是：修改/设置 root 的密码：mysqladmin -u root password &quot;root&quot;设置为允许远程客户端访问（生产环境为安全不会开启）： 1234-- grant all privileges on . to 'root' @'%' identified by 'root';GRANT ALL ON *.* TO admin@'%' IDENTIFIED BY 'admin' WITH GRANT OPTION;-- admin@'%' 其中admin是用户名，“%”是允许任何ip的访问，密码为admin。flush privileges; 还有就是不要忘了开启防火墙： 12/sbin/iptables -I INPUT -p tcp --dport 3306 -j ACCEPT/etc/rc.d/init.d/iptables save mysql 客户端每次访问 db，mysql 就会试图去解析来访问的机器的 hostname，并缓存到 hostname cache，这样会导致连接速度变慢，我们可以设置关闭这个功能，当然是测试环境时，为了安全还是…..编辑 vim /etc/my.cnf ，在 [mysqld] 下面添加 skip-name-resolve 然后重启 MySQL 服务就可以了 设置编码首先通过 show variables like &#39;character_set_%&#39;; 查看 mysql 字符集默认编码为 latin1，当然是不支持中文的，所以还是改成 u8 比较好伐，修改 /etc/my.inf 配置文件，主要就是在下面的两个节点下追加一条配置： 12345[client] default-character-set=utf8[mysqld]character-set-server=utf8 然后重启 MySQL 的服务即可，网上很多资源都是在 [mysqld] 下添加 ：default-character-set=utf8 ，如果这样改会导致 5.7 版本 mysql 无法打开，所以要改为 character-set-server=utf8 ，所以要考虑版本问题啊…. 12345678-- 修改数据库的编码ALTER DATABASE dbtest CHARACTER SET utf8 COLLATE utf8_general_ci;-- ALTER DATABASE dbtest CHARACTER SET utf8; -- 简单修改-- 修改表的编码ALTER TABLE tbtest CHARACTER set utf8 COLLATE utf8_general_ci;-- 修改字段编码ALTER TABLE tbtest MODIFY email VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci;]]></content>
-      <categories>
-        <category>我是修电脑的</category>
-      </categories>
-      <tags>
-        <tag>MySQL</tag>
       </tags>
   </entry>
   <entry>
@@ -1518,6 +1504,28 @@
       <tags>
         <tag>Linux</tag>
         <tag>SSH</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[VBOX启动错误]]></title>
+    <url>%2F2016%2F03%2F21%2FVBOX%E6%97%A0%E6%B3%95%E5%90%AF%E5%8A%A8%E9%97%AE%E9%A2%98%2F</url>
+    <content type="text"><![CDATA[网上查了很久，最多的就是说版本的bug，回退到4.3的版本就可以了，但好像也没有什么效果，依然错误。 解决方案是因为系统是64位的原因导致某些服务无法启动，也或许是因为是windows10的原因，目前windows10的兼容性还不是很好，git、kdiff3之类的软件默认是英文界面。。。 打开安装目录D:\Program Files\Oracle\VirtualBox\drivers\vboxdrv右键VBoxDrv.inf安装，然后重启应该就可以了。(我就是忘了重启又折腾了好久o(￣▽￣)ゞ))￣▽￣)o) PS：win10下，5.x以上的版本才支持桥连呢]]></content>
+      <categories>
+        <category>我是修电脑的</category>
+      </categories>
+      <tags>
+        <tag>VBOX</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[MySQL安装和服务无法启动-3534解决]]></title>
+    <url>%2F2016%2F03%2F21%2FMySQL%E6%9C%8D%E5%8A%A1%E6%97%A0%E6%B3%95%E5%90%AF%E5%8A%A8%E8%A7%A3%E5%86%B3%E4%BB%A5%E5%8F%8A%E5%AE%89%E8%A3%85%2F</url>
+    <content type="text"><![CDATA[应该是配置文件没有设置好，多见于绿色版吧，安装版一般没问题有问题卸载重装大法能解决大部分问题啦~ MySQL安装在配置文件写入下列信息12345678910111213141516[mysql]# 设置mysql客户端默认字符集default-character-set=utf8 [mysqld]#设置3306端口port = 3306 # 设置mysql的安装目录basedir=D:\mysql\mysql-5.6.17-winx64# 设置mysql数据库的数据的存放目录datadir=D:\mysql\mysql-5.6.17-winx64\data# 允许最大连接数max_connections=200# 服务端使用的字符集默认为8比特编码的latin1字符集character-set-server=utf8# 创建新表时将使用的默认存储引擎default-storage-engine=INNODB CMD管理员运行进入bin目录执行mysqld install即可 服务无法启动成功安装以后，启动MySQL，输入： net start mysql 提示： ”MySQL 服务无法启动，服务没有报告任何错误，请键入 NET HELPMSG 3534 以获得更多的帮助。” 查了下，在当前目录下输入： mysqld-initialize mysqld --initialize-insecure 还是出错，又查了下，原因是： mysqld –initialize-insecure自动生成无密码的root用户 mysqld –initialize自动生成带随机密码的root用户。 data文件夹不为空是不能执行这个命令的。 解决办法：先删除data目录下的所有文件或者移走。 服务器安装一般服务器安装的都不是官方原版，而是基于原版的衍生版，使用方面和原生的操作完全一样，但是性能方面会有大大的提高，常见的衍生版有 MariaDB 和 PerconaServer，前者是原作者的另一个项目，后者性能有显著提升 安装后常用的操作是：修改/设置 root 的密码：mysqladmin -u root password &quot;root&quot;设置为允许远程客户端访问（生产环境为安全不会开启）： 1234-- grant all privileges on . to 'root' @'%' identified by 'root';GRANT ALL ON *.* TO admin@'%' IDENTIFIED BY 'admin' WITH GRANT OPTION;-- admin@'%' 其中admin是用户名，“%”是允许任何ip的访问，密码为admin。flush privileges; 还有就是不要忘了开启防火墙： 12/sbin/iptables -I INPUT -p tcp --dport 3306 -j ACCEPT/etc/rc.d/init.d/iptables save mysql 客户端每次访问 db，mysql 就会试图去解析来访问的机器的 hostname，并缓存到 hostname cache，这样会导致连接速度变慢，我们可以设置关闭这个功能，当然是测试环境时，为了安全还是…..编辑 vim /etc/my.cnf ，在 [mysqld] 下面添加 skip-name-resolve 然后重启 MySQL 服务就可以了 设置编码首先通过 show variables like &#39;character_set_%&#39;; 查看 mysql 字符集默认编码为 latin1，当然是不支持中文的，所以还是改成 u8 比较好伐，修改 /etc/my.inf 配置文件，主要就是在下面的两个节点下追加一条配置： 12345[client] default-character-set=utf8[mysqld]character-set-server=utf8 然后重启 MySQL 的服务即可，网上很多资源都是在 [mysqld] 下添加 ：default-character-set=utf8 ，如果这样改会导致 5.7 版本 mysql 无法打开，所以要改为 character-set-server=utf8 ，所以要考虑版本问题啊…. 12345678-- 修改数据库的编码ALTER DATABASE dbtest CHARACTER SET utf8 COLLATE utf8_general_ci;-- ALTER DATABASE dbtest CHARACTER SET utf8; -- 简单修改-- 修改表的编码ALTER TABLE tbtest CHARACTER set utf8 COLLATE utf8_general_ci;-- 修改字段编码ALTER TABLE tbtest MODIFY email VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci;]]></content>
+      <categories>
+        <category>我是修电脑的</category>
+      </categories>
+      <tags>
+        <tag>MySQL</tag>
       </tags>
   </entry>
 </search>
